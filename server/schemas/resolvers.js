@@ -37,6 +37,7 @@ const resolvers = {
     },
   },
   Mutation: {
+    //register a new user
     addUser: async (parent, args) => {
       // check if user already exists
       const userExists = await User.findOne({ email: args.email });
@@ -56,9 +57,11 @@ const resolvers = {
         verification: "Please check your email to verify your account",
       };
     },
+    // login a user
     login: async (parent, { email, password }, context) => {
+      const refresh_token = context.headers.cookie?.split("=")[1];
       const user = await User.findOne({ email });
-
+      console.log(context.headers.cookie);
       if (!user) {
         throw new AuthenticationError("Incorrect credentials");
       }
@@ -73,10 +76,7 @@ const resolvers = {
         throw new AuthenticationError("Please verify your email.");
       }
 
-      if (user.refreshToken) {
-        throw new AuthenticationError("You are already logged in");
-      }
-
+      // user data to be sent to client
       const data = {
         email: user.email,
         given_name: user.given_name,
@@ -90,19 +90,38 @@ const resolvers = {
       const accessToken = generateToken(data);
       const refreshToken = generateToken(data, "refresh");
 
+      // If refresh token exists in cookie, get new array of tokens without the old refresh token
+      let newRefreshTokenArray = !refresh_token
+        ? user.refreshToken
+        : user.refreshToken.filter((token) => token !== refresh_token);
+
+      if (refresh_token) {
+        // clear httpOnly cookie
+        context.res.clearCookie("refresh_token", {
+          httpOnly: true,
+          sameSite: "none",
+          secure: true,
+        });
+      }
+
       // save tokens to user
-      user.refreshToken = refreshToken;
+      user.refreshToken = [...newRefreshTokenArray, refreshToken];
       await user.save();
 
       // set httpOnly cookie
-      context.res.cookie("accessToken", accessToken, {
+      context.res.cookie("refresh_token", refreshToken, {
         httpOnly: true,
         sameSite: "none",
         secure: true,
       });
 
-      return { message: "Logged in successfully" };
+      return {
+        message: "Logged in successfully",
+        access_token: accessToken,
+        user,
+      };
     },
+    // New Post
     addPost: async (parent, args, context) => {
       if (context.user) {
         const post = await Post.create({
@@ -121,6 +140,7 @@ const resolvers = {
 
       throw new AuthenticationError("You need to be logged in!");
     },
+    // Add Comment
     addComment: async (parent, { postId, commentText }, context) => {
       if (context.user) {
         const updatedPost = await Post.findOneAndUpdate(

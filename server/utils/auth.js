@@ -22,7 +22,7 @@ module.exports = {
       console.log("Invalid token");
     }
 
-    return req;
+    return { req, res };
   },
   generateToken: function (user, secret) {
     let secretkey = process.env.ACCESS_TOKEN_SECRET;

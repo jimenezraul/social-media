@@ -6,6 +6,8 @@ const typeDefs = gql`
     given_name: String
     family_name: String
     email: String
+    isAdmin: Boolean
+    isVerified: Boolean
     postCount: Int
     posts: [Post]
   }
@@ -34,18 +36,10 @@ const typeDefs = gql`
     createdAt: String
   }
 
-  type Tokens {
-    accessToken: String
-    refreshToken: String
-  }
-
   type Auth {
-    token: Tokens
-    user: User
-  }
-
-  type Confirmation {
     message: String
+    access_token: String
+    user: User
   }
 
   type Query {
@@ -62,8 +56,8 @@ const typeDefs = gql`
       family_name: String!
       email: String!
       password: String!
-    ): Confirmation
-    login(email: String!, password: String!): Confirmation
+    ): Auth
+    login(email: String!, password: String!): Auth
     addPost(postText: String!): Post
     addComment(postId: ID!, commentText: String!): Post
     addLike(postId: ID!): Post

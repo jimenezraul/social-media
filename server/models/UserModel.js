@@ -52,9 +52,7 @@ const userSchema = new Schema({
   accessToken: {
     type: String,
   },
-  refreshToken: {
-    type: String,
-  },
+  refreshToken: [String],
 });
 
 userSchema.pre("save", async function (next) {
