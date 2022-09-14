@@ -1,6 +1,6 @@
 const { AuthenticationError } = require("apollo-server-express");
 const { User, Post } = require("../models");
-const { signToken } = require("../utils/auth");
+const { generateToken } = require("../utils/auth");
 
 const resolvers = {
   Query: {
@@ -28,7 +28,6 @@ const resolvers = {
         .populate("posts")
         .populate("comments");
     },
-    // get all friends posts for logged in user
     posts: async (parent, { username }) => {
       const params = username ? { username } : {};
       return Post.find(params).sort({ createdAt: -1 });
@@ -39,12 +38,25 @@ const resolvers = {
   },
   Mutation: {
     addUser: async (parent, args) => {
-      const user = await User.create(args);
-      const token = signToken(user);
+      // check if user already exists
+      const userExists = await User.findOne({ email: args.email });
 
-      return { token, user };
+      if (userExists) {
+        throw new AuthenticationError("Email already exists");
+      }
+
+      // create new user and add accessToken and refreshToken
+      const user = await User.create(args);
+      user.accessToken = generateToken(args);
+      user.refreshToken = generateToken(args, "refresh");
+      await user.save();
+
+      return {
+        message: "User created successfully",
+        verification: "Please check your email to verify your account",
+      };
     },
-    login: async (parent, { email, password }) => {
+    login: async (parent, { email, password }, context) => {
       const user = await User.findOne({ email });
 
       if (!user) {
@@ -57,8 +69,39 @@ const resolvers = {
         throw new AuthenticationError("Incorrect credentials");
       }
 
-      const token = signToken(user);
-      return { token, user };
+      if (!user.isVerified) {
+        throw new AuthenticationError("Please verify your email.");
+      }
+
+      if (user.refreshToken) {
+        throw new AuthenticationError("You are already logged in");
+      }
+
+      const data = {
+        email: user.email,
+        given_name: user.given_name,
+        family_name: user.family_name,
+        _id: user._id,
+        isAdmin: user.isAdmin,
+        isVerified: user.isVerified,
+      };
+
+      //generate new tokens
+      const accessToken = generateToken(data);
+      const refreshToken = generateToken(data, "refresh");
+
+      // save tokens to user
+      user.refreshToken = refreshToken;
+      await user.save();
+
+      // set httpOnly cookie
+      context.res.cookie("accessToken", accessToken, {
+        httpOnly: true,
+        sameSite: "none",
+        secure: true,
+      });
+
+      return { message: "Logged in successfully" };
     },
     addPost: async (parent, args, context) => {
       if (context.user) {

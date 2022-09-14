@@ -49,6 +49,9 @@ const userSchema = new Schema({
     type: Boolean,
     default: false,
   },
+  accessToken: {
+    type: String,
+  },
   refreshToken: {
     type: String,
   },
@@ -64,7 +67,7 @@ userSchema.pre("save", async function (next) {
 });
 
 userSchema.methods.isCorrectPassword = async function (password) {
-  return bcrypt.compare(password, this.password);
+  return await bcrypt.compare(password, this.password);
 };
 
 const User = model("User", userSchema);
