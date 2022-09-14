@@ -53,6 +53,10 @@ const userSchema = new Schema({
     type: String,
   },
   refreshToken: [String],
+  provider: {
+    type: String,
+    default: "email",
+  },
 });
 
 userSchema.pre("save", async function (next) {
