@@ -1,13 +1,14 @@
 const jwt = require("jsonwebtoken");
+let expiration = "1h";
 
 require("dotenv").config();
 
 module.exports = {
   authMiddleware: function ({ req, res }) {
     let token = req.headers.authorization;
-
+    
     // ["Bearer", "<tokenvalue>"]
-    if (req.headers.authorization) {
+    if (token) {
       token = token.split(" ").pop().trim();
     }
 
@@ -16,19 +17,19 @@ module.exports = {
     }
 
     try {
-      const { data } = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, {
+      const data = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, {
         maxAge: expiration,
       });
+      
       req.user = data;
     } catch {
       console.log("Invalid token");
     }
 
-    return { req, res };
+    return req;
   },
   generateToken: function (user, secret) {
     let secretkey = process.env.ACCESS_TOKEN_SECRET;
-    let expiration = "1h";
     if (secret === "refresh") {
       secretkey = process.env.REFRESH_TOKEN_SECRET;
       expiration = "7d";

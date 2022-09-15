@@ -72,6 +72,11 @@ userSchema.methods.isCorrectPassword = async function (password) {
   return await bcrypt.compare(password, this.password);
 };
 
+// get the post count
+userSchema.virtual("postCount").get(function () {
+  return this.posts.length;
+});
+
 const User = model("User", userSchema);
 
 module.exports = User;
