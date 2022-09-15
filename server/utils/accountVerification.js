@@ -12,7 +12,7 @@ module.exports = {
     });
 
     const mailOptions = {
-      from: "Social Media App",
+      from: `"Social Media App" <${process.env.EMAIL}>`,
       to: user.email,
       subject: "Account Verification",
       text: `Please click the link below to verify your account: http://localhost:3000/verify?token=${token}`,

@@ -1,15 +1,20 @@
 const { Schema, model } = require("mongoose");
 
-const commentSchema = new Schema({
+const commentSchema = new Schema(
+  {
     commentText: {
-        type: String,
-        trim: true,
+      type: String,
+      trim: true,
     },
     commentAuthor: {
-        type: Schema.Types.ObjectId,
-        ref: "User",
-    }
-});
+      type: Schema.Types.ObjectId,
+      ref: "User",
+    },
+  },
+  {
+    timestamps: true,
+  }
+);
 
 const Comment = model("Comment", commentSchema);
 

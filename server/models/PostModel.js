@@ -32,6 +32,16 @@ const postSchema = new Schema(
   }
 );
 
+// comments count
+postSchema.virtual("commentCount").get(function () {
+  return this.comments.length;
+});
+
+// likes count
+postSchema.virtual("likeCount").get(function () {
+  return this.likes.length;
+});
+
 const Post = model("Post", postSchema);
 
 module.exports = Post;
