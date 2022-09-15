@@ -1,6 +1,7 @@
 const { AuthenticationError } = require("apollo-server-express");
 const { User, Post } = require("../models");
 const { generateToken } = require("../utils/auth");
+const { sendVerificationEmail } = require("../utils/accountVerification");
 
 const resolvers = {
   Query: {
@@ -45,12 +46,14 @@ const resolvers = {
       if (userExists) {
         throw new AuthenticationError("Email already exists");
       }
-
+      const token = generateToken(args);
       // create new user and add accessToken and refreshToken
       const user = await User.create(args);
-      user.accessToken = generateToken(args);
-      user.refreshToken = generateToken(args, "refresh");
+      user.accessToken = token;
       await user.save();
+
+      // send verification email
+      await sendVerificationEmail(user, token);
 
       return {
         message: "User created successfully",

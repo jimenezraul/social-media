@@ -16,7 +16,9 @@ module.exports = {
     }
 
     try {
-      const { data } = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, { maxAge: expiration });
+      const { data } = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, {
+        maxAge: expiration,
+      });
       req.user = data;
     } catch {
       console.log("Invalid token");
@@ -28,9 +30,9 @@ module.exports = {
     let secretkey = process.env.ACCESS_TOKEN_SECRET;
     let expiration = "1h";
     if (secret === "refresh") {
-        secretkey = process.env.REFRESH_TOKEN_SECRET;
-        expiration = "7d";
+      secretkey = process.env.REFRESH_TOKEN_SECRET;
+      expiration = "7d";
     }
     return jwt.sign(user, secretkey, { expiresIn: expiration });
-    },
+  },
 };
