@@ -1,4 +1,12 @@
-const { me, users, user, addUser, login, verifyUser } = require("./user");
+const {
+  me,
+  users,
+  user,
+  addUser,
+  login,
+  verifyUser,
+  refreshToken,
+} = require("./user");
 const { post, posts, addPost, addComment } = require("./posts");
 
 const resolvers = {
@@ -13,8 +21,9 @@ const resolvers = {
     addUser: addUser,
     verifyUser: verifyUser,
     login: login,
+    refreshToken: refreshToken,
     addPost: addPost,
-    addComment: addComment
+    addComment: addComment,
   },
 };
 

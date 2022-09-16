@@ -1,5 +1,5 @@
 const jwt = require("jsonwebtoken");
-const allowedOrigins = require('../config/allowedOrigins');
+const allowedOrigins = require("../config/allowedOrigins");
 let expiration = "1d";
 
 require("dotenv").config();
@@ -14,21 +14,21 @@ module.exports = {
 
     token = token.split(" ").pop().trim();
 
-    try {
-      const data = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, {
+    const data = jwt.verify(
+      token,
+      process.env.ACCESS_TOKEN_SECRET,
+      {
         maxAge: expiration,
-      }, (err, decoded) => {
+      },
+      (err, decoded) => {
         if (err) {
-          console.log(err);
+          console.log("Invalid token");
           return req;
         }
         req.user = decoded.user;
         return req;
-      });
-
-    } catch {
-      console.log("Invalid token");
-    }
+      }
+    );
 
     return req;
   },
@@ -42,11 +42,24 @@ module.exports = {
   },
   credentials: (req, res, next) => {
     const origin = req.headers.origin;
-   
+
     if (allowedOrigins.includes(origin)) {
       res.header("Access-Control-Allow-Credentials", true);
     }
-    
+
     next();
+  },
+  validToken: (refreshToken) => {
+    return jwt.verify(
+      refreshToken,
+      process.env.REFRESH_TOKEN_SECRET,
+      (err, decoded) => {
+        if (err) {
+          console.log(err);
+          return false;
+        }
+        return true;
+      }
+    );
   },
 };
