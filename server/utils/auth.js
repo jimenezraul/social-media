@@ -1,27 +1,31 @@
 const jwt = require("jsonwebtoken");
+const allowedOrigins = require('../config/allowedOrigins');
 let expiration = "1d";
 
 require("dotenv").config();
 
 module.exports = {
-  authMiddleware: function ({ req, res }) {
-    let token = req.headers.authorization;
-    
-    // ["Bearer", "<tokenvalue>"]
-    if (token) {
-      token = token.split(" ").pop().trim();
-    }
+  authMiddleware: function ({ req }) {
+    let token = req.headers.authorization || req.headers.Authorization;
 
     if (!token) {
       return req;
     }
 
+    token = token.split(" ").pop().trim();
+
     try {
       const data = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, {
         maxAge: expiration,
+      }, (err, decoded) => {
+        if (err) {
+          console.log(err);
+          return req;
+        }
+        req.user = decoded.user;
+        return req;
       });
-      
-      req.user = data;
+
     } catch {
       console.log("Invalid token");
     }
@@ -35,5 +39,14 @@ module.exports = {
       expiration = "7d";
     }
     return jwt.sign(user, secretkey, { expiresIn: expiration });
+  },
+  credentials: (req, res, next) => {
+    const origin = req.headers.origin;
+   
+    if (allowedOrigins.includes(origin)) {
+      res.header("Access-Control-Allow-Credentials", true);
+    }
+    
+    next();
   },
 };

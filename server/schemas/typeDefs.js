@@ -25,10 +25,14 @@ const typeDefs = gql`
     given_name: String
     family_name: String
     email: String
+    profileUrl: String
     isAdmin: Boolean
     isVerified: Boolean
     postCount: Int
     posts: [Post]
+    friends: [User]
+    friendRequests: [User]
+    friendRequestsCount: Int
   }
 
   type Like {

@@ -47,6 +47,10 @@ const userSchema = new Schema(
         ref: "User",
       },
     ],
+    friendRequestsCount: {
+      type: Number,
+      default: 0,
+    },
     friends: [
       {
         type: Schema.Types.ObjectId,
