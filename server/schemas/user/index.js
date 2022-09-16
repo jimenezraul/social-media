@@ -154,10 +154,13 @@ module.exports = {
       throw new AuthenticationError("User not found");
     }
 
+    const newRefreshTokenArray = user.refreshToken.filter(
+      (token) => token !== refresh_token
+    );
+
+    // Refresh token expired
     if (!isValidToken) {
-      user.refreshToken = user.refreshToken.filter(
-        (token) => token !== refresh_token
-      );
+      user.refreshToken = newRefreshTokenArray;
       await user.save();
       throw new AuthenticationError(
         "Refresh token expired, please login again"
@@ -171,11 +174,16 @@ module.exports = {
       throw new AuthenticationError("Invalid token");
     }
 
+    // generate new refresh token and save to user
+    const newRefreshToken = generateToken({ user: loggedUser }, "refresh");
+    user.refreshToken = [...newRefreshTokenArray, newRefreshToken];
+    await user.save();
+
     // generate new access token
     const accessToken = generateToken({ user: loggedUser });
 
     // set httpOnly cookie
-    context.res.cookie("refresh_token", refresh_token, {
+    context.res.cookie("refresh_token", newRefreshToken, {
       httpOnly: true,
       sameSite: "none",
       secure: true,
