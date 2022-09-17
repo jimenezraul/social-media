@@ -55,7 +55,6 @@ module.exports = {
       process.env.REFRESH_TOKEN_SECRET,
       (err, decoded) => {
         if (err) {
-          console.log(err);
           return false;
         }
         return true;

@@ -4,6 +4,7 @@ const {
   user,
   addUser,
   login,
+  logout,
   verifyUser,
   refreshToken,
 } = require("./user");
@@ -21,6 +22,7 @@ const resolvers = {
     addUser: addUser,
     verifyUser: verifyUser,
     login: login,
+    logout: logout,
     refreshToken: refreshToken,
     addPost: addPost,
     addComment: addComment,
