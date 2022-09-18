@@ -9,7 +9,32 @@ module.exports = {
         .select("-__v -password")
         .populate("posts")
         .populate("friends")
-        .populate("friendRequests");
+        .populate("friendRequests")
+        .populate({
+          path: "posts",
+          populate: {
+            path: "postAuthor",
+            select: "-__v -password",
+          },
+        })
+        .populate({
+          path: "posts",
+          populate: {
+            path: "comments",
+            model: "Comment",
+            populate: {
+              path: "commentAuthor",
+              model: "User",
+            },
+          },
+        })
+        .populate({
+          path: "posts",
+          populate: {
+            path: "likes",
+            model: "User",
+          },
+        });
 
       return userData;
     }

@@ -22,7 +22,10 @@ module.exports = {
       throw new AuthenticationError("You need to be logged in!");
     }
 
-    return Post.findOne({ _id: postId });
+    return Post.findOne({ _id: postId })
+        .select("-__v")
+        .populate("comments")
+        .populate("likes");
   },
 
   addPost: async (parent, args, context) => {

@@ -11,8 +11,8 @@ const postSchema = new Schema(
       trim: true,
     },
     postAuthor: {
-      type: Schema.Types.ObjectId,
-      ref: "User",
+        type: Schema.Types.ObjectId,
+        ref: "User",
     },
     comments: [
       {

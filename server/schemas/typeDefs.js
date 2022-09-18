@@ -11,11 +11,11 @@ const typeDefs = gql`
   type Post {
     _id: ID
     postText: String
-    postAuthor: String
+    postAuthor: User
     createdAt: String
     comments: [Comment]
     commentCount: Int
-    likes: [Like]
+    likes: [User]
     likeCount: Int
   }
 
@@ -32,12 +32,6 @@ const typeDefs = gql`
     friends: [User]
     friendRequests: [User]
     friendRequestsCount: Int
-  }
-
-  type Like {
-    _id: ID
-    likeAuthor: String
-    createdAt: String
   }
 
   type Message {
@@ -73,7 +67,7 @@ const typeDefs = gql`
     addPost(postText: String!): Post
     addComment(postId: ID!, commentText: String!): Post
     friendRequest(friendId: ID!): Message
-    acceptFriendRequest(friendId: ID!): Message 
+    acceptFriendRequest(friendId: ID!): Message
     removeComment(postId: ID!, commentId: ID!): Post
     likes(postId: ID!): Message
   }
