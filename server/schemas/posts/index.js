@@ -1,6 +1,7 @@
 const { post, posts, addPost } = require("./post");
 const { addComment, removeComment } = require("./comment");
 const { likes } = require("./likes");
+const { feed } = require("./feed");
 
 module.exports = {
   posts: posts,
@@ -9,4 +10,5 @@ module.exports = {
   addComment: addComment,
   removeComment: removeComment,
   likes: likes,
+  feed: feed,
 };

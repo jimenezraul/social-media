@@ -17,6 +17,7 @@ const {
   addComment,
   removeComment,
   likes,
+  feed,
 } = require("./posts");
 
 const resolvers = {
@@ -26,6 +27,7 @@ const resolvers = {
     user: user,
     post: post,
     posts: posts,
+    feed: feed,
   },
   Mutation: {
     register: register,
