@@ -10,7 +10,14 @@ const {
   friendRequest,
   acceptFriendRequest,
 } = require("./user");
-const { post, posts, addPost, addComment } = require("./posts");
+const {
+  post,
+  posts,
+  addPost,
+  addComment,
+  removeComment,
+  likes,
+} = require("./posts");
 
 const resolvers = {
   Query: {
@@ -30,6 +37,9 @@ const resolvers = {
     addComment: addComment,
     friendRequest: friendRequest,
     acceptFriendRequest: acceptFriendRequest,
+    addComment: addComment,
+    removeComment: removeComment,
+    likes: likes,
   },
 };
 

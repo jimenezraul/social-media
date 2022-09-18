@@ -72,9 +72,10 @@ const typeDefs = gql`
     refreshToken: Auth
     addPost(postText: String!): Post
     addComment(postId: ID!, commentText: String!): Post
-    addLike(postId: ID!): Post
     friendRequest(friendId: ID!): Message
     acceptFriendRequest(friendId: ID!): Message 
+    removeComment(postId: ID!, commentId: ID!): Post
+    likes(postId: ID!): Message
   }
 `;
 
