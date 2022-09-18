@@ -17,11 +17,31 @@ module.exports = {
     throw new AuthenticationError("Not logged in");
   },
   // Query for all users
-  users: async () => {
-    return User.find().select("-__v -password").populate("posts");
+  users: async (parent, args, context) => {
+    const loggedUser = context.user;
+
+    // if (!loggedUser) {
+    //   throw new AuthenticationError("You need to be logged in!");
+    // }
+
+    return User.find()
+      .select("-__v -password")
+      .populate("posts")
+      .populate("friends")
+      .populate("friendRequests");
   },
   // Query for a single user by id
-  user: async (parent, { id }) => {
-    return User.findOne({ _id: id }).select("-__v -password").populate("posts");
+  user: async (parent, { id }, context) => {
+    const loggedUser = context.user;
+
+    if (!loggedUser) {
+      throw new AuthenticationError("You need to be logged in!");
+    }
+
+    return User.findOne({ _id: id })
+      .select("-__v -password")
+      .populate("posts")
+      .populate("friends")
+      .populate("friendRequests");
   },
 };

@@ -1,19 +1,29 @@
-const { User, Post } = require("../../models");
+const { User, Post, Comment } = require("../../models");
 
 module.exports = {
   posts: async (parent, args, context) => {
-    if (context.user) {
-      return Post.find({ postAuthor: context.user._id })
-        .select("-__v")
-        .populate("comments")
-        .populate("likes");
+    const loggedUser = context.user;
+
+    if (!loggedUser) {
+      throw new AuthenticationError("You need to be logged in!");
     }
 
-    throw new AuthenticationError("Not logged in");
+    return Post.find({ postAuthor: context.user._id })
+      .select("-__v")
+      .populate("comments")
+      .populate("likes");
   },
-  post: async (parent, { postId }) => {
+
+  post: async (parent, { postId }, context) => {
+    const loggedUser = context.user;
+
+    if (!loggedUser) {
+      throw new AuthenticationError("You need to be logged in!");
+    }
+
     return Post.findOne({ _id: postId });
   },
+
   addPost: async (parent, args, context) => {
     if (context.user) {
       const user = context.user;
@@ -33,24 +43,34 @@ module.exports = {
 
     throw new AuthenticationError("You need to be logged in!");
   },
-  addComment: async (parent, { postId, commentText }, context) => {
-    if (context.user) {
-      const updatedPost = await Post.findOneAndUpdate(
-        { _id: postId },
-        {
-          $push: {
-            comments: { commentText, commentAuthor: context.user.username },
-          },
-        },
-        {
-          new: true,
-          runValidators: true,
-        }
-      );
 
-      return updatedPost;
+  addComment: async (parent, { postId, commentText }, context) => {
+    const loggedUser = context.user;
+
+    if (!loggedUser) {
+      throw new AuthenticationError("You need to be logged in!");
     }
 
-    throw new AuthenticationError("You need to be logged in!");
+    // create a new comment
+    const addComment = await Comment.create({
+      commentText: commentText,
+      commentAuthor: context.user._id,
+    });
+
+    // update the post with the new comment
+    const updatedPost = await Post.findOneAndUpdate(
+      { _id: postId },
+      {
+        $push: {
+          comments: addComment._id,
+        },
+      },
+      {
+        new: true,
+        runValidators: true,
+      }
+    );
+
+    return updatedPost;
   },
 };
