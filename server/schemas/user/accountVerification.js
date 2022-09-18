@@ -2,7 +2,7 @@ const { AuthenticationError } = require("apollo-server-express");
 const { User } = require("../../models");
 
 module.exports = {
-    // Verify user account
+  // Verify user account
   verifyUser: async (parent, args) => {
     const user = await User.findOne({ accessToken: args.token });
 
@@ -17,5 +17,5 @@ module.exports = {
     return {
       message: "Account verified successfully",
     };
-  }
+  },
 };

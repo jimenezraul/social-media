@@ -5,7 +5,7 @@ const { sendVerificationEmail } = require("../../utils/accountVerification");
 
 module.exports = {
   //register a new user
-  addUser: async (parent, args) => {
+  register: async (parent, args) => {
     // check if user already exists
     const userExists = await User.findOne({ email: args.email });
 
@@ -14,6 +14,7 @@ module.exports = {
     }
     const token = generateToken(args);
     // create new user and add accessToken and refreshToken
+    console.log(args);
     const user = await User.create(args);
     user.accessToken = token;
     await user.save();
@@ -22,8 +23,8 @@ module.exports = {
     await sendVerificationEmail(user, token);
 
     return {
-      message: "User created successfully",
-      verification: "Please check your email to verify your account",
+      message: "Account created successfully",
+      subMessage: "Please check your email to verify your account",
     };
   },
 };

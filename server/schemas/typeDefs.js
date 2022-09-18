@@ -1,7 +1,6 @@
 const { gql } = require("apollo-server-express");
 
 const typeDefs = gql`
-  
   type Comment {
     _id: ID
     commentText: String
@@ -43,6 +42,7 @@ const typeDefs = gql`
 
   type Message {
     message: String
+    subMessage: String
   }
 
   type Auth {
@@ -54,18 +54,18 @@ const typeDefs = gql`
   type Query {
     me: User
     users: [User]
-    user(username: String!): User
+    user(id: ID!): User
     posts: [Post]
     post(postId: ID!): Post
   }
 
   type Mutation {
-    addUser(
+    register(
       given_name: String!
       family_name: String!
       email: String!
       password: String!
-    ): Auth
+    ): Message
     verifyUser(token: String!): Message
     login(email: String!, password: String!): Auth
     logout: Message
@@ -73,6 +73,8 @@ const typeDefs = gql`
     addPost(postText: String!): Post
     addComment(postId: ID!, commentText: String!): Post
     addLike(postId: ID!): Post
+    friendRequest(friendId: ID!): Message
+    acceptFriendRequest(friendId: ID!): Message 
   }
 `;
 

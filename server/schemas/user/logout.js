@@ -9,6 +9,10 @@ module.exports = {
     const token = context.headers.cookie?.split("=")[1];
     const loggedUser = context?.user;
 
+    if (!loggedUser) {
+        throw new AuthenticationError("User not found");
+    }
+
     // clear httpOnly cookie
     context.res.clearCookie("refresh_token", {
       httpOnly: true,
@@ -30,8 +34,11 @@ module.exports = {
       (token) => token !== token
     );
 
-    user.refreshToken = newRefreshTokenArray;
-    await user.save();
+    await User.findOneAndUpdate(
+        { _id: loggedUser._id },
+        { $set: { refreshToken: newRefreshTokenArray } },
+        { new: true }
+    );
 
     return {
       message: "User logged out successfully",

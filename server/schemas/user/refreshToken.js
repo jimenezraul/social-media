@@ -3,7 +3,7 @@ const { User } = require("../../models");
 const { generateToken, validToken } = require("../../utils/auth");
 
 module.exports = {
-    // refresh access token
+  // refresh access token
   refreshToken: async (parent, args, context) => {
     const refresh_token = context.headers.cookie?.split("=")[1];
     const loggedUser = context?.user;

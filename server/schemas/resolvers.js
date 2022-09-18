@@ -2,11 +2,13 @@ const {
   me,
   users,
   user,
-  addUser,
+  register,
   login,
   logout,
   verifyUser,
   refreshToken,
+  friendRequest,
+  acceptFriendRequest,
 } = require("./user");
 const { post, posts, addPost, addComment } = require("./posts");
 
@@ -19,13 +21,15 @@ const resolvers = {
     posts: posts,
   },
   Mutation: {
-    addUser: addUser,
+    register: register,
     verifyUser: verifyUser,
     login: login,
     logout: logout,
     refreshToken: refreshToken,
     addPost: addPost,
     addComment: addComment,
+    friendRequest: friendRequest,
+    acceptFriendRequest: acceptFriendRequest,
   },
 };
 
