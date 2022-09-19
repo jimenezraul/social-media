@@ -35,6 +35,28 @@ module.exports = {
     };
   },
 
+  // update a comment
+  updateComment: async (parent, { commentId, commentText }, context) => {
+    const loggedUser = context.user;
+
+    if (!loggedUser) {
+      throw new AuthenticationError("You need to be logged in!");
+    }
+
+    // update the comment
+    const updatedComment = await Comment.findOneAndUpdate(
+      { _id: commentId },
+      { commentText },
+      { new: true }
+    );
+
+    return {
+      success: true,
+      message: "Comment updated!",
+    };
+  },
+
+  // delete a comment
   deleteComment: async (parent, { postId, commentId }, context) => {
     const loggedUser = context.user;
 

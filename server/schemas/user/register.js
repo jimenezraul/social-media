@@ -12,9 +12,10 @@ module.exports = {
     if (userExists) {
       throw new AuthenticationError("Email already exists");
     }
+
     const token = generateToken(args);
-    // create new user and add accessToken and refreshToken
-    console.log(args);
+
+    // create new user and add accessToken
     const user = await User.create(args);
     user.accessToken = token;
     await user.save();
