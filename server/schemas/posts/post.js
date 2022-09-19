@@ -17,7 +17,7 @@ module.exports = {
 
   post: async (parent, { postId }, context) => {
     const loggedUser = context.user;
-
+    
     if (!loggedUser) {
       throw new AuthenticationError("You need to be logged in!");
     }

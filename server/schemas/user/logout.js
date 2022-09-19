@@ -10,7 +10,7 @@ module.exports = {
     const loggedUser = context?.user;
 
     if (!loggedUser) {
-      throw new AuthenticationError("User not found");
+      throw new AuthenticationError("You are not logged in");
     }
 
     // clear httpOnly cookie

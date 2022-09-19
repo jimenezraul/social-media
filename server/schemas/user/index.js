@@ -6,15 +6,21 @@ const { verifyUser } = require("./accountVerification");
 const { refreshToken } = require("./refreshToken");
 const { friendRequest, acceptFriendRequest } = require("./friendRequest");
 
-module.exports = {
-  me: me,
-  user: user,
-  users: users,
-  register: register,
-  login: login,
-  logout: logout,
-  verifyUser: verifyUser,
-  refreshToken: refreshToken,
-  friendRequest: friendRequest,
-  acceptFriendRequest: acceptFriendRequest,
+const userResolvers = {
+  userQuery: {
+    me: me,
+    user: user,
+    users: users,
+  },
+  userMutation: {
+    register: register,
+    login: login,
+    logout: logout,
+    verifyUser: verifyUser,
+    refreshToken: refreshToken,
+    friendRequest: friendRequest,
+    acceptFriendRequest: acceptFriendRequest,
+  },
 };
+
+module.exports = userResolvers;
