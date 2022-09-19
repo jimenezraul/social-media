@@ -1,6 +1,8 @@
 const { gql } = require("apollo-server-express");
 
 const typeDefs = gql`
+  scalar Date
+
   type Comment {
     _id: ID
     commentText: String
@@ -32,14 +34,19 @@ const typeDefs = gql`
     friends: [User]
     friendRequests: [User]
     friendRequestsCount: Int
+    createdAt: Date
+    updatedAt: Date
+    provider: String
   }
 
   type Message {
+    success: Boolean
     message: String
     subMessage: String
   }
 
   type Auth {
+    success: Boolean
     message: String
     access_token: String
     user: User
@@ -66,10 +73,12 @@ const typeDefs = gql`
     logout: Message
     refreshToken: Auth
     addPost(postText: String!): Post
-    addComment(postId: ID!, commentText: String!): Post
+    addComment(postId: ID!, commentText: String!): Message
+    updatePost(postId: ID!, postText: String!): Message
+    deletePost(postId: ID!): Message
     friendRequest(friendId: ID!): Message
     acceptFriendRequest(friendId: ID!): Message
-    removeComment(postId: ID!, commentId: ID!): Post
+    deleteComment(postId: ID!, commentId: ID!): Message
     likes(postId: ID!): Message
   }
 `;

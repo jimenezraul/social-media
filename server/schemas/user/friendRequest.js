@@ -27,6 +27,7 @@ module.exports = {
     );
 
     return {
+      success: true,
       message: "Friend request sent successfully",
     };
   },
@@ -46,7 +47,7 @@ module.exports = {
     }
 
     if (!user.friendRequests.includes(friendId)) {
-        throw new AuthenticationError("You have not received a friend request");
+      throw new AuthenticationError("You have not received a friend request");
     }
 
     // remove friend request from the friend request array
@@ -71,6 +72,7 @@ module.exports = {
     );
 
     return {
+      success: true,
       message: "Friend request accepted successfully",
     };
   },

@@ -29,10 +29,13 @@ module.exports = {
       }
     );
 
-    return updatedPost;
+    return {
+      success: true,
+      message: "Comment added!",
+    };
   },
 
-  removeComment: async (parent, { postId, commentId }, context) => {
+  deleteComment: async (parent, { postId, commentId }, context) => {
     const loggedUser = context.user;
 
     if (!loggedUser) {
@@ -58,6 +61,9 @@ module.exports = {
       }
     );
 
-    return updatedPost;
+    return {
+      success: true,
+      message: "Comment removed!",
+    };
   },
 };

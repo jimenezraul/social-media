@@ -23,6 +23,7 @@ module.exports = {
     await sendVerificationEmail(user, token);
 
     return {
+      success: true,
       message: "Account created successfully",
       subMessage: "Please check your email to verify your account",
     };

@@ -45,9 +45,9 @@ module.exports = {
   users: async (parent, args, context) => {
     const loggedUser = context.user;
 
-    // if (!loggedUser) {
-    //   throw new AuthenticationError("You need to be logged in!");
-    // }
+    if (!loggedUser) {
+      throw new AuthenticationError("You need to be logged in!");
+    }
 
     return User.find()
       .select("-__v -password")
@@ -55,6 +55,7 @@ module.exports = {
       .populate("friends")
       .populate("friendRequests");
   },
+
   // Query for a single user by id
   user: async (parent, { id }, context) => {
     const loggedUser = context.user;
@@ -67,6 +68,33 @@ module.exports = {
       .select("-__v -password")
       .populate("posts")
       .populate("friends")
-      .populate("friendRequests");
+      .populate("friendRequests")
+      .populate({
+        path: "posts",
+        populate: {
+          path: "postAuthor",
+          select: "-__v -password",
+        },
+      })
+      .populate({
+        path: "posts",
+        populate: {
+          path: "comments",
+          model: "Comment",
+          populate: {
+            path: "commentAuthor",
+            model: "User",
+            select: "-__v -password",
+          },
+        },
+      })
+      .populate({
+        path: "posts",
+        populate: {
+          path: "likes",
+          model: "User",
+          select: "-__v -password",
+        },
+      });
   },
 };

@@ -15,6 +15,7 @@ module.exports = {
     await user.save();
 
     return {
+      success: true,
       message: "Account verified successfully",
     };
   },

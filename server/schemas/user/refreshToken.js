@@ -64,6 +64,7 @@ module.exports = {
     });
 
     return {
+      success: true,
       message: "Access token refreshed successfully",
       access_token: accessToken,
       user: loggedUser,

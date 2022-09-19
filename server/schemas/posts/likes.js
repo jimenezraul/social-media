@@ -27,6 +27,7 @@ module.exports = {
       );
 
       return {
+        success: true,
         message: "Like removed",
       };
     }
@@ -44,6 +45,7 @@ module.exports = {
     );
 
     return {
+      success: true,
       message: "Like added!",
     };
   },

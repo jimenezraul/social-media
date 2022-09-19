@@ -23,9 +23,9 @@ module.exports = {
     }
 
     return Post.findOne({ _id: postId })
-        .select("-__v")
-        .populate("comments")
-        .populate("likes");
+      .select("-__v")
+      .populate("comments")
+      .populate("likes");
   },
 
   addPost: async (parent, args, context) => {
@@ -46,5 +46,35 @@ module.exports = {
     }
 
     throw new AuthenticationError("You need to be logged in!");
+  },
+
+  updatePost: async (parent, { postId, postText }, context) => {
+    if (!context.user) {
+      throw new AuthenticationError("You need to be logged in!");
+    }
+
+    const updatedPost = await Post.findOneAndUpdate(
+      { _id: postId },
+      { postText },
+      { new: true }
+    );
+
+    return {
+      success: true,
+      message: "Post updated!",
+    };
+  },
+
+  deletePost: async (parent, { postId }, context) => {
+    if (!context.user) {
+      throw new AuthenticationError("You need to be logged in!");
+    }
+
+    const deletedPost = await Post.findOneAndDelete({ _id: postId });
+
+    return {
+      success: true,
+      message: "Post deleted!",
+    };
   },
 };

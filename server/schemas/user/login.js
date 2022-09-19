@@ -62,6 +62,7 @@ module.exports = {
     });
 
     return {
+      success: true,
       message: "Logged in successfully",
       access_token: accessToken,
       user,

@@ -10,7 +10,7 @@ module.exports = {
     const loggedUser = context?.user;
 
     if (!loggedUser) {
-        throw new AuthenticationError("User not found");
+      throw new AuthenticationError("User not found");
     }
 
     // clear httpOnly cookie
@@ -35,12 +35,13 @@ module.exports = {
     );
 
     await User.findOneAndUpdate(
-        { _id: loggedUser._id },
-        { $set: { refreshToken: newRefreshTokenArray } },
-        { new: true }
+      { _id: loggedUser._id },
+      { $set: { refreshToken: newRefreshTokenArray } },
+      { new: true }
     );
 
     return {
+      success: true,
       message: "User logged out successfully",
     };
   },
