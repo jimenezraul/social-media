@@ -1,4 +1,4 @@
-const { userQuery, userMutation } = require("./user");
+const { userQuery, userMutation } = require("./users");
 const { postQuery, postMutation } = require("./posts");
 
 const resolvers = {

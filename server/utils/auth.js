@@ -22,7 +22,6 @@ module.exports = {
       },
       (err, decoded) => {
         if (err) {
-          console.log("Invalid token");
           return req;
         }
         req.user = decoded.user;

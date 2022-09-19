@@ -47,7 +47,7 @@ module.exports = {
     const updatedComment = await Comment.findOneAndUpdate(
       { _id: commentId },
       { commentText },
-      { new: true }
+      { new: true, runValidators: true }
     );
 
     return {

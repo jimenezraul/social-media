@@ -12,7 +12,22 @@ module.exports = {
     return Post.find()
       .select("-__v")
       .populate("comments")
-      .populate("likes");
+      .populate("likes")
+      .populate({
+        path: "postAuthor",
+        select: "-__v -password",
+      })
+      .populate({
+        path: "comments",
+        populate: {
+          path: "commentAuthor",
+          model: "User",
+        },
+      })
+      .populate({
+        path: "likes",
+        model: "User"
+      });
   },
 
   post: async (parent, { postId }, context) => {
@@ -42,7 +57,10 @@ module.exports = {
         { new: true }
       );
 
-      return post;
+      return post.populate({
+        path: "postAuthor",
+        select: "-__v -password",
+      });
     }
 
     throw new AuthenticationError("You need to be logged in!");
@@ -68,6 +86,18 @@ module.exports = {
   deletePost: async (parent, { postId }, context) => {
     if (!context.user) {
       throw new AuthenticationError("You need to be logged in!");
+    }
+
+    // check if the post exists
+    const post = await Post.findOne({ _id: postId });
+
+    if (!post) {
+        throw new AuthenticationError("Post does not exist!");
+    } 
+
+    // check if the logged in user is the post author or is an admin
+    if (post.postAuthor.toString() !== context.user._id.toString() && !context.user.isAdmin) {
+        throw new AuthenticationError("You are not authorized to delete this post!");
     }
 
     const deletedPost = await Post.findOneAndDelete({ _id: postId });
