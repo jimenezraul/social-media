@@ -9,7 +9,7 @@ module.exports = {
       throw new AuthenticationError("You need to be logged in!");
     }
 
-    return Post.find({ postAuthor: context.user._id })
+    return Post.find()
       .select("-__v")
       .populate("comments")
       .populate("likes");
@@ -17,7 +17,7 @@ module.exports = {
 
   post: async (parent, { postId }, context) => {
     const loggedUser = context.user;
-    
+
     if (!loggedUser) {
       throw new AuthenticationError("You need to be logged in!");
     }
