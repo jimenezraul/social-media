@@ -43,6 +43,7 @@ module.exports = {
     return {
       success: true,
       message: "User logged out successfully",
+      isLoggedIn: false,
     };
   },
 };

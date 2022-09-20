@@ -132,6 +132,7 @@ module.exports = {
         message: "User logged in",
         access_token: token,
         user: user,
+        isLoggedIn: true,
       };
     }
 
@@ -160,6 +161,7 @@ module.exports = {
       message: "User created successfully",
       access_token: token,
       user: newUser,
+      isLoggedIn: true,
     };
   },
 };

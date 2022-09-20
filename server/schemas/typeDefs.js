@@ -73,7 +73,7 @@ const typeDefs = gql`
     ): Message
     verifyUser(token: String!): Message
     login(email: String!, password: String!): Auth
-    logout: Message
+    logout: Auth
     refreshToken: Auth
     addPost(postText: String!): Post
     addComment(postId: ID!, commentText: String!): Message
