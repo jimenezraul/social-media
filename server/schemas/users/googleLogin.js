@@ -3,6 +3,8 @@ const { User } = require("../../models");
 const { generateToken } = require("../../utils/auth");
 const { AuthenticationError } = require("apollo-server-express");
 const { validToken } = require("../../utils/auth");
+const { formatUserData } = require("../../utils/formatUserData");
+const { setCookie, clearCookie } = require("../../utils/cookies");
 require("dotenv").config();
 
 module.exports = {
@@ -19,39 +21,29 @@ module.exports = {
       throw new AuthenticationError("You need to be logged in with Google!");
     }
 
-    function clearCookie() {
-      context.res.clearCookie("refresh_token", {
-        httpOnly: true,
-        sameSite: "none",
-        secure: true,
-      });
-    }
-
-    // If refresh token exists in cookie and is valid,
     if (refresh_token) {
-      // check if token is valid and not expired
       const isValid = validToken(refresh_token);
 
       if (!isValid) {
-        clearCookie();
+        clearCookie(context.res, "refresh_token");
         throw new AuthenticationError("You need to try logging in again!");
       }
-      // check if token exists in user.refreshtokens
+      
       const user = await User.findOne({
         refreshToken: refresh_token,
       }).select("given_name family_name email isVerified isAdmin profileUrl");
 
       if (!user) {
-        clearCookie();
+        clearCookie(context.res, "refresh_token");
         throw new AuthenticationError("You need to try logging in again!");
       }
 
-      const token = generateToken({ user: user });
+      const access_token = generateToken({ user: user });
 
       return {
         success: true,
         message: "You are logged in!",
-        access_token: token,
+        access_token: access_token,
         user: user,
         isLoggedIn: true,
       };
@@ -93,44 +85,23 @@ module.exports = {
       );
     }
 
-    const setCookie = (token) => {
-      context.res.cookie("refresh_token", token, {
-        httpOnly: true,
-        sameSite: "none",
-        secure: true,
-        maxAge: 1000 * 60 * 60 * 24 * 7,
-      });
-    };
-
-    function userData(user) {
-      return {
-        _id: user._id,
-        given_name: user.given_name,
-        family_name: user.family_name,
-        email: user.email,
-        isVerified: user.isVerified,
-        isAdmin: user.isAdmin,
-        profileUrl: user.profileUrl,
-      };
-    }
-
     // if user exists, return user
     if (user) {
       const currentRefreshToken = user.refreshToken;
-      const data = userData(user);
+      const data = formatUserData(user);
 
-      const token = generateToken({ user: data });
-      const refreshToken = generateToken({ user: data }, "refresh");
+      const access_token = generateToken({ user: data });
+      const refresh_token = generateToken({ user: data }, "refresh");
 
-      user.refreshToken = [...currentRefreshToken, refreshToken];
+      user.refreshToken = [...currentRefreshToken, refresh_token];
       await user.save();
 
-      setCookie(refreshToken);
+      setCookie(context.res, "refresh_token", refresh_token);
 
       return {
         success: true,
         message: "User logged in",
-        access_token: token,
+        access_token: access_token,
         user: user,
         isLoggedIn: true,
       };
@@ -147,11 +118,11 @@ module.exports = {
       password: process.env.GOOGLE_CLIENT_SECRET,
     });
 
-    const data = userData(newUser);
-    const token = generateToken({ user: data });
+    const data = formatUserData(newUser);
+    const access_token = generateToken({ user: data });
     const refreshToken = generateToken({ user: data }, "refresh");
 
-    setCookie(refreshToken);
+    setCookie(context.res, "refresh_token", refreshToken);
 
     newUser.refreshToken = [refreshToken];
     await newUser.save();
@@ -159,7 +130,7 @@ module.exports = {
     return {
       success: true,
       message: "User created successfully",
-      access_token: token,
+      access_token: access_token,
       user: newUser,
       isLoggedIn: true,
     };

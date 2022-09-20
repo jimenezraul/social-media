@@ -1,6 +1,8 @@
 const { AuthenticationError } = require("apollo-server-express");
 const { User } = require("../../models");
 const { generateToken } = require("../../utils/auth");
+const { formatUserData } = require("../../utils/formatUserData");
+const { setCookie, clearCookie } = require("../../utils/cookies");
 
 module.exports = {
   // login a user
@@ -23,14 +25,7 @@ module.exports = {
     }
 
     // user data to be sent to client
-    const data = {
-      email: user.email,
-      given_name: user.given_name,
-      family_name: user.family_name,
-      _id: user._id,
-      isAdmin: user.isAdmin,
-      isVerified: user.isVerified,
-    };
+    const data = formatUserData(user);
 
     //generate new tokens
     const accessToken = generateToken({ user: data });
@@ -43,11 +38,7 @@ module.exports = {
 
     if (refresh_token) {
       // clear httpOnly cookie
-      context.res.clearCookie("refresh_token", {
-        httpOnly: true,
-        sameSite: "none",
-        secure: true,
-      });
+      clearCookie(context.res, "refresh_token");
     }
 
     // save tokens to user
@@ -55,11 +46,7 @@ module.exports = {
     await user.save();
 
     // set httpOnly cookie
-    context.res.cookie("refresh_token", refreshToken, {
-      httpOnly: true,
-      sameSite: "none",
-      secure: true,
-    });
+    setCookie(context.res, "refresh_token", refreshToken);
 
     return {
       success: true,

@@ -1,6 +1,7 @@
 const { AuthenticationError } = require("apollo-server-express");
 const { User } = require("../../models");
 const { generateToken, validToken } = require("../../utils/auth");
+const {setCookie, clearCookie} = require("../../utils/cookies");
 
 module.exports = {
   // refresh access token
@@ -9,11 +10,7 @@ module.exports = {
     const loggedUser = context?.user;
 
     // clear httpOnly cookie
-    context.res.clearCookie("refresh_token", {
-      httpOnly: true,
-      sameSite: "none",
-      secure: true,
-    });
+    clearCookie(context.res, "refresh_token");
 
     if (!refresh_token) {
       throw new AuthenticationError("No refresh token found");
@@ -57,11 +54,7 @@ module.exports = {
     const accessToken = generateToken({ user: loggedUser });
 
     // set httpOnly cookie
-    context.res.cookie("refresh_token", newRefreshToken, {
-      httpOnly: true,
-      sameSite: "none",
-      secure: true,
-    });
+    setCookie(context.res, "refresh_token", newRefreshToken);
 
     return {
       success: true,

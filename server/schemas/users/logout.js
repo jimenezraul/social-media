@@ -2,6 +2,7 @@ const { AuthenticationError } = require("apollo-server-express");
 const { User } = require("../../models");
 const { generateToken, validToken } = require("../../utils/auth");
 const { sendVerificationEmail } = require("../../utils/accountVerification");
+const {clearCookie} = require("../../utils/cookies");
 
 module.exports = {
   // logout user
@@ -18,11 +19,7 @@ module.exports = {
     }
 
     // clear httpOnly cookie
-    context.res.clearCookie("refresh_token", {
-      httpOnly: true,
-      sameSite: "none",
-      secure: true,
-    });
+    clearCookie(context.res, "refresh_token");
 
     const user = await User.findOne({ _id: loggedUser._id });
 
