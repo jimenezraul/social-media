@@ -6,15 +6,15 @@ const typeDefs = gql`
   type Comment {
     _id: ID
     commentText: String
-    commentAuthor: String
-    createdAt: String
+    commentAuthor: User
+    createdAt: Date
   }
 
   type Post {
     _id: ID
     postText: String
     postAuthor: User
-    createdAt: String
+    createdAt: Date
     comments: [Comment]
     commentCount: Int
     likes: [User]
@@ -37,6 +37,8 @@ const typeDefs = gql`
     createdAt: Date
     updatedAt: Date
     provider: String
+    fullName: String
+    friendCount: Int
   }
 
   type Message {

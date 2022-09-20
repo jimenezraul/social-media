@@ -13,32 +13,11 @@ module.exports = {
 
     const likeExists = post.likes.includes(context.user._id);
 
-    if (likeExists) {
-      const removeLike = await Post.findOneAndUpdate(
-        { _id: postId },
-        {
-          $pull: {
-            likes: context.user._id,
-          },
-        },
-        {
-          new: true,
-        }
-      );
-
-      return {
-        success: true,
-        message: "Like removed",
-      };
-    }
-
-    const addLike = await Post.findOneAndUpdate(
+    await Post.findOneAndUpdate(
       { _id: postId },
-      {
-        $push: {
-          likes: context.user._id,
-        },
-      },
+      likeExists
+        ? { $pull: { likes: context.user._id } }
+        : { $push: { likes: context.user._id } },
       {
         new: true,
       }
@@ -46,7 +25,7 @@ module.exports = {
 
     return {
       success: true,
-      message: "Like added!",
+      message: likeExists ? "Like removed!" : "Like added!",
     };
   },
 };

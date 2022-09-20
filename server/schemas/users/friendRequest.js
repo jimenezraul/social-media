@@ -50,26 +50,31 @@ module.exports = {
       throw new AuthenticationError("You have not received a friend request");
     }
 
-    // remove friend request from the friend request array
-    await User.findOneAndUpdate(
-      { _id: context.user._id },
-      { $pull: { friendRequests: friendId } },
-      { new: true }
-    );
+    if (user.friends.includes(friendId)) {
+      throw new AuthenticationError("You are already friends");
+    }
+    
+    const userReq = [
+      {
+        _id: context.user._id,
+        method: { $pull: { friendRequests: friendId } },
+      },
+      {
+        _id: context.user._id,
+        method: { $push: { friends: friendId } },
+      },
+      {
+        _id: friendId,
+        method: { $push: { friends: context.user._id } },
+      },
+    ];
 
-    // add friend to my friends array
-    await User.findOneAndUpdate(
-      { _id: context.user._id },
-      { $push: { friends: friendId } },
-      { new: true }
-    );
-
-    // add me to my friend's friends array
-    await User.findOneAndUpdate(
-      { _id: friendId },
-      { $push: { friends: context.user._id } },
-      { new: true }
-    );
+    userReq.forEach(async (req) => {
+      console.log(req);
+      await User.findOneAndUpdate({ _id: req._id }, req.method, {
+        new: true,
+      });
+    });
 
     return {
       success: true,

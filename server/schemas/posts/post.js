@@ -84,6 +84,7 @@ module.exports = {
   },
 
   deletePost: async (parent, { postId }, context) => {
+    
     if (!context.user) {
       throw new AuthenticationError("You need to be logged in!");
     }

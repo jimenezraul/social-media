@@ -30,8 +30,13 @@ const userSchema = new Schema(
     },
     profileUrl: {
       type: String,
+      default: "https://i.imgur.com/8Q5ZQ9A.png",
     },
     isAdmin: {
+      type: Boolean,
+      default: false,
+    },
+    isVerified: {
       type: Boolean,
       default: false,
     },
@@ -57,10 +62,6 @@ const userSchema = new Schema(
         ref: "User",
       },
     ],
-    isVerified: {
-      type: Boolean,
-      default: false,
-    },
     accessToken: {
       type: String,
     },
@@ -84,6 +85,7 @@ userSchema.pre("save", async function (next) {
   next();
 });
 
+// compare the incoming password with the hashed password
 userSchema.methods.isCorrectPassword = async function (password) {
   return await bcrypt.compare(password, this.password);
 };
@@ -91,6 +93,16 @@ userSchema.methods.isCorrectPassword = async function (password) {
 // get the post count
 userSchema.virtual("postCount").get(function () {
   return this.posts.length;
+});
+
+// get full name
+userSchema.virtual("fullName").get(function () {
+  return `${this.given_name} ${this.family_name}`;
+});
+
+// friend count
+userSchema.virtual("friendCount").get(function () {
+  return this.friends.length;
 });
 
 const User = model("User", userSchema);
