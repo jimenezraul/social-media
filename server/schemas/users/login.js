@@ -66,6 +66,7 @@ module.exports = {
       message: "Logged in successfully",
       access_token: accessToken,
       user,
+      isLoggedIn: true,
     };
   },
 };

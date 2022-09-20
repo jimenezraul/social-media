@@ -33,7 +33,7 @@ const typeDefs = gql`
     posts: [Post]
     friends: [User]
     friendRequests: [User]
-    friendRequestsCount: Int
+    friendRequestCount: Int
     createdAt: Date
     updatedAt: Date
     provider: String
@@ -52,6 +52,7 @@ const typeDefs = gql`
     message: String
     access_token: String
     user: User
+    isLoggedIn: Boolean
   }
 
   type Query {

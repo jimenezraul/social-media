@@ -52,7 +52,7 @@ const userSchema = new Schema(
         ref: "User",
       },
     ],
-    friendRequestsCount: {
+    friendRequestCount: {
       type: Number,
       default: 0,
     },

@@ -5,24 +5,32 @@ module.exports = {
   // friend request
   friendRequest: async (parent, args, context) => {
     const { friendId } = args;
-
+    
     if (!context.user) {
       throw new AuthenticationError("You need to be logged in!");
     }
 
-    const user = await User.findOne({ _id: context.user._id });
+    const user = await User.findOne({ _id: friendId });
 
     if (!user) {
       throw new AuthenticationError("User not found");
     }
 
-    if (user.friendRequests.includes(friendId)) {
+    if (user.friendRequests.includes(context.user._id)) {
       throw new AuthenticationError("You have already sent a friend request");
     }
+    let friendRequestCount = await User.findOne({ _id: friendId });
+    friendRequestCount = friendRequestCount.friendRequestCount;
+    
+    await User.findOneAndUpdate(
+      { _id: friendId },
+      { $push: { friendRequests: context.user._id } },
+      { new: true }
+    );
 
     await User.findOneAndUpdate(
-      { _id: context.user._id },
-      { $push: { friendRequests: friendId } },
+      { _id: friendId },
+      { $set: { friendRequestCount: friendRequestCount + 1 } },
       { new: true }
     );
 
@@ -53,7 +61,7 @@ module.exports = {
     if (user.friends.includes(friendId)) {
       throw new AuthenticationError("You are already friends");
     }
-    
+
     const userReq = [
       {
         _id: context.user._id,
@@ -70,7 +78,6 @@ module.exports = {
     ];
 
     userReq.forEach(async (req) => {
-      console.log(req);
       await User.findOneAndUpdate({ _id: req._id }, req.method, {
         new: true,
       });

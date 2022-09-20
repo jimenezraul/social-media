@@ -13,16 +13,16 @@ module.exports = {
       throw new AuthenticationError("You are not logged in");
     }
 
+    if (!token) {
+      throw new AuthenticationError("No refresh token found");
+    }
+
     // clear httpOnly cookie
     context.res.clearCookie("refresh_token", {
       httpOnly: true,
       sameSite: "none",
       secure: true,
     });
-
-    if (!token) {
-      throw new AuthenticationError("No refresh token found");
-    }
 
     const user = await User.findOne({ _id: loggedUser._id });
 
