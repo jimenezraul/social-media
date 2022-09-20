@@ -83,6 +83,7 @@ const typeDefs = gql`
     friendRequest(friendId: ID!): Message
     acceptFriendRequest(friendId: ID!): Message
     likes(postId: ID!): Message
+    googleLogin(idToken: String!): Auth
   }
 `;
 
