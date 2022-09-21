@@ -21,6 +21,7 @@ module.exports = {
       throw new AuthenticationError("You need to be logged in with Google!");
     }
 
+    // if we have a refresh token, verify it and get user data
     if (refresh_token) {
       const isValid = validToken(refresh_token);
 
@@ -71,6 +72,7 @@ module.exports = {
     const oAuth2Client = client;
     const res = await oAuth2Client.request({ url });
 
+    // if we don't get data back from Google, throw an error
     if (!res.data) {
       throw new AuthenticationError("User not found");
     }
@@ -79,6 +81,8 @@ module.exports = {
 
     const user = await User.findOne({ email });
 
+    // if user exists but user registered with email and password
+    // and trying to login with google, throw error
     if (user && user.provider !== "google") {
       throw new AuthenticationError(
         "Please login with your email and password"

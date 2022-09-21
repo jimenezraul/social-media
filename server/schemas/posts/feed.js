@@ -26,6 +26,10 @@ module.exports = {
         populate: {
           path: "postAuthor",
           select: "-__v -password",
+          populate: {
+            path: "friends",
+            select: "-__v -password",
+          },
         },
       })
       .populate({

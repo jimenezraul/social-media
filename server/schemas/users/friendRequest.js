@@ -5,7 +5,7 @@ module.exports = {
   // friend request
   friendRequest: async (parent, args, context) => {
     const { friendId } = args;
-    
+
     if (!context.user) {
       throw new AuthenticationError("You need to be logged in!");
     }
@@ -17,22 +17,18 @@ module.exports = {
     }
 
     if (user.friendRequests.includes(context.user._id)) {
-      throw new AuthenticationError("You have already sent a friend request");
+      user.friendRequests.pull(context.user._id);
+      user.friendRequestCount -= 1;
+      user.save();
+      return {
+        success: true,
+        message: "Friend request removed",
+      };
     }
-    let friendRequestCount = await User.findOne({ _id: friendId });
-    friendRequestCount = friendRequestCount.friendRequestCount;
-    
-    await User.findOneAndUpdate(
-      { _id: friendId },
-      { $push: { friendRequests: context.user._id } },
-      { new: true }
-    );
 
-    await User.findOneAndUpdate(
-      { _id: friendId },
-      { $set: { friendRequestCount: friendRequestCount + 1 } },
-      { new: true }
-    );
+    user.friendRequests.push(context.user._id);
+    user.friendRequestCount = user.friendRequestCount + 1;
+    user.save();
 
     return {
       success: true,
@@ -61,6 +57,9 @@ module.exports = {
     if (user.friends.includes(friendId)) {
       throw new AuthenticationError("You are already friends");
     }
+
+    user.friendRequestCount -= 1;
+    user.save();
 
     const userReq = [
       {
