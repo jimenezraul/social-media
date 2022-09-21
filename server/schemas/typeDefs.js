@@ -85,6 +85,7 @@ const typeDefs = gql`
     acceptFriendRequest(friendId: ID!): Message
     likes(postId: ID!): Message
     googleLogin(idToken: String!): Auth
+    removeFriend(friendId: ID!): Message
   }
 `;
 

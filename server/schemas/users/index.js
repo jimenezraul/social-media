@@ -4,7 +4,7 @@ const { login } = require("./login");
 const { logout } = require("./logout");
 const { verifyUser } = require("./accountVerification");
 const { refreshToken } = require("./refreshToken");
-const { friendRequest, acceptFriendRequest } = require("./friendRequest");
+const { friendRequest, acceptFriendRequest, removeFriend } = require("./friendRequest");
 const { googleLogin } = require("./googleLogin");
 
 const userResolvers = {
@@ -22,6 +22,7 @@ const userResolvers = {
     friendRequest: friendRequest,
     acceptFriendRequest: acceptFriendRequest,
     googleLogin: googleLogin,
+    removeFriend: removeFriend,
   },
 };
 

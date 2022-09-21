@@ -87,4 +87,31 @@ module.exports = {
       message: "Friend request accepted successfully",
     };
   },
+
+  // remove friend
+  removeFriend: async (parent, args, context) => {
+    const { friendId } = args;
+
+    if (!context.user) {
+      throw new AuthenticationError("You need to be logged in!");
+    }
+
+    const user = await User.findOne({ _id: context.user._id });
+
+    if (!user) {
+      throw new AuthenticationError("User not found");
+    }
+
+    if (!user.friends.includes(friendId)) {
+      throw new AuthenticationError("You are not friends");
+    }
+
+    user.friends.pull(friendId);
+    user.save();
+
+    return {
+      success: true,
+      message: "Friend removed successfully",
+    };
+  }
 };
