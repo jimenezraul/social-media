@@ -1,19 +1,19 @@
-const { AuthenticationError } = require("apollo-server-express");
-const { User } = require("../../models");
-const { generateToken, validToken } = require("../../utils/auth");
-const {setCookie, clearCookie} = require("../../utils/cookies");
+const { AuthenticationError } = require('apollo-server-express');
+const { User } = require('../../models');
+const { generateToken, validToken } = require('../../utils/auth');
+const { setCookie, clearCookie } = require('../../utils/cookies');
 
 module.exports = {
   // refresh access token
   refreshToken: async (parent, args, context) => {
-    const refresh_token = context.headers.cookie?.split("=")[1];
+    const refresh_token = context.headers.cookie?.split('=')[1];
     const loggedUser = context?.user;
 
     // clear httpOnly cookie
-    clearCookie(context.res, "refresh_token");
+    clearCookie(context.res, 'refresh_token');
 
     if (!refresh_token) {
-      throw new AuthenticationError("No refresh token found");
+      throw new AuthenticationError('No refresh token found');
     }
 
     // check if refresh token is valid
@@ -22,7 +22,7 @@ module.exports = {
     const user = await User.findOne({ _id: loggedUser._id });
 
     if (!user) {
-      throw new AuthenticationError("User not found");
+      throw new AuthenticationError('User not found');
     }
 
     const newRefreshTokenArray = user.refreshToken.filter(
@@ -34,7 +34,7 @@ module.exports = {
       user.refreshToken = newRefreshTokenArray;
       await user.save();
       throw new AuthenticationError(
-        "Refresh token expired, please login again"
+        'Refresh token expired, please login again'
       );
     }
 
@@ -42,11 +42,11 @@ module.exports = {
     const tokenExists = user.refreshToken.includes(refresh_token);
 
     if (!tokenExists) {
-      throw new AuthenticationError("Invalid token");
+      throw new AuthenticationError('Invalid token');
     }
 
     // generate new refresh token and save to user
-    const newRefreshToken = generateToken({ user: loggedUser }, "refresh");
+    const newRefreshToken = generateToken({ user: loggedUser }, 'refresh');
     user.refreshToken = [...newRefreshTokenArray, newRefreshToken];
     await user.save();
 
@@ -54,11 +54,11 @@ module.exports = {
     const accessToken = generateToken({ user: loggedUser });
 
     // set httpOnly cookie
-    setCookie(context.res, "refresh_token", newRefreshToken);
+    setCookie(context.res, 'refresh_token', newRefreshToken);
 
     return {
       success: true,
-      message: "Access token refreshed successfully",
+      message: 'Access token refreshed successfully',
       access_token: accessToken,
       user: loggedUser,
     };

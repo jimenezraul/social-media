@@ -1,32 +1,32 @@
-const { AuthenticationError } = require("apollo-server-express");
-const { User, Post } = require("../../models");
+const { AuthenticationError } = require('apollo-server-express');
+const { User, Post } = require('../../models');
 
 module.exports = {
   posts: async (parent, args, context) => {
     const loggedUser = context.user;
 
     if (!loggedUser) {
-      throw new AuthenticationError("You need to be logged in!");
+      throw new AuthenticationError('You need to be logged in!');
     }
 
     return Post.find()
-      .select("-__v")
-      .populate("comments")
-      .populate("likes")
+      .select('-__v')
+      .populate('comments')
+      .populate('likes')
       .populate({
-        path: "postAuthor",
-        select: "-__v -password",
+        path: 'postAuthor',
+        select: '-__v -password',
       })
       .populate({
-        path: "comments",
+        path: 'comments',
         populate: {
-          path: "commentAuthor",
-          model: "User",
+          path: 'commentAuthor',
+          model: 'User',
         },
       })
       .populate({
-        path: "likes",
-        model: "User"
+        path: 'likes',
+        model: 'User',
       });
   },
 
@@ -34,13 +34,13 @@ module.exports = {
     const loggedUser = context.user;
 
     if (!loggedUser) {
-      throw new AuthenticationError("You need to be logged in!");
+      throw new AuthenticationError('You need to be logged in!');
     }
 
     return Post.findOne({ _id: postId })
-      .select("-__v")
-      .populate("comments")
-      .populate("likes");
+      .select('-__v')
+      .populate('comments')
+      .populate('likes');
   },
 
   addPost: async (parent, args, context) => {
@@ -58,17 +58,17 @@ module.exports = {
       );
 
       return post.populate({
-        path: "postAuthor",
-        select: "-__v -password",
+        path: 'postAuthor',
+        select: '-__v -password',
       });
     }
 
-    throw new AuthenticationError("You need to be logged in!");
+    throw new AuthenticationError('You need to be logged in!');
   },
 
   updatePost: async (parent, { postId, postText }, context) => {
     if (!context.user) {
-      throw new AuthenticationError("You need to be logged in!");
+      throw new AuthenticationError('You need to be logged in!');
     }
 
     const updatedPost = await Post.findOneAndUpdate(
@@ -79,33 +79,37 @@ module.exports = {
 
     return {
       success: true,
-      message: "Post updated!",
+      message: 'Post updated!',
     };
   },
 
   deletePost: async (parent, { postId }, context) => {
-    
     if (!context.user) {
-      throw new AuthenticationError("You need to be logged in!");
+      throw new AuthenticationError('You need to be logged in!');
     }
 
     // check if the post exists
     const post = await Post.findOne({ _id: postId });
 
     if (!post) {
-        throw new AuthenticationError("Post does not exist!");
-    } 
+      throw new AuthenticationError('Post does not exist!');
+    }
 
     // check if the logged in user is the post author or is an admin
-    if (post.postAuthor.toString() !== context.user._id.toString() && !context.user.isAdmin) {
-        throw new AuthenticationError("You are not authorized to delete this post!");
+    if (
+      post.postAuthor.toString() !== context.user._id.toString() &&
+      !context.user.isAdmin
+    ) {
+      throw new AuthenticationError(
+        'You are not authorized to delete this post!'
+      );
     }
 
     const deletedPost = await Post.findOneAndDelete({ _id: postId });
 
     return {
       success: true,
-      message: "Post deleted!",
+      message: 'Post deleted!',
     };
   },
 };

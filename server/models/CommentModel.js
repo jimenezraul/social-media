@@ -1,4 +1,4 @@
-const { Schema, model } = require("mongoose");
+const { Schema, model } = require('mongoose');
 
 const commentSchema = new Schema(
   {
@@ -8,7 +8,7 @@ const commentSchema = new Schema(
     },
     commentAuthor: {
       type: Schema.Types.ObjectId,
-      ref: "User",
+      ref: 'User',
     },
   },
   {
@@ -16,6 +16,6 @@ const commentSchema = new Schema(
   }
 );
 
-const Comment = model("Comment", commentSchema);
+const Comment = model('Comment', commentSchema);
 
 module.exports = Comment;

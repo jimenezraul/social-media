@@ -1,10 +1,10 @@
-const nodemailer = require("nodemailer");
-require("dotenv").config();
+const nodemailer = require('nodemailer');
+require('dotenv').config();
 
 module.exports = {
   sendVerificationEmail: async (user, token) => {
     const transporter = nodemailer.createTransport({
-      service: "gmail",
+      service: 'gmail',
       auth: {
         user: process.env.EMAIL,
         pass: process.env.PASSWORD,
@@ -14,7 +14,7 @@ module.exports = {
     const mailOptions = {
       from: `"Social Media App" <${process.env.EMAIL}>`,
       to: user.email,
-      subject: "Account Verification",
+      subject: 'Account Verification',
       text: `Please click the link below to verify your account: http://localhost:3000/verify?token=${token}`,
       html: `<!DOCTYPE html>
       <html>

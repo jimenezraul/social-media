@@ -1,5 +1,5 @@
-const { AuthenticationError } = require("apollo-server-express");
-const { User } = require("../../models");
+const { AuthenticationError } = require('apollo-server-express');
+const { User } = require('../../models');
 
 module.exports = {
   // feed for logged in user
@@ -7,47 +7,47 @@ module.exports = {
     const loggedUser = context.user;
 
     if (!loggedUser) {
-      throw new AuthenticationError("You need to be logged in!");
+      throw new AuthenticationError('You need to be logged in!');
     }
 
     const user = await User.findOne({ _id: context.user._id }).select(
-      "-__v -password -refreshToken"
+      '-__v -password -refreshToken'
     );
 
     const friends = user.friends;
 
     const friendPosts = await User.find({ _id: friends })
-      .select("-__v -password")
-      .populate("posts")
-      .populate("friends")
-      .populate("friendRequests")
+      .select('-__v -password')
+      .populate('posts')
+      .populate('friends')
+      .populate('friendRequests')
       .populate({
-        path: "posts",
+        path: 'posts',
         populate: {
-          path: "postAuthor",
-          select: "-__v -password",
+          path: 'postAuthor',
+          select: '-__v -password',
           populate: {
-            path: "friends",
-            select: "-__v -password",
+            path: 'friends',
+            select: '-__v -password',
           },
         },
       })
       .populate({
-        path: "posts",
+        path: 'posts',
         populate: {
-          path: "comments",
-          model: "Comment",
+          path: 'comments',
+          model: 'Comment',
           populate: {
-            path: "commentAuthor",
-            model: "User",
+            path: 'commentAuthor',
+            model: 'User',
           },
         },
       })
       .populate({
-        path: "posts",
+        path: 'posts',
         populate: {
-          path: "likes",
-          model: "User",
+          path: 'likes',
+          model: 'User',
         },
       });
 

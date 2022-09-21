@@ -1,12 +1,12 @@
-const { AuthenticationError } = require("apollo-server-express");
-const { Post, Comment } = require("../../models");
+const { AuthenticationError } = require('apollo-server-express');
+const { Post, Comment } = require('../../models');
 
 module.exports = {
   addComment: async (parent, { postId, commentText }, context) => {
     const loggedUser = context.user;
 
     if (!loggedUser) {
-      throw new AuthenticationError("You need to be logged in!");
+      throw new AuthenticationError('You need to be logged in!');
     }
 
     // create a new comment
@@ -31,7 +31,7 @@ module.exports = {
 
     return {
       success: true,
-      message: "Comment added!",
+      message: 'Comment added!',
     };
   },
 
@@ -40,7 +40,7 @@ module.exports = {
     const loggedUser = context.user;
 
     if (!loggedUser) {
-      throw new AuthenticationError("You need to be logged in!");
+      throw new AuthenticationError('You need to be logged in!');
     }
 
     // update the comment
@@ -52,7 +52,7 @@ module.exports = {
 
     return {
       success: true,
-      message: "Comment updated!",
+      message: 'Comment updated!',
     };
   },
 
@@ -61,7 +61,7 @@ module.exports = {
     const loggedUser = context.user;
 
     if (!loggedUser) {
-      throw new AuthenticationError("You need to be logged in!");
+      throw new AuthenticationError('You need to be logged in!');
     }
 
     // delete the comment
@@ -85,7 +85,7 @@ module.exports = {
 
     return {
       success: true,
-      message: "Comment removed!",
+      message: 'Comment removed!',
     };
   },
 };

@@ -1,8 +1,8 @@
-const jwt = require("jsonwebtoken");
-const allowedOrigins = require("../config/allowedOrigins");
-let expiration = "1d";
+const jwt = require('jsonwebtoken');
+const allowedOrigins = require('../config/allowedOrigins');
+let expiration = '1d';
 
-require("dotenv").config();
+require('dotenv').config();
 
 module.exports = {
   authMiddleware: function ({ req }) {
@@ -12,7 +12,7 @@ module.exports = {
       return req;
     }
 
-    token = token.split(" ").pop().trim();
+    token = token.split(' ').pop().trim();
 
     const data = jwt.verify(
       token,
@@ -33,9 +33,9 @@ module.exports = {
   },
   generateToken: function (user, secret) {
     let secretkey = process.env.ACCESS_TOKEN_SECRET;
-    if (secret === "refresh") {
+    if (secret === 'refresh') {
       secretkey = process.env.REFRESH_TOKEN_SECRET;
-      expiration = "7d";
+      expiration = '7d';
     }
     return jwt.sign(user, secretkey, { expiresIn: expiration });
   },
@@ -43,7 +43,7 @@ module.exports = {
     const origin = req.headers.origin;
 
     if (allowedOrigins.includes(origin)) {
-      res.header("Access-Control-Allow-Credentials", true);
+      res.header('Access-Control-Allow-Credentials', true);
     }
 
     next();

@@ -1,5 +1,5 @@
-const { AuthenticationError } = require("apollo-server-express");
-const { User } = require("../../models");
+const { AuthenticationError } = require('apollo-server-express');
+const { User } = require('../../models');
 
 module.exports = {
   // friend request
@@ -7,13 +7,13 @@ module.exports = {
     const { friendId } = args;
 
     if (!context.user) {
-      throw new AuthenticationError("You need to be logged in!");
+      throw new AuthenticationError('You need to be logged in!');
     }
 
     const user = await User.findOne({ _id: friendId });
 
     if (!user) {
-      throw new AuthenticationError("User not found");
+      throw new AuthenticationError('User not found');
     }
 
     if (user.friendRequests.includes(context.user._id)) {
@@ -22,7 +22,7 @@ module.exports = {
       user.save();
       return {
         success: true,
-        message: "Friend request removed",
+        message: 'Friend request removed',
       };
     }
 
@@ -32,7 +32,7 @@ module.exports = {
 
     return {
       success: true,
-      message: "Friend request sent successfully",
+      message: 'Friend request sent successfully',
     };
   },
 
@@ -41,21 +41,21 @@ module.exports = {
     const { friendId } = args;
 
     if (!context.user) {
-      throw new AuthenticationError("You need to be logged in!");
+      throw new AuthenticationError('You need to be logged in!');
     }
 
     const user = await User.findOne({ _id: context.user._id });
 
     if (!user) {
-      throw new AuthenticationError("User not found");
+      throw new AuthenticationError('User not found');
     }
 
     if (!user.friendRequests.includes(friendId)) {
-      throw new AuthenticationError("You have not received a friend request");
+      throw new AuthenticationError('You have not received a friend request');
     }
 
     if (user.friends.includes(friendId)) {
-      throw new AuthenticationError("You are already friends");
+      throw new AuthenticationError('You are already friends');
     }
 
     user.friendRequestCount -= 1;
@@ -84,7 +84,7 @@ module.exports = {
 
     return {
       success: true,
-      message: "Friend request accepted successfully",
+      message: 'Friend request accepted successfully',
     };
   },
 
@@ -93,17 +93,17 @@ module.exports = {
     const { friendId } = args;
 
     if (!context.user) {
-      throw new AuthenticationError("You need to be logged in!");
+      throw new AuthenticationError('You need to be logged in!');
     }
 
     const user = await User.findOne({ _id: context.user._id });
 
     if (!user) {
-      throw new AuthenticationError("User not found");
+      throw new AuthenticationError('User not found');
     }
 
     if (!user.friends.includes(friendId)) {
-      throw new AuthenticationError("You are not friends");
+      throw new AuthenticationError('You are not friends');
     }
 
     user.friends.pull(friendId);
@@ -111,7 +111,7 @@ module.exports = {
 
     return {
       success: true,
-      message: "Friend removed successfully",
+      message: 'Friend removed successfully',
     };
-  }
+  },
 };

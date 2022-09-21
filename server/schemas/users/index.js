@@ -1,11 +1,15 @@
-const { me, user, users } = require("./user");
-const { register } = require("./register");
-const { login } = require("./login");
-const { logout } = require("./logout");
-const { verifyUser } = require("./accountVerification");
-const { refreshToken } = require("./refreshToken");
-const { friendRequest, acceptFriendRequest, removeFriend } = require("./friendRequest");
-const { googleLogin } = require("./googleLogin");
+const { me, user, users } = require('./user');
+const { register } = require('./register');
+const { login } = require('./login');
+const { logout } = require('./logout');
+const { verifyUser } = require('./accountVerification');
+const { refreshToken } = require('./refreshToken');
+const {
+  friendRequest,
+  acceptFriendRequest,
+  removeFriend,
+} = require('./friendRequest');
+const { googleLogin } = require('./googleLogin');
 
 const userResolvers = {
   userQuery: {

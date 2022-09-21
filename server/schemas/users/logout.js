@@ -1,30 +1,30 @@
-const { AuthenticationError } = require("apollo-server-express");
-const { User } = require("../../models");
-const { generateToken, validToken } = require("../../utils/auth");
-const { sendVerificationEmail } = require("../../utils/accountVerification");
-const {clearCookie} = require("../../utils/cookies");
+const { AuthenticationError } = require('apollo-server-express');
+const { User } = require('../../models');
+const { generateToken, validToken } = require('../../utils/auth');
+const { sendVerificationEmail } = require('../../utils/accountVerification');
+const { clearCookie } = require('../../utils/cookies');
 
 module.exports = {
   // logout user
   logout: async (parent, args, context) => {
-    const token = context.headers.cookie?.split("=")[1];
+    const token = context.headers.cookie?.split('=')[1];
     const loggedUser = context?.user;
 
     if (!loggedUser) {
-      throw new AuthenticationError("You are not logged in");
+      throw new AuthenticationError('You are not logged in');
     }
 
     if (!token) {
-      throw new AuthenticationError("No refresh token found");
+      throw new AuthenticationError('No refresh token found');
     }
 
     // clear httpOnly cookie
-    clearCookie(context.res, "refresh_token");
+    clearCookie(context.res, 'refresh_token');
 
     const user = await User.findOne({ _id: loggedUser._id });
 
     if (!user) {
-      throw new AuthenticationError("User not found");
+      throw new AuthenticationError('User not found');
     }
 
     const newRefreshTokenArray = user.refreshToken.filter(
@@ -39,7 +39,7 @@ module.exports = {
 
     return {
       success: true,
-      message: "User logged out successfully",
+      message: 'User logged out successfully',
       isLoggedIn: false,
     };
   },

@@ -1,7 +1,7 @@
-const { Schema, model } = require("mongoose");
-const bcrypt = require("bcrypt");
+const { Schema, model } = require('mongoose');
+const bcrypt = require('bcrypt');
 
-require("dotenv").config();
+require('dotenv').config();
 
 const userSchema = new Schema(
   {
@@ -21,7 +21,7 @@ const userSchema = new Schema(
       type: String,
       required: true,
       // unique: true,
-      match: [/.+@.+\..+/, "Must use a valid email address"],
+      match: [/.+@.+\..+/, 'Must use a valid email address'],
     },
     password: {
       type: String,
@@ -30,7 +30,7 @@ const userSchema = new Schema(
     },
     profileUrl: {
       type: String,
-      default: "https://i.imgur.com/8Q5ZQ9A.png",
+      default: 'https://i.imgur.com/8Q5ZQ9A.png',
     },
     isAdmin: {
       type: Boolean,
@@ -43,13 +43,13 @@ const userSchema = new Schema(
     posts: [
       {
         type: Schema.Types.ObjectId,
-        ref: "Post",
+        ref: 'Post',
       },
     ],
     friendRequests: [
       {
         type: Schema.Types.ObjectId,
-        ref: "User",
+        ref: 'User',
       },
     ],
     friendRequestCount: {
@@ -59,7 +59,7 @@ const userSchema = new Schema(
     friends: [
       {
         type: Schema.Types.ObjectId,
-        ref: "User",
+        ref: 'User',
       },
     ],
     accessToken: {
@@ -68,7 +68,7 @@ const userSchema = new Schema(
     refreshToken: [String],
     provider: {
       type: String,
-      default: "email",
+      default: 'email',
     },
   },
   {
@@ -76,8 +76,8 @@ const userSchema = new Schema(
   }
 );
 
-userSchema.pre("save", async function (next) {
-  if (this.isNew || this.isModified("password")) {
+userSchema.pre('save', async function (next) {
+  if (this.isNew || this.isModified('password')) {
     const saltRounds = +process.env.SALT_ROUNDS;
     this.password = await bcrypt.hash(this.password, saltRounds);
   }
@@ -91,20 +91,20 @@ userSchema.methods.isCorrectPassword = async function (password) {
 };
 
 // get the post count
-userSchema.virtual("postCount").get(function () {
+userSchema.virtual('postCount').get(function () {
   return this.posts.length;
 });
 
 // get full name
-userSchema.virtual("fullName").get(function () {
+userSchema.virtual('fullName').get(function () {
   return `${this.given_name} ${this.family_name}`;
 });
 
 // friend count
-userSchema.virtual("friendCount").get(function () {
+userSchema.virtual('friendCount').get(function () {
   return this.friends.length;
 });
 
-const User = model("User", userSchema);
+const User = model('User', userSchema);
 
 module.exports = User;

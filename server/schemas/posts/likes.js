@@ -1,12 +1,12 @@
-const { AuthenticationError } = require("apollo-server-express");
-const { Post } = require("../../models");
+const { AuthenticationError } = require('apollo-server-express');
+const { Post } = require('../../models');
 
 module.exports = {
   likes: async (parent, { postId }, context) => {
     const loggedUser = context.user;
 
     if (!loggedUser) {
-      throw new AuthenticationError("You need to be logged in!");
+      throw new AuthenticationError('You need to be logged in!');
     }
 
     const post = await Post.findOne({ _id: postId });
@@ -25,7 +25,7 @@ module.exports = {
 
     return {
       success: true,
-      message: likeExists ? "Like removed!" : "Like added!",
+      message: likeExists ? 'Like removed!' : 'Like added!',
     };
   },
 };

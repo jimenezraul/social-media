@@ -1,5 +1,5 @@
-const { AuthenticationError } = require("apollo-server-express");
-const { User } = require("../../models");
+const { AuthenticationError } = require('apollo-server-express');
+const { User } = require('../../models');
 
 module.exports = {
   // Verify user account
@@ -7,7 +7,7 @@ module.exports = {
     const user = await User.findOne({ accessToken: args.token });
 
     if (!user) {
-      throw new AuthenticationError("Invalid token");
+      throw new AuthenticationError('Invalid token');
     }
 
     user.isVerified = true;
@@ -16,7 +16,7 @@ module.exports = {
 
     return {
       success: true,
-      message: "Account verified successfully",
+      message: 'Account verified successfully',
     };
   },
 };

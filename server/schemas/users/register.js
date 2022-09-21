@@ -1,7 +1,7 @@
-const { AuthenticationError } = require("apollo-server-express");
-const { User } = require("../../models");
-const { generateToken } = require("../../utils/auth");
-const { sendVerificationEmail } = require("../../utils/accountVerification");
+const { AuthenticationError } = require('apollo-server-express');
+const { User } = require('../../models');
+const { generateToken } = require('../../utils/auth');
+const { sendVerificationEmail } = require('../../utils/accountVerification');
 
 module.exports = {
   //register a new user
@@ -10,7 +10,7 @@ module.exports = {
     const userExists = await User.findOne({ email: args.email });
 
     if (userExists) {
-      throw new AuthenticationError("Email already exists");
+      throw new AuthenticationError('Email already exists');
     }
 
     const token = generateToken(args);
@@ -25,8 +25,8 @@ module.exports = {
 
     return {
       success: true,
-      message: "Account created successfully",
-      subMessage: "Please check your email to verify your account",
+      message: 'Account created successfully',
+      subMessage: 'Please check your email to verify your account',
     };
   },
 };
