@@ -1,4 +1,5 @@
 const { Schema, model } = require('mongoose');
+const date = require('date-and-time');
 
 const postSchema = new Schema(
   {
@@ -9,6 +10,7 @@ const postSchema = new Schema(
     postText: {
       type: String,
       trim: true,
+      required: true,
     },
     postAuthor: {
       type: Schema.Types.ObjectId,
@@ -40,6 +42,11 @@ postSchema.virtual('commentCount').get(function () {
 // likes count
 postSchema.virtual('likeCount').get(function () {
   return this.likes.length;
+});
+
+// format createdAt date
+postSchema.virtual('createdAtFormatted').get(function () {
+  return date.format(this.createdAt, 'dddd MMM DD, YYYY');
 });
 
 const Post = model('Post', postSchema);

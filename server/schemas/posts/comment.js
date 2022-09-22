@@ -29,10 +29,7 @@ module.exports = {
       }
     );
 
-    return {
-      success: true,
-      message: 'Comment added!',
-    };
+    return updatedPost;
   },
 
   // update a comment
@@ -50,10 +47,7 @@ module.exports = {
       { new: true, runValidators: true }
     );
 
-    return {
-      success: true,
-      message: 'Comment updated!',
-    };
+    return updatedComment;
   },
 
   // delete a comment

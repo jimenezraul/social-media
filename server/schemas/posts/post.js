@@ -2,6 +2,7 @@ const { AuthenticationError } = require('apollo-server-express');
 const { User, Post } = require('../../models');
 
 module.exports = {
+  // get all posts
   posts: async (parent, args, context) => {
     const loggedUser = context.user;
 
@@ -30,6 +31,7 @@ module.exports = {
       });
   },
 
+  // get a single post by id
   post: async (parent, { postId }, context) => {
     const loggedUser = context.user;
 
@@ -43,46 +45,67 @@ module.exports = {
       .populate('likes');
   },
 
+  // add a post
   addPost: async (parent, args, context) => {
-    if (context.user) {
-      const user = context.user;
-      const post = await Post.create({
-        ...args,
-        postAuthor: user._id,
-      });
-
-      await User.findByIdAndUpdate(
-        { _id: context.user._id },
-        { $push: { posts: post._id } },
-        { new: true }
-      );
-
-      return post.populate({
-        path: 'postAuthor',
-        select: '-__v -password',
-      });
+    if (!context.user) {
+      throw new AuthenticationError('You need to be logged in!');
     }
 
-    throw new AuthenticationError('You need to be logged in!');
+    const user = context.user;
+    const post = await Post.create({
+      ...args,
+      postAuthor: user._id,
+    });
+
+    await User.findByIdAndUpdate(
+      { _id: context.user._id },
+      { $push: { posts: post._id } },
+      { new: true }
+    );
+
+    return post.populate({
+      path: 'postAuthor',
+      select: '-__v -password',
+    });
   },
 
+  // update a post
   updatePost: async (parent, { postId, postText }, context) => {
     if (!context.user) {
       throw new AuthenticationError('You need to be logged in!');
     }
 
-    const updatedPost = await Post.findOneAndUpdate(
+    const post = await Post.findOne({ _id: postId });
+
+    if (post.postAuthor.toString() !== context.user._id) {
+      throw new AuthenticationError(
+        'You are not authorized to update this post!'
+      );
+    }
+
+    return (updatedPost = await Post.findOneAndUpdate(
       { _id: postId },
       { postText },
-      { new: true }
-    );
-
-    return {
-      success: true,
-      message: 'Post updated!',
-    };
+      { new: true, runValidators: true }
+    )
+      .populate({
+        path: 'postAuthor',
+        select: '-__v -password',
+      })
+      .populate({
+        path: 'comments',
+        populate: {
+          path: 'commentAuthor',
+          model: 'User',
+        },
+      })
+      .populate({
+        path: 'likes',
+        model: 'User',
+      }));
   },
 
+  // delete a post
   deletePost: async (parent, { postId }, context) => {
     if (!context.user) {
       throw new AuthenticationError('You need to be logged in!');

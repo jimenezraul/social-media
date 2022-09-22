@@ -1,5 +1,6 @@
 const { Schema, model } = require('mongoose');
 const bcrypt = require('bcrypt');
+const date = require('date-and-time');
 
 require('dotenv').config();
 
@@ -30,7 +31,7 @@ const userSchema = new Schema(
     },
     profileUrl: {
       type: String,
-      default: 'https://i.imgur.com/8Q5ZQ9A.png',
+      default: '/assets/img/default-user.png',
     },
     isAdmin: {
       type: Boolean,
@@ -103,6 +104,11 @@ userSchema.virtual('fullName').get(function () {
 // friend count
 userSchema.virtual('friendCount').get(function () {
   return this.friends.length;
+});
+
+// format createdAt date
+userSchema.virtual('createdAtFormatted').get(function () {
+  return date.format(this.createdAt, 'dddd MMM DD, YYYY');
 });
 
 const User = model('User', userSchema);

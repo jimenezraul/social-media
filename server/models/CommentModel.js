@@ -1,4 +1,5 @@
 const { Schema, model } = require('mongoose');
+const date = require('date-and-time');
 
 const commentSchema = new Schema(
   {
@@ -15,6 +16,11 @@ const commentSchema = new Schema(
     timestamps: true,
   }
 );
+
+// format createdAt date
+commentSchema.virtual('createdAtFormatted').get(function () {
+  return date.format(this.createdAt, 'dddd MMM DD, YYYY');
+});
 
 const Comment = model('Comment', commentSchema);
 

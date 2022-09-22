@@ -8,6 +8,7 @@ const typeDefs = gql`
     commentText: String
     commentAuthor: User
     createdAt: Date
+    createdAtFormatted: String
   }
 
   type Post {
@@ -19,6 +20,7 @@ const typeDefs = gql`
     commentCount: Int
     likes: [User]
     likeCount: Int
+    createdAtFormatted: String
   }
 
   type User {
@@ -39,6 +41,7 @@ const typeDefs = gql`
     provider: String
     fullName: String
     friendCount: Int
+    createdAtFormatted: String
   }
 
   type Message {
@@ -76,10 +79,10 @@ const typeDefs = gql`
     logout: Auth
     refreshToken: Auth
     addPost(postText: String!): Post
-    addComment(postId: ID!, commentText: String!): Message
-    updateComment(postId: ID!, commentId: ID!, commentText: String!): Message
+    addComment(postId: ID!, commentText: String!): Comment
+    updateComment(postId: ID!, commentId: ID!, commentText: String!): Comment
     deleteComment(postId: ID!, commentId: ID!): Message
-    updatePost(postId: ID!, postText: String!): Message
+    updatePost(postId: ID!, postText: String!): Post
     deletePost(postId: ID!): Message
     friendRequest(friendId: ID!): Message
     acceptFriendRequest(friendId: ID!): Message
