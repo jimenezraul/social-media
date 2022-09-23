@@ -89,6 +89,8 @@ const typeDefs = gql`
     likes(postId: ID!): Message
     googleLogin(idToken: String!): Auth
     removeFriend(friendId: ID!): Message
+    resetPassword(token: String!, password: String!): Message
+    forgotPassword(email: String!): Message
   }
 `;
 
