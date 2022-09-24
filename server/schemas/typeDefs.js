@@ -91,6 +91,7 @@ const typeDefs = gql`
     removeFriend(friendId: ID!): Message
     resetPassword(token: String!, password: String!): Message
     forgotPassword(email: String!): Message
+    resendVerificationEmail(email: String!): Message
   }
 `;
 

@@ -6,6 +6,7 @@ const { verifyUser } = require('./accountVerification');
 const { refreshToken } = require('./refreshToken');
 const { resetPassword } = require('./resetPassword');
 const { forgotPassword } = require('./forgotPassword');
+const { resendVerificationEmail } = require('./resendVerificationEmail');
 const {
   friendRequest,
   acceptFriendRequest,
@@ -31,6 +32,7 @@ const userResolvers = {
     removeFriend: removeFriend,
     resetPassword: resetPassword,
     forgotPassword: forgotPassword,
+    resendVerificationEmail: resendVerificationEmail,
   },
 };
 
