@@ -15,6 +15,10 @@ module.exports = {
       commentAuthor: context.user._id,
     });
 
+    const comment = await Comment.findOne({ _id: addComment._id }).populate(
+      'commentAuthor'
+    );
+
     // update the post with the new comment
     const updatedPost = await Post.findOneAndUpdate(
       { _id: postId },
@@ -29,7 +33,7 @@ module.exports = {
       }
     );
 
-    return updatedPost;
+    return comment;
   },
 
   // update a comment
