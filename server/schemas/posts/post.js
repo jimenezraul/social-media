@@ -7,7 +7,6 @@ const { User, Post } = require('../../models');
 module.exports = {
   // get all posts
   posts: async (parent, args, context) => {
- 
     if (!context.user) {
       throw new AuthenticationError('You need to be logged in!');
     }
@@ -18,23 +17,24 @@ module.exports = {
 
     return Post.find()
       .select('-__v')
-      .populate('comments')
-      .populate('likes')
       .populate({
         path: 'postAuthor',
         select: '-__v -password',
       })
       .populate({
         path: 'comments',
-        populate: {
-          path: 'commentAuthor',
-          model: 'User',
-        },
+        populate: [
+          {
+            path: 'commentAuthor',
+            model: 'User',
+          },
+          {
+            path: 'likes',
+            model: 'User',
+          },
+        ],
       })
-      .populate({
-        path: 'likes',
-        model: 'User',
-      });
+      .populate("likes");
   },
 
   // get a single post by id
@@ -46,24 +46,25 @@ module.exports = {
     }
 
     return Post.findOne({ _id: postId })
-      .select('-__v')
-      .populate('comments')
-      .populate('likes')
-      .populate({
-        path: 'postAuthor',
-        select: '-__v -password',
-      })
-      .populate({
-        path: 'comments',
-        populate: {
+    .select('-__v')
+    .populate({
+      path: 'postAuthor',
+      select: '-__v -password',
+    })
+    .populate({
+      path: 'comments',
+      populate: [
+        {
           path: 'commentAuthor',
           model: 'User',
         },
-      })
-      .populate({
-        path: 'likes',
-        model: 'User',
-      });
+        {
+          path: 'likes',
+          model: 'User',
+        },
+      ],
+    })
+    .populate("likes");
   },
 
   // add a post
@@ -99,7 +100,7 @@ module.exports = {
     const post = await Post.findOne({ _id: postId });
 
     if (post.postAuthor.toString() !== context.user._id) {
-      throw new AuthenticationError(
+      throw new ForbiddenError(
         'You are not authorized to update this post!'
       );
     }
@@ -108,22 +109,24 @@ module.exports = {
       { _id: postId },
       { postText },
       { new: true, runValidators: true }
-    )
-      .populate({
+    ).populate({
         path: 'postAuthor',
         select: '-__v -password',
       })
       .populate({
         path: 'comments',
-        populate: {
-          path: 'commentAuthor',
-          model: 'User',
-        },
+        populate: [
+          {
+            path: 'commentAuthor',
+            model: 'User',
+          },
+          {
+            path: 'likes',
+            model: 'User',
+          },
+        ],
       })
-      .populate({
-        path: 'likes',
-        model: 'User',
-      }));
+      .populate("likes"));
   },
 
   // delete a post
@@ -144,7 +147,7 @@ module.exports = {
       post.postAuthor.toString() !== context.user._id.toString() &&
       !context.user.isAdmin
     ) {
-      throw new AuthenticationError(
+      throw new ForbiddenError(
         'You are not authorized to delete this post!'
       );
     }
