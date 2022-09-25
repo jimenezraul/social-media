@@ -9,10 +9,14 @@ const typeDefs = gql`
     commentAuthor: User
     createdAt: Date
     createdAtFormatted: String
+    likes: [User]
+    likesCount: Int
+    replies: [Comment]
   }
 
   type Post {
     _id: ID
+    postImage: String
     postText: String
     postAuthor: User
     createdAt: Date
@@ -77,7 +81,7 @@ const typeDefs = gql`
     verifyUser(token: String!): Message
     login(email: String!, password: String!): Auth
     logout: Auth
-    refreshToken: Auth
+    refreshToken(id:ID!): Auth
     addPost(postText: String!): Post
     addComment(postId: ID!, commentText: String!): Comment
     updateComment(postId: ID!, commentId: ID!, commentText: String!): Comment

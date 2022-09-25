@@ -31,9 +31,9 @@ module.exports = {
 
     return req;
   },
-  generateToken: function (user, secret) {
+  generateToken: function (user, type) {
     let secretkey = process.env.ACCESS_TOKEN_SECRET;
-    if (secret === 'refresh') {
+    if (type === 'refresh') {
       secretkey = process.env.REFRESH_TOKEN_SECRET;
       expiration = '7d';
     }

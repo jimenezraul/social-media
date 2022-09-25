@@ -11,6 +11,18 @@ const commentSchema = new Schema(
       type: Schema.Types.ObjectId,
       ref: 'User',
     },
+    likes: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: 'User',
+      },
+    ],
+    replies: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: 'Comment',
+      },
+    ],
   },
   {
     timestamps: true,
@@ -20,6 +32,10 @@ const commentSchema = new Schema(
 // format createdAt date
 commentSchema.virtual('createdAtFormatted').get(function () {
   return date.format(this.createdAt, 'dddd MMM DD, YYYY');
+});
+
+commentSchema.virtual('likesCount').get(function () {
+  return this.likes.length;
 });
 
 const Comment = model('Comment', commentSchema);

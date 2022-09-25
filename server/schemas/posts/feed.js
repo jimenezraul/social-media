@@ -5,7 +5,7 @@ module.exports = {
   // feed for logged in user
   feed: async (parent, args, context) => {
     const loggedUser = context.user;
-
+   
     if (!loggedUser) {
       throw new AuthenticationError('You need to be logged in!');
     }

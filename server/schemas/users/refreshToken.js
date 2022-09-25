@@ -2,12 +2,12 @@ const { AuthenticationError } = require('apollo-server-express');
 const { User } = require('../../models');
 const { generateToken, validToken } = require('../../utils/auth');
 const { setCookie, clearCookie } = require('../../utils/cookies');
+const { formatUserData } = require('../../utils/formatUserData');
 
 module.exports = {
   // refresh access token
-  refreshToken: async (parent, args, context) => {
+  refreshToken: async (parent, { id }, context) => {
     const refresh_token = context.headers.cookie?.split('=')[1];
-    const loggedUser = context?.user;
 
     // clear httpOnly cookie
     clearCookie(context.res, 'refresh_token');
@@ -19,7 +19,7 @@ module.exports = {
     // check if refresh token is valid
     const isValidToken = validToken(refresh_token);
 
-    const user = await User.findOne({ _id: loggedUser._id });
+    const user = await User.findOne({ _id: id });
 
     if (!user) {
       throw new AuthenticationError('User not found');
@@ -45,13 +45,15 @@ module.exports = {
       throw new AuthenticationError('Invalid token');
     }
 
+    const currentUser = formatUserData(user);
+
     // generate new refresh token and save to user
-    const newRefreshToken = generateToken({ user: loggedUser }, 'refresh');
+    const newRefreshToken = generateToken({ user: currentUser }, 'refresh');
     user.refreshToken = [...newRefreshTokenArray, newRefreshToken];
     await user.save();
 
     // generate new access token
-    const accessToken = generateToken({ user: loggedUser });
+    const accessToken = generateToken({ user: currentUser });
 
     // set httpOnly cookie
     setCookie(context.res, 'refresh_token', newRefreshToken);
@@ -60,7 +62,7 @@ module.exports = {
       success: true,
       message: 'Access token refreshed successfully',
       access_token: accessToken,
-      user: loggedUser,
+      user: currentUser,
     };
   },
 };

@@ -1,13 +1,19 @@
-const { AuthenticationError } = require('apollo-server-express');
+const {
+  AuthenticationError,
+  ForbiddenError,
+} = require('apollo-server-express');
 const { User, Post } = require('../../models');
 
 module.exports = {
   // get all posts
   posts: async (parent, args, context) => {
-    const loggedUser = context.user;
-
-    if (!loggedUser) {
+ 
+    if (!context.user) {
       throw new AuthenticationError('You need to be logged in!');
+    }
+
+    if (!context.user.isAdmin) {
+      throw new ForbiddenError('You are not authorized to perform this action');
     }
 
     return Post.find()
@@ -42,7 +48,22 @@ module.exports = {
     return Post.findOne({ _id: postId })
       .select('-__v')
       .populate('comments')
-      .populate('likes');
+      .populate('likes')
+      .populate({
+        path: 'postAuthor',
+        select: '-__v -password',
+      })
+      .populate({
+        path: 'comments',
+        populate: {
+          path: 'commentAuthor',
+          model: 'User',
+        },
+      })
+      .populate({
+        path: 'likes',
+        model: 'User',
+      });
   },
 
   // add a post

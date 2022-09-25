@@ -56,9 +56,8 @@ module.exports = {
 
   // delete a comment
   deleteComment: async (parent, { postId, commentId }, context) => {
-    const loggedUser = context.user;
-
-    if (!loggedUser) {
+   
+    if (!context.user) {
       throw new AuthenticationError('You need to be logged in!');
     }
 
@@ -66,6 +65,10 @@ module.exports = {
     const removeComment = await Comment.findOneAndDelete({
       _id: commentId,
     });
+
+    if (!removeComment) {
+      throw new Error('Comment not found');
+    }
 
     // update the post with the new comment
     const updatedPost = await Post.findOneAndUpdate(
