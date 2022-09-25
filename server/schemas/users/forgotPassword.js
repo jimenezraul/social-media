@@ -21,7 +21,7 @@ module.exports = {
     user.accessToken = accessToken;
     await user.save();
 
-    sendResetPassEmail(email, accessToken);
+    sendResetPassEmail(user.email, accessToken);
 
     return {
       success: true,
