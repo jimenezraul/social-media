@@ -54,7 +54,8 @@ module.exports = {
       .select('-__v -password')
       .populate('posts')
       .populate('friends')
-      .populate('friendRequests');
+      .populate('friendRequests')
+      .populate("blockedUsers");
   },
 
   // Query for a single user by id

@@ -38,6 +38,7 @@ const typeDefs = gql`
     postCount: Int
     posts: [Post]
     friends: [User]
+    blockedUsers: [User]
     friendRequests: [User]
     friendRequestCount: Int
     createdAt: Date
@@ -91,7 +92,7 @@ const typeDefs = gql`
     friendRequest(friendId: ID!): Message
     acceptFriendRequest(friendId: ID!): Message
     likes(postId: ID!): Message
-    googleLogin(idToken: String!): Auth
+    googleLogin: Auth
     removeFriend(friendId: ID!): Message
     resetPassword(token: String!, password: String!): Message
     forgotPassword(email: String!): Message

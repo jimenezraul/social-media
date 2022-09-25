@@ -10,7 +10,6 @@ require('dotenv').config();
 module.exports = {
   googleLogin: async (parent, args, context) => {
     const refresh_token = context.headers.cookie?.split('=')[1];
-    const { idToken } = args;
     const url = 'https://www.googleapis.com/userinfo/v2/me';
 
     let tokenId =
@@ -54,19 +53,6 @@ module.exports = {
       clientId: process.env.GOOGLE_CLIENT_ID,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET,
     });
-
-    let response = await client.verifyIdToken({
-      idToken,
-      audience: process.env.GOOGLE_CLIENT_ID,
-    });
-    response = response.getPayload();
-
-    if (
-      response.iss !== 'accounts.google.com' &&
-      response.aud !== process.env.GOOGLE_CLIENT_ID
-    ) {
-      throw new AuthenticationError('You need to be logged in with Google!');
-    }
 
     client.setCredentials({ access_token: tokenId });
     const oAuth2Client = client;

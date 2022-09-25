@@ -63,6 +63,12 @@ const userSchema = new Schema(
         ref: 'User',
       },
     ],
+    blockedUsers: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: 'User',
+      },
+    ],
     accessToken: {
       type: String,
     },
