@@ -1,13 +1,41 @@
+import { Suspense } from "react";
 import { lazyImport } from "../utils/lazyImports";
+import { Outlet } from "react-router-dom";
+import { Landing } from "../features/misc";
 
-const { PublicRoutes } = lazyImport(
-  () => import("./publicRoutes"),
-  "PublicRoutes"
-);
+const { Login } = lazyImport(() => import("../features/users"), "Login");
+const { Register } = lazyImport(() => import("../features/users"), "Register");
+
+const Public = () => {
+  return (
+    <div className="bg-slate-900 min-h-screen flex flex-col">
+      <Suspense
+        fallback={
+          <div className="h-full w-full flex items-center justify-center"></div>
+        }
+      >
+        <Outlet />
+      </Suspense>
+    </div>
+  );
+};
 
 export const publicRoutes = [
   {
-    path: "/login/*",
-    element: <PublicRoutes />,
+    element: <Public />,
+    children: [
+      {
+        path: "/",
+        element: <Landing />,
+      },
+      {
+        path: "/login",
+        element: <Login />,
+      },
+      {
+        path: "/register/*",
+        element: <Register />,
+      },
+    ],
   },
 ];

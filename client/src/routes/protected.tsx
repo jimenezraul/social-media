@@ -11,14 +11,16 @@ const { Profile } = lazyImport(
 
 const Protected = () => {
   return (
-    <div>
+    <div className="bg-slate-900 min-h-screen flex flex-col">
       <Navbar />
       <Suspense
         fallback={
           <div className="h-full w-full flex items-center justify-center"></div>
         }
       >
-        <Outlet />
+        <div className="w-full h-full flex flex-1 items-center justify-center">
+          <Outlet />
+        </div>
       </Suspense>
     </div>
   );
