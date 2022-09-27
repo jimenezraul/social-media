@@ -1,4 +1,5 @@
 import { useNavigate } from "react-router-dom";
+import { Button } from "../../../components/CustomButton";
 
 export const Landing = () => {
   const navigate = useNavigate();
@@ -21,18 +22,16 @@ export const Landing = () => {
                 <span className="bg-green-500 p-1 rounded-xl border">ME</span>
               </h2>
               <p className="text-xl text-slate-300 mt-5">
-                A social media platform where you can connect with
-                people around the world.
+                A social media platform where you can connect with people around
+                the world.
               </p>
-                <p className="text-slate-300">
-                    Sign up or login to get started
-                </p>
-              <button
+              <p className="text-slate-300">Sign up or login to get started</p>
+              <Button
+                type="button"
                 onClick={() => navigate("/login")}
+                name="Get Started"
                 className="bg-gradient-to-r from-blue-600 to to-red-500 hover:from-blue-700 hover:to-red-600 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline mt-5"
-              >
-                Get Started
-              </button>
+              />
             </div>
           </div>
         </div>

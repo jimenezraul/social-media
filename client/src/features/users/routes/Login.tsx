@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import { Button } from "../../../components/CustomButton";
 
 type FormEvent = React.FormEvent<HTMLFormElement>;
 
@@ -22,7 +23,7 @@ export const Login = () => {
           Login
         </h1>
         <img
-          className="h-40 w-40 mx-auto bg-slate-700 rounded-full"
+          className="h-40 w-40 mx-auto bg-gradient-to-r from-blue-600 to to-red-600 rounded-full"
           src="assets/img/rocket-front-color.png"
           alt=""
         />
@@ -53,12 +54,11 @@ export const Login = () => {
           />
         </div>
         <div className="flex items-center justify-between">
-          <button
+          <Button
             type="submit"
-            className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-          >
-            Login
-          </button>
+            name="Login"
+            className="bg-gradient-to-r from-blue-600 to to-red-500 hover:from-blue-700 hover:to-red-600 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline mt-5"
+          />
           <Link
             to="/register"
             className="inline-block align-baseline font-bold text-sm text-blue-500 hover:text-blue-800"
@@ -72,12 +72,11 @@ export const Login = () => {
           <div className="flex-grow border-t border-gray-400"></div>
         </div>
         <div className="flex items-center justify-center">
-            <button
-                type="submit"
-                className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-            >
-                Login with Google
-            </button>
+          <Button
+            name="Login with Google"
+            type="button"
+            className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+          />
         </div>
       </form>
     </div>
