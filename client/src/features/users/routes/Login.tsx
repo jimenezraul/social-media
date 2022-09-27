@@ -16,9 +16,16 @@ export const Login = () => {
     <div className="flex flex-1 items-center justify-center">
       <form
         onSubmit={handleSubmit}
-        className="bg-slate-800 shadow-md border border-slate-700 rounded-lg px-12 pt-6 pb-8 mb-4"
+        className="bg-slate-800 shadow-md border border-slate-700 rounded-lg px-12 pt-6 pb-8 mb-4 "
       >
-        <h1 className="text-2xl text-center text-slate-300 font-bold mb-5">Login</h1>
+        <h1 className="text-2xl text-center text-slate-300 font-bold mb-3">
+          Login
+        </h1>
+        <img
+          className="h-40 w-40 mx-auto bg-slate-700 rounded-full"
+          src="assets/img/rocket-front-color.png"
+          alt=""
+        />
         <div className="mb-4">
           <label className="block text-slate-300 text-sm font-bold mb-2">
             Email
@@ -58,6 +65,19 @@ export const Login = () => {
           >
             Register
           </Link>
+        </div>
+        <div className="relative flex py-5 items-center">
+          <div className="flex-grow border-t border-gray-400"></div>
+          <span className="flex-shrink mx-4 text-gray-400">OR</span>
+          <div className="flex-grow border-t border-gray-400"></div>
+        </div>
+        <div className="flex items-center justify-center">
+            <button
+                type="submit"
+                className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+            >
+                Login with Google
+            </button>
         </div>
       </form>
     </div>
