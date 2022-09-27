@@ -28,8 +28,8 @@ export const Login = () => {
             name="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            className="bg-slate-700 shadow appearance-none rounded w-full py-2 px-3 text-gray-400 leading-tight focus:outline focus:shadow-outline"
-            placeholder="Email"
+            className="bg-slate-700 shadow appearance-none rounded w-full py-2 px-3 text-gray-200 leading-tight focus:outline focus:shadow-outline"
+            placeholder="John@example.com"
           />
         </div>
         <div className="mb-6">
@@ -41,7 +41,7 @@ export const Login = () => {
             name="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            className="bg-slate-700 shadow appearance-none rounded w-full py-2 px-3 text-gray-400 mb-3 leading-tight focus:outline-none focus:shadow-outline"
+            className="bg-slate-700 shadow appearance-none rounded w-full py-2 px-3 text-gray-200 mb-3 leading-tight focus:outline-none focus:shadow-outline"
             placeholder="******************"
           />
         </div>

@@ -1,10 +1,29 @@
+import { useNavigate } from "react-router-dom";
+
 export const Landing = () => {
+  const navigate = useNavigate();
   return (
     <div className="flex flex-1">
-      <div className="container mx-auto">
-        <div className="flex flex-wrap justify-center">
-          <div className="w-full md:w-1/2">
-            <h1 className="text-5xl text-white font-bold text-center">Landing page</h1>
+      <div className="w-full mx-auto">
+        <div className="flex flex-wrap justify-center h-full p-3 md:p-10">
+          <div className="w-full md:w-1/2 flex flex-col items-center md:items-end justify-center">
+            <img
+              className="w-3/5 md:w-1/2"
+              src="/assets/img/social-media.png"
+              alt=""
+            />
+          </div>
+          <div className="w-full md:w-1/2 flex flex-col md:justify-center bg-gradient-to-b md:bg-gradient-to-r from-slate-900 to-blue-800 rounded-b-2xl md:rounded-r-2xl">
+            <div className="p-10 text-center md:text-start">
+              <h1 className="text-4xl text-white font-bold">Welcome to</h1>
+              <h2 className="text-4xl text-white font-bold mt-3">Connect <span className="bg-green-500 p-1 rounded-xl border">ME</span></h2>
+              <button
+                onClick={() => navigate("/login")}
+                className="bg-gradient-to-r from-blue-600 to to-red-500 hover:from-blue-700 hover:to-red-600 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline mt-5"
+              >
+                Get Started
+              </button>
+            </div>
           </div>
         </div>
       </div>
