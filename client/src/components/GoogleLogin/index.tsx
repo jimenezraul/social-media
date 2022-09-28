@@ -1,52 +1,54 @@
-import { useState } from "react";
-
-import { GoogleLogin, GoogleLogout } from "react-google-login";
-
+import { useRef, useEffect, useState } from "react";
 import { useAppDispatch } from "../../app/hooks";
+import jwt_decode from "jwt-decode";
 import { login } from "../../features/users/userSlice";
+
 export const GoogleLoginButton = () => {
+  const [scriptLoaded, setScriptLoaded] = useState(false);
+  const divRef = useRef<HTMLDivElement>(null);
   const dispatch = useAppDispatch();
-  const [profile, setProfile] = useState<String[] | null>(null);
+
   const clientId =
     "759091763684-s8i5j4sq4fr84mqneo6vaq7de4sdu7hd.apps.googleusercontent.com";
 
-  console.log(profile);
+  useEffect(() => {
+    if (scriptLoaded) return undefined;
 
-  const onSuccess = (res: any) => {
-    dispatch(login({ ...res.profileObj, provider: "google" }));
-    localStorage.setItem(
-      "user",
-      JSON.stringify({ ...res.profileObj, provider: "google" })
-    );
-    console.log("success:", res);
-  };
+    function handleGoogleSignIn(res: any) {
+      const decodeUser = jwt_decode(res?.credential as string);
+      localStorage.setItem("user", JSON.stringify(decodeUser));
+      dispatch(login(Object(decodeUser)));
+    }
+    setScriptLoaded(true);
+    const initializeGoogle = () => {
+      if (!window.google || scriptLoaded) return;
+      window.google.accounts.id.initialize({
+        client_id: clientId,
+        callback: (res) => handleGoogleSignIn(res),
+      });
+      window.google.accounts.id.renderButton(divRef.current as HTMLDivElement, {
+        theme: "filled_blue",
+        size: "large",
+        text: "signin_with",
+        type: "standard",
+      });
+    };
+    const script = document.createElement("script");
+    script.src = "https://accounts.google.com/gsi/client";
+    script.onload = initializeGoogle;
+    script.async = true;
+    script.id = "google-client-script";
+    document.body.appendChild(script);
 
-  const onFailure = (err: any) => {
-    console.log("failure:", err);
-  };
-
-  const logOut = () => {
-    setProfile(null);
-  };
+    return () => {
+      window.google?.accounts.id.cancel();
+      document.getElementById("google-client-script")?.remove();
+    };
+  }, [dispatch, clientId, scriptLoaded]);
 
   return (
     <>
-      {!profile ? (
-        <GoogleLogin
-          clientId={clientId}
-          buttonText="Sign in with Google"
-          onSuccess={onSuccess}
-          onFailure={onFailure}
-          cookiePolicy={"single_host_origin"}
-          isSignedIn={true}
-        />
-      ) : (
-        <GoogleLogout
-          clientId={clientId}
-          buttonText="Log out"
-          onLogoutSuccess={logOut}
-        />
-      )}
+      <div ref={divRef} />
     </>
   );
 };

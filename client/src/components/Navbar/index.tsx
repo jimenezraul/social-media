@@ -4,7 +4,7 @@ import { useAppSelector } from "../../app/hooks";
 import { selectUser, logout } from "../../features/users/userSlice";
 import { useAppDispatch } from "../../app/hooks";
 
-import { useGoogleLogout } from "react-google-login";
+declare const google: any;
 
 const Navbar = () => {
   const navigate = useNavigate();
@@ -24,20 +24,14 @@ const Navbar = () => {
     },
   ];
 
-  const onLogoutSuccess = () => {
+  const logoutUser = () => {
     dispatch(logout());
     localStorage.removeItem("user");
     navigate("/login");
   };
 
-  const { signOut } = useGoogleLogout({
-    clientId:
-      "759091763684-s8i5j4sq4fr84mqneo6vaq7de4sdu7hd.apps.googleusercontent.com",
-    onLogoutSuccess: () => onLogoutSuccess(),
-  });
-
   const user = useAppSelector(selectUser);
-  const provider = user?.user;
+  const { provider } = Object(user?.user);
 
   return (
     <nav className="flex items-center justify-between flex-wrap p-6">
@@ -80,11 +74,10 @@ const Navbar = () => {
             })}
           </div>
           <div>
-            {provider && (
-              <button type="button" onClick={signOut} className="text-white">
-                Logout
-              </button>
-            )}
+            <img src="" alt="" />
+            <button type="button" onClick={logoutUser} className="text-white">
+              Logout
+            </button>
           </div>
         </div>
       </div>
