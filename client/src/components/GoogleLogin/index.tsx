@@ -1,30 +1,23 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 import { GoogleLogin, GoogleLogout } from "react-google-login";
-import { gapi } from "gapi-script";
 
 import { useAppDispatch } from "../../app/hooks";
 import { login } from "../../features/users/userSlice";
 export const GoogleLoginButton = () => {
-    const dispatch = useAppDispatch();
+  const dispatch = useAppDispatch();
   const [profile, setProfile] = useState<String[] | null>(null);
   const clientId =
     "759091763684-s8i5j4sq4fr84mqneo6vaq7de4sdu7hd.apps.googleusercontent.com";
 
-  useEffect(() => {
-    const initClient = () => {
-      gapi.client.init({
-        clientId: clientId,
-        scope: "email profile",
-      });
-    };
-    gapi.load("client:auth2", initClient);
-  });
-
   console.log(profile);
 
   const onSuccess = (res: any) => {
-   dispatch(login({...res.profileObj, provider: "google"}));
+    dispatch(login({ ...res.profileObj, provider: "google" }));
+    localStorage.setItem(
+      "user",
+      JSON.stringify({ ...res.profileObj, provider: "google" })
+    );
     console.log("success:", res);
   };
 

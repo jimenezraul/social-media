@@ -11,10 +11,10 @@ interface UserState {
 export const UserSlice = createSlice({
     name: 'user',
     initialState: {
-        user: null,
+        user: localStorage.getItem('user') ? JSON.parse(localStorage.getItem('user') || '{}') : null,
         status: 'idle',
         token: null,
-        isLoggedIn: false,
+        isLoggedIn: localStorage.getItem('user') ? true : false,
     } as UserState,
     reducers: {
         login: (state, action: PayloadAction<object>) => {
@@ -27,6 +27,9 @@ export const UserSlice = createSlice({
         },
         setToken: (state, action: PayloadAction<object>) => {
             state.token = action.payload;
+        },
+        setStatus: (state, action: PayloadAction<'idle' | 'loading' | 'failed'>) => {
+            state.status = action.payload;
         },
     },
 });

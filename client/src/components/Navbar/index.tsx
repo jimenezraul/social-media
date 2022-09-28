@@ -1,7 +1,14 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
+import { useAppSelector } from "../../app/hooks";
+import { selectUser, logout } from "../../features/users/userSlice";
+import { useAppDispatch } from "../../app/hooks";
+
+import { useGoogleLogout } from "react-google-login";
 
 const Navbar = () => {
+  const navigate = useNavigate();
+  const dispatch = useAppDispatch();
   const [currentPath, setCurrentPath] = useState<String>(
     window.location.pathname
   );
@@ -16,6 +23,21 @@ const Navbar = () => {
       path: "/feed",
     },
   ];
+
+  const onLogoutSuccess = () => {
+    dispatch(logout());
+    localStorage.removeItem("user");
+    navigate("/login");
+  };
+
+  const { signOut } = useGoogleLogout({
+    clientId:
+      "759091763684-s8i5j4sq4fr84mqneo6vaq7de4sdu7hd.apps.googleusercontent.com",
+    onLogoutSuccess: () => onLogoutSuccess(),
+  });
+
+  const user = useAppSelector(selectUser);
+  const provider = user?.user;
 
   return (
     <nav className="flex items-center justify-between flex-wrap p-6">
@@ -58,9 +80,11 @@ const Navbar = () => {
             })}
           </div>
           <div>
-            <Link to="#" className="text-white font-bold">
-              Login
-            </Link>
+            {provider && (
+              <button type="button" onClick={signOut} className="text-white">
+                Logout
+              </button>
+            )}
           </div>
         </div>
       </div>

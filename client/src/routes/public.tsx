@@ -36,7 +36,7 @@ export const publicRoutes = [
         path: "/register/*",
         element: <Register />,
       },
-        { path: "*", element: <Navigate to="." /> },
+        { path: "*", element: <Navigate to="/login" /> },
     ],
   },
 ];
