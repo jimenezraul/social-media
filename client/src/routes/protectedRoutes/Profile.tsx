@@ -1,4 +1,10 @@
+import { useAppSelector, useAppDispatch } from '../../app/hooks';
+import { selectUser } from '../../features/users/userSlice';
+
 export const Profile = () => {
+    const user = useAppSelector(selectUser);
+
+    console.log(user);
   return (
     <div className="">
       <div className="container mx-auto">

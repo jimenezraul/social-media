@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { Button } from "../../../components/CustomButton";
+import { GoogleLoginButton } from "../../../components/GoogleLogin";
 
 type FormEvent = React.FormEvent<HTMLFormElement>;
 
@@ -72,11 +73,7 @@ export const Login = () => {
           <div className="flex-grow border-t border-gray-400"></div>
         </div>
         <div className="flex items-center justify-center">
-          <Button
-            name="Login with Google"
-            type="button"
-            className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-          />
+          <GoogleLoginButton />
         </div>
       </form>
     </div>
