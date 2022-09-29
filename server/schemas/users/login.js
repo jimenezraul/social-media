@@ -11,17 +11,26 @@ module.exports = {
     const user = await User.findOne({ email });
 
     if (!user) {
-      throw new AuthenticationError('Incorrect credentials');
+      return {
+        success: false,
+        message: 'Incorrect email or password',
+      };
     }
 
     const correctPw = await user.isCorrectPassword(password);
 
     if (!correctPw) {
-      throw new AuthenticationError('Incorrect credentials');
+      return {
+        success: false,
+        message: 'Incorrect email or password',
+      };
     }
 
     if (!user.isVerified) {
-      throw new AuthenticationError('Please verify your email.');
+      return {
+        success: false,
+        message: 'Please verify your email',
+      };
     }
 
     // user data to be sent to client

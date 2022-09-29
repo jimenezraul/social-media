@@ -2,16 +2,89 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import { Button } from "../../../components/CustomButton";
 import { GoogleLoginButton } from "../../../components/GoogleLogin";
+import { validation } from "../../../utils/validation";
+import { useMutation } from "@apollo/client";
+import { LOGIN } from "./api";
+import { useAppDispatch } from "../../../app/hooks";
+import { user_login, setAccessToken } from "../../../features/users/userSlice";
 
 type FormEvent = React.FormEvent<HTMLFormElement>;
 
+function isErrorNumObj<T>(obj: T): obj is T & { errNum: unknown } {
+  return obj && "errNum" in obj;
+}
+
 export const Login = () => {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const dispatch = useAppDispatch();
+  const [errors, setErrors] = useState<String>("");
+
+  const [login] = useMutation(LOGIN);
+
+  const [formState, setFormState] = useState({
+    email: "",
+    password: "",
+    error: {
+      email: "",
+      password: "",
+    },
+  });
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
-    console.log(email, password);
+
+    const isValid = validation(formState, setFormState);
+
+    if (!isValid) {
+      console.log("Form is not valid");
+      return;
+    }
+
+    try {
+      const response = await login({
+        variables: {
+          email: formState.email,
+          password: formState.password,
+        },
+      });
+
+      const { success, message, access_token, user } = response.data.login;
+
+      if (!success) {
+        setErrors(message);
+        return;
+      }
+
+      setFormState({
+        email: "",
+        password: "",
+        error: {
+          email: "",
+          password: "",
+        },
+      });
+
+      localStorage.setItem("user", JSON.stringify(user));
+      dispatch(user_login(user));
+      dispatch(setAccessToken(access_token));
+
+      return;
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = event.target;
+    setFormState({
+      ...formState,
+      [name]: value,
+      error: {
+        ...formState.error,
+        [name]: "",
+      },
+    });
+
+    if (errors) setErrors("");
   };
 
   return (
@@ -35,11 +108,12 @@ export const Login = () => {
           <input
             type="email"
             name="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
+            value={formState.email}
+            onChange={(e) => handleChange(e)}
             className="bg-slate-700 shadow appearance-none rounded w-full py-2 px-3 text-gray-200 leading-tight focus:outline focus:shadow-outline"
             placeholder="John@example.com"
           />
+          <div className="text-red-500 text-xs">{formState.error.email}</div>
         </div>
         <div className="mb-6">
           <label className="block text-slate-300 text-sm font-bold mb-2">
@@ -48,12 +122,14 @@ export const Login = () => {
           <input
             type="password"
             name="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
+            value={formState.password}
+            onChange={(e) => handleChange(e)}
             className="bg-slate-700 shadow appearance-none rounded w-full py-2 px-3 text-gray-200 mb-3 leading-tight focus:outline-none focus:shadow-outline"
             placeholder="******************"
           />
+          <div className="text-red-500 text-xs">{formState.error.password}</div>
         </div>
+        <div className="text-red-500 text-xs">{errors}</div>
         <div className="flex items-center justify-between">
           <Button
             type="submit"

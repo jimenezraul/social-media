@@ -1,6 +1,6 @@
 import { useRef, useEffect, useState } from "react";
 import { useAppDispatch } from "../../app/hooks";
-import { login, setAccessToken } from "../../features/users/userSlice";
+import { user_login, setAccessToken } from "../../features/users/userSlice";
 import { useMutation } from "@apollo/client";
 import { GOOGLE_LOGIN } from "../../utils/mutations";
 
@@ -33,7 +33,7 @@ export const GoogleLoginButton = () => {
       }
 
       localStorage.setItem("user", JSON.stringify(user));
-      dispatch(login(user));
+      dispatch(user_login(user));
       dispatch(setAccessToken(access_token));
     }
     setScriptLoaded(true);
