@@ -7,8 +7,11 @@ export const LOGIN = gql`
       message
       access_token
       user {
+        _id
         given_name
         family_name
+        email
+        profileUrl
       }
       isLoggedIn
     }
