@@ -7,13 +7,8 @@ const { clearCookie } = require('../../utils/cookies');
 module.exports = {
   // logout user
   logout: async (parent, args, context) => {
-    const token = context.headers.cookie?.split('=')[1];
-    const loggedUser = context?.user;
-
-    if (!loggedUser) {
-      throw new AuthenticationError('You are not logged in');
-    }
-
+    const token = context.headers.cookie.split('refresh_token=')[1];
+    
     if (!token) {
       throw new AuthenticationError('No refresh token found');
     }
@@ -21,7 +16,7 @@ module.exports = {
     // clear httpOnly cookie
     clearCookie(context.res, 'refresh_token');
 
-    const user = await User.findOne({ _id: loggedUser._id });
+    const user = await User.findOne({ refreshToken: token });
 
     if (!user) {
       throw new AuthenticationError('User not found');
@@ -32,7 +27,7 @@ module.exports = {
     );
 
     await User.findOneAndUpdate(
-      { _id: loggedUser._id },
+      { refreshToken: token },
       { $set: { refreshToken: newRefreshTokenArray } },
       { new: true }
     );

@@ -1,12 +1,14 @@
 import { useRef, useEffect, useState } from "react";
 import { useAppDispatch } from "../../app/hooks";
-import jwt_decode from "jwt-decode";
 import { login } from "../../features/users/userSlice";
+import { useMutation } from "@apollo/client";
+import { GOOGLE_LOGIN } from "../../utils/mutations";
 
 export const GoogleLoginButton = () => {
   const [scriptLoaded, setScriptLoaded] = useState(false);
   const divRef = useRef<HTMLDivElement>(null);
   const dispatch = useAppDispatch();
+  const [googleLogin] = useMutation(GOOGLE_LOGIN);
 
   const clientId =
     "759091763684-s8i5j4sq4fr84mqneo6vaq7de4sdu7hd.apps.googleusercontent.com";
@@ -14,10 +16,24 @@ export const GoogleLoginButton = () => {
   useEffect(() => {
     if (scriptLoaded) return undefined;
 
-    function handleGoogleSignIn(res: any) {
-      const decodeUser = jwt_decode(res?.credential as string);
-      localStorage.setItem("user", JSON.stringify(decodeUser));
-      dispatch(login(Object(decodeUser)));
+    async function handleGoogleSignIn(res: any) {
+      const tokenId = res.credential;
+
+      const google_login = await googleLogin({
+        variables: {
+          tokenId: tokenId,
+        },
+      });
+
+      const { success, message, access_token, user } =
+        google_login.data.googleLogin;
+
+      if (!success) {
+        return alert(message);
+      }
+
+      localStorage.setItem("user", JSON.stringify(user));
+      dispatch(login({ access_token, user }));
     }
     setScriptLoaded(true);
     const initializeGoogle = () => {
@@ -32,6 +48,7 @@ export const GoogleLoginButton = () => {
         text: "signin_with",
         type: "standard",
       });
+      window.google.accounts.id.prompt();
     };
     const script = document.createElement("script");
     script.src = "https://accounts.google.com/gsi/client";
@@ -44,7 +61,7 @@ export const GoogleLoginButton = () => {
       window.google?.accounts.id.cancel();
       document.getElementById("google-client-script")?.remove();
     };
-  }, [dispatch, clientId, scriptLoaded]);
+  }, [dispatch, clientId, scriptLoaded, googleLogin]);
 
   return (
     <>

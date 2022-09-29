@@ -1,10 +1,10 @@
 import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { useAppSelector } from "../../app/hooks";
-import { selectUser, logout } from "../../features/users/userSlice";
+import { selectUser, user_logout } from "../../features/users/userSlice";
 import { useAppDispatch } from "../../app/hooks";
-
-declare const google: any;
+import { useMutation } from "@apollo/client";
+import { LOGOUT } from "../../utils/mutations";
 
 const Navbar = () => {
   const navigate = useNavigate();
@@ -12,6 +12,8 @@ const Navbar = () => {
   const [currentPath, setCurrentPath] = useState<String>(
     window.location.pathname
   );
+
+  const [logout] = useMutation(LOGOUT);
 
   const routes = [
     {
@@ -24,8 +26,9 @@ const Navbar = () => {
     },
   ];
 
-  const logoutUser = () => {
-    dispatch(logout());
+  const logoutUser = async () => {
+    dispatch(user_logout());
+    await logout();
     localStorage.removeItem("user");
     navigate("/login");
   };

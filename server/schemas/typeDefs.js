@@ -92,7 +92,7 @@ const typeDefs = gql`
     friendRequest(friendId: ID!): Message
     acceptFriendRequest(friendId: ID!): Message
     likes(postId: ID!): Message
-    googleLogin: Auth
+    googleLogin(tokenId: String!): Auth
     removeFriend(friendId: ID!): Message
     resetPassword(token: String!, password: String!): Message
     forgotPassword(email: String!): Message

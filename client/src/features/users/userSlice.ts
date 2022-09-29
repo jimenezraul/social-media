@@ -21,7 +21,7 @@ export const UserSlice = createSlice({
             state.user = action.payload;
             state.isLoggedIn = true;
         },
-        logout: (state) => {
+        user_logout: (state) => {
             state.user = null;
             state.isLoggedIn = false;
         },
@@ -33,7 +33,7 @@ export const UserSlice = createSlice({
         },
     },
 });
-export const { login, logout } = UserSlice.actions;
+export const { login, user_logout } = UserSlice.actions;
 
 export const selectUser = (state: RootState) => state.user;
 
