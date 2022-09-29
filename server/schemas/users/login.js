@@ -8,29 +8,20 @@ module.exports = {
   // login a user
   login: async (parent, { email, password }, context) => {
     const refresh_token = context.headers.cookie?.split('=')[1];
-    const user = await User.findOne({ email });
+    const user = await User.findOne({ email: email.toLowerCase() });
 
     if (!user) {
-      return {
-        success: false,
-        message: 'Incorrect email or password',
-      };
+      throw new AuthenticationError('Incorrect email or password');
     }
 
     const correctPw = await user.isCorrectPassword(password);
 
     if (!correctPw) {
-      return {
-        success: false,
-        message: 'Incorrect email or password',
-      };
+      throw new AuthenticationError('Incorrect email or password');
     }
 
     if (!user.isVerified) {
-      return {
-        success: false,
-        message: 'Please verify your email',
-      };
+      throw new AuthenticationError('Please verify your email');
     }
 
     // user data to be sent to client

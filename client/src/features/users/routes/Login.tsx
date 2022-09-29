@@ -7,12 +7,7 @@ import { useMutation } from "@apollo/client";
 import { LOGIN } from "./api";
 import { useAppDispatch } from "../../../app/hooks";
 import { user_login, setAccessToken } from "../../../features/users/userSlice";
-
-type FormEvent = React.FormEvent<HTMLFormElement>;
-
-function isErrorNumObj<T>(obj: T): obj is T & { errNum: unknown } {
-  return obj && "errNum" in obj;
-}
+import { FormEvent, ChangeEvent } from "./types";
 
 export const Login = () => {
   const dispatch = useAppDispatch();
@@ -35,7 +30,6 @@ export const Login = () => {
     const isValid = validation(formState, setFormState);
 
     if (!isValid) {
-      console.log("Form is not valid");
       return;
     }
 
@@ -48,7 +42,7 @@ export const Login = () => {
       });
 
       const { success, message, access_token, user } = response.data.login;
-
+      
       if (!success) {
         setErrors(message);
         return;
@@ -68,12 +62,12 @@ export const Login = () => {
       dispatch(setAccessToken(access_token));
 
       return;
-    } catch (err) {
-      console.log(err);
+    } catch (err:any) {
+      setErrors(err.message);
     }
   };
 
-  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChange = (event: ChangeEvent) => {
     const { name, value } = event.target;
     setFormState({
       ...formState,
@@ -111,7 +105,7 @@ export const Login = () => {
             value={formState.email}
             onChange={(e) => handleChange(e)}
             className="bg-slate-700 shadow appearance-none rounded w-full py-2 px-3 text-gray-200 leading-tight focus:outline focus:shadow-outline"
-            placeholder="John@example.com"
+            placeholder="john@example.com"
           />
           <div className="text-red-500 text-xs">{formState.error.email}</div>
         </div>
@@ -149,7 +143,7 @@ export const Login = () => {
           <div className="flex-grow border-t border-gray-400"></div>
         </div>
         <div className="flex items-center justify-center">
-          <GoogleLoginButton />
+          <GoogleLoginButton setErrors={setErrors} />
         </div>
       </form>
     </div>

@@ -3,9 +3,10 @@ import { useAppDispatch } from "../../app/hooks";
 import { user_login, setAccessToken } from "../../features/users/userSlice";
 import { useMutation } from "@apollo/client";
 import { GOOGLE_LOGIN } from "../../utils/mutations";
+import { IProps } from "./types";
 
-export const GoogleLoginButton = () => {
-  const [scriptLoaded, setScriptLoaded] = useState(false);
+export const GoogleLoginButton = (props: IProps) => {
+  const [scriptLoaded, setScriptLoaded] = useState<Boolean | undefined>(false);
   const divRef = useRef<HTMLDivElement>(null);
   const dispatch = useAppDispatch();
   const [googleLogin] = useMutation(GOOGLE_LOGIN);
@@ -29,7 +30,8 @@ export const GoogleLoginButton = () => {
         google_login.data.googleLogin;
 
       if (!success) {
-        return alert(message);
+        props.setErrors(message);
+        return;
       }
 
       localStorage.setItem("user", JSON.stringify(user));
@@ -62,7 +64,7 @@ export const GoogleLoginButton = () => {
       window.google?.accounts.id.cancel();
       document.getElementById("google-client-script")?.remove();
     };
-  }, [dispatch, clientId, scriptLoaded, googleLogin]);
+  }, [dispatch, clientId, scriptLoaded, googleLogin, props]);
 
   return (
     <>
