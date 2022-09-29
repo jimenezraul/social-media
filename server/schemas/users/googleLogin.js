@@ -2,14 +2,13 @@ const { OAuth2Client } = require('google-auth-library');
 const { User } = require('../../models');
 const { generateToken } = require('../../utils/auth');
 const { AuthenticationError } = require('apollo-server-express');
-const { validToken } = require('../../utils/auth');
 const { formatUserData } = require('../../utils/formatUserData');
 const { setCookie, clearCookie } = require('../../utils/cookies');
 require('dotenv').config();
 
 module.exports = {
   googleLogin: async (parent, args, context) => {
-    const refresh_token = context.headers.cookie?.split('=')[1];
+    const refresh_token = context.headers.cookie?.split('refresh_token=')[1];
     const { tokenId } = args;
     clearCookie(context.res, 'refresh_token');
 

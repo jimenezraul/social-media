@@ -34,6 +34,7 @@ const Navbar = () => {
   };
 
   const user = useAppSelector(selectUser);
+  console.log(user);
   const { provider } = Object(user?.user);
 
   return (
