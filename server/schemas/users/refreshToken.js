@@ -19,7 +19,7 @@ module.exports = {
     // check if refresh token is valid
     const isValidToken = validToken(refresh_token);
 
-    const user = await User.findOne({ _id: id });
+    const user = await User.findOne({ refreshToken: refresh_token });
 
     if (!user) {
       throw new AuthenticationError('User not found');
@@ -36,13 +36,6 @@ module.exports = {
       throw new AuthenticationError(
         'Refresh token expired, please login again'
       );
-    }
-
-    // check if refresh token exists in user's array of refresh tokens
-    const tokenExists = user.refreshToken.includes(refresh_token);
-
-    if (!tokenExists) {
-      throw new AuthenticationError('Invalid token');
     }
 
     const currentUser = formatUserData(user);
