@@ -7,10 +7,7 @@ const { formatUserData } = require('../../utils/formatUserData');
 module.exports = {
   // refresh access token
   refreshToken: async (parent, { id }, context) => {
-    const refresh_token = context.headers.cookie?.split('=')[1];
-
-    // clear httpOnly cookie
-    clearCookie(context.res, 'refresh_token');
+    const refresh_token = context.headers.cookie?.split('refresh_token=')[1];
 
     if (!refresh_token) {
       throw new AuthenticationError('No refresh token found');
@@ -22,6 +19,12 @@ module.exports = {
     const user = await User.findOne({ refreshToken: refresh_token });
 
     if (!user) {
+      clearCookie(context.res, 'refresh_token');
+      throw new AuthenticationError('User not found');
+    }
+
+    if (user._id.toString() !== id) {
+      clearCookie(context.res, 'refresh_token');
       throw new AuthenticationError('User not found');
     }
 
@@ -31,6 +34,7 @@ module.exports = {
 
     // Refresh token expired
     if (!isValidToken) {
+      clearCookie(context.res, 'refresh_token');
       user.refreshToken = newRefreshTokenArray;
       await user.save();
       throw new AuthenticationError(
@@ -42,6 +46,7 @@ module.exports = {
 
     // generate new refresh token and save to user
     const newRefreshToken = generateToken({ user: currentUser }, 'refresh');
+
     user.refreshToken = [...newRefreshTokenArray, newRefreshToken];
     await user.save();
 

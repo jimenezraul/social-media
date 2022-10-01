@@ -4,7 +4,7 @@ import { Button } from "../../../components/CustomButton";
 import { GoogleLoginButton } from "../../../components/GoogleLogin";
 import { validation } from "../../../utils/validation";
 import { useMutation } from "@apollo/client";
-import { LOGIN } from "./api";
+import { LOGIN } from "./api/mutations";
 import { useAppDispatch } from "../../../app/hooks";
 import { user_login, setAccessToken } from "../../../features/users/userSlice";
 import { FormEvent, ChangeEvent } from "./types";

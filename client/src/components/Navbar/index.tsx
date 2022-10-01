@@ -30,11 +30,11 @@ const Navbar = () => {
     dispatch(user_logout());
     await logout();
     localStorage.removeItem("user");
+    localStorage.removeItem("access_token");
     navigate("/login");
   };
 
   const user = useAppSelector(selectUser);
-  console.log(user);
   const { provider } = Object(user?.user);
 
   return (

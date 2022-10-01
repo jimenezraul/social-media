@@ -2,6 +2,7 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { RootState } from '../../app/store';
 
 interface UserState {
+    _id: string | null;
     user: object | null;
     access_token: object | null;
     isLoggedIn: boolean;
@@ -11,7 +12,7 @@ export const UserSlice = createSlice({
     name: 'user',
     initialState: {
         user: localStorage.getItem('user') ? JSON.parse(localStorage.getItem('user') || '{}') : null,
-        access_token: null,
+        access_token: localStorage.getItem('access_token') ? localStorage.getItem('access_token') || '{}' : null,
         isLoggedIn: localStorage.getItem('user') ? true : false,
     } as UserState,
     reducers: {

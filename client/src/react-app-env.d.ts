@@ -124,3 +124,11 @@ interface SetFormState {
     }>
   ): void;
 }
+
+interface Friends {
+  _id: string;
+  fullName: string;
+  email: string;
+  profileUrl: string;
+  isVerified: boolean;
+}

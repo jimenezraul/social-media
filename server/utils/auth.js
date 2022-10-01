@@ -1,6 +1,7 @@
 const jwt = require('jsonwebtoken');
 const allowedOrigins = require('../config/allowedOrigins');
-let expiration = '1d';
+let expiration = '15m';
+const { getCookies } = require('./cookies');
 
 require('dotenv').config();
 
@@ -13,7 +14,7 @@ module.exports = {
     }
 
     token = token.split(' ').pop().trim();
-
+  
     const data = jwt.verify(
       token,
       process.env.ACCESS_TOKEN_SECRET,
@@ -35,7 +36,10 @@ module.exports = {
     let secretkey = process.env.ACCESS_TOKEN_SECRET;
     if (type === 'refresh') {
       secretkey = process.env.REFRESH_TOKEN_SECRET;
-      expiration = '7d';
+      exp = '7d';
+      return jwt.sign({ user }, secretkey, {
+        expiresIn: exp,
+      });
     }
     return jwt.sign(user, secretkey, { expiresIn: expiration });
   },

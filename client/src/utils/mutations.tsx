@@ -29,3 +29,22 @@ export const LOGOUT = gql`
     }
   }
 `;
+
+export const REFRESH_TOKEN = gql`
+  mutation RefreshToken($userId: ID!) {
+    refreshToken(id: $userId) {
+      success
+      message
+      access_token
+      user {
+        _id
+        given_name
+        family_name
+        profileUrl
+        isAdmin
+        isVerified
+      }
+      isLoggedIn
+    }
+  }
+`;

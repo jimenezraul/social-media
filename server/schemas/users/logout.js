@@ -1,7 +1,5 @@
 const { AuthenticationError } = require('apollo-server-express');
 const { User } = require('../../models');
-const { generateToken, validToken } = require('../../utils/auth');
-const { sendVerificationEmail } = require('../../utils/accountVerification');
 const { clearCookie } = require('../../utils/cookies');
 
 module.exports = {

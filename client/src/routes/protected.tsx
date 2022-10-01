@@ -5,7 +5,7 @@ import { lazyImport } from "../utils/lazyImports";
 import Navbar from "../components/Navbar";
 
 const { Profile } = lazyImport(
-  () => import("../features/users/"),
+  () => import("../features/users"),
   "Profile"
 );
 

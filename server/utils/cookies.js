@@ -1,4 +1,12 @@
 module.exports = {
+  getCookies: function (req) {
+    const cookies = {};
+    req.headers.cookie?.split(';').forEach((cookie) => {
+      const [key, value] = cookie.split('=');
+      cookies[key.trim()] = value;
+    });
+    return cookies;
+  },
   setCookie: (res, name, token) => {
     res.cookie(name, token, {
       httpOnly: true,
