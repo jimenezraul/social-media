@@ -19,6 +19,7 @@ export const GET_ME = gql`
         postAuthor {
           _id
           fullName
+          profileUrl
         }
         createdAt
         createdAtFormatted
@@ -28,7 +29,7 @@ export const GET_ME = gql`
             fullName
             profileUrl
           }
-          createdAt
+          createdAtFormatted
           likes {
             _id
             fullName

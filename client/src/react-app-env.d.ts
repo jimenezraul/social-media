@@ -132,3 +132,49 @@ interface Friends {
   profileUrl: string;
   isVerified: boolean;
 }
+
+interface User {
+  _id: ID;
+  given_name: String;
+  family_name: String;
+  email: String;
+  profileUrl: String;
+  isAdmin: Boolean;
+  isVerified: Boolean;
+  postCount: Int;
+  posts: [Post];
+  friends: [User];
+  blockedUsers: [User];
+  friendRequests: [User];
+  friendRequestCount: Int;
+  createdAt: Date;
+  updatedAt: Date;
+  provider: String;
+  fullName: String;
+  friendCount: Int;
+  createdAtFormatted: String;
+}
+
+interface Comment {
+  _id: ID;
+  commentText: String;
+  commentAuthor: User;
+  createdAt: Date;
+  createdAtFormatted: String;
+  likes: [User];
+  likesCount: Int;
+  replies: [Comment];
+}
+
+interface Post {
+  _id: ID;
+  postImage: String;
+  postText: String;
+  postAuthor: User;
+  createdAt: Date;
+  comments: [Comment];
+  commentCount: Int;
+  likes: [User];
+  likeCount: Int;
+  createdAtFormatted: String;
+}

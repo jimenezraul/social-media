@@ -1,4 +1,4 @@
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { useState } from "react";
 import { useAppSelector } from "../../app/hooks";
 import { selectUser, user_logout } from "../../features/users/userSlice";
@@ -7,7 +7,6 @@ import { useMutation } from "@apollo/client";
 import { LOGOUT } from "../../utils/mutations";
 
 const Navbar = () => {
-  const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const [currentPath, setCurrentPath] = useState<String>(
     window.location.pathname
@@ -31,11 +30,11 @@ const Navbar = () => {
     await logout();
     localStorage.removeItem("user");
     localStorage.removeItem("access_token");
-    navigate("/login");
+    window.location.reload();
   };
 
-  const user = useAppSelector(selectUser);
-  const { provider } = Object(user?.user);
+  const user = useAppSelector(selectUser).user;
+  const { profileUrl } = Object(user);
 
   return (
     <nav className="flex items-center justify-between flex-wrap p-6">
@@ -77,8 +76,8 @@ const Navbar = () => {
               );
             })}
           </div>
-          <div>
-            <img src="" alt="" />
+          <div className="flex">
+            <img className="mr-2 h-10 bg-gradient-to-r from-blue-600 to to-red-500 rounded-full border border-slate-500" src={`${profileUrl}`} alt="" />
             <button type="button" onClick={logoutUser} className="text-white">
               Logout
             </button>

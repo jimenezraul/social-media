@@ -23,6 +23,7 @@ export const Me = gql`
         createdAt
         createdAtFormatted
         comments {
+          _id
           commentText
           commentAuthor {
             fullName
