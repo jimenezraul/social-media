@@ -37,14 +37,14 @@ const Navbar = () => {
   const { profileUrl } = Object(user);
 
   return (
-    <nav className="flex items-center justify-between flex-wrap p-6">
+    <nav className="flex items-center justify-between flex-wrap p-6  bg-transparent">
       <div className="container mx-auto flex flex-wrap items-center justify-between">
         <div className="flex items-center flex-shrink-0 text-white mr-6">
           <span className="font-semibold text-xl tracking-tight">
             Social Media
           </span>
         </div>
-        <div className="block lg:hidden">
+        <div className="text-white block lg:hidden">
           <button className="flex items-center px-3 py-2 border rounded hover:text-white hover:border-white">
             <svg
               className="fill-current h-3 w-3"
@@ -77,7 +77,7 @@ const Navbar = () => {
             })}
           </div>
           <div className="flex">
-            <img className="mr-2 h-10 bg-gradient-to-r from-blue-600 to to-red-500 rounded-full border border-slate-500" src={`${profileUrl}`} alt="" />
+            <img className="mr-2 h-10 bg-gradient-to-r from-blue-600 to to-red-500 rounded-full p-0.5" src={`${profileUrl}`} alt="" />
             <button type="button" onClick={logoutUser} className="text-white">
               Logout
             </button>

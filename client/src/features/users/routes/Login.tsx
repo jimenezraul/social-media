@@ -47,7 +47,7 @@ export const Login = () => {
         setErrors(message);
         return;
       }
-
+      console.log(message);
       setFormState({
         email: "",
         password: "",

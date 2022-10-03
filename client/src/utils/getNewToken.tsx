@@ -43,7 +43,9 @@ export const getNewToken = async () => {
     }
     return new Error("Something went wrong");
   } catch (err: any) {
-    localStorage.clear();
-    window.location.reload();
+    if (err.message === "Refresh token expired, please login again") {
+      localStorage.clear();
+      window.location.reload();
+    }
   }
 };

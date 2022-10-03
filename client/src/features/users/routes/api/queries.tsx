@@ -6,6 +6,7 @@ export const GET_ME = gql`
       _id
       given_name
       family_name
+      fullName
       email
       profileUrl
       isAdmin

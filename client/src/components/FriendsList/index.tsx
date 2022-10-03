@@ -2,7 +2,6 @@ import { Button } from "../CustomButton";
 
 interface isLastEl extends User {
   isLastEl: boolean;
-  buttonName: string;
   onClick: () => void;
 }
 
@@ -11,7 +10,6 @@ export const FriendsList = ({
   profileUrl,
   fullName,
   isLastEl,
-  buttonName,
   onClick,
 }: isLastEl) => {
   return (
@@ -22,12 +20,12 @@ export const FriendsList = ({
           src={`${profileUrl}`}
           alt=""
         />
-        <h1 className="text-xl font-semibold mt-2">{fullName}</h1>
+        <h1 className="text-md font-semibold flex justify-center items-center">{fullName}</h1>
       </div>
       <Button
         onClick={onClick}
-        name={buttonName}
-        className="bg-gradient-to-r from-blue-600 to to-red-500 hover:from-blue-700 hover:to-red-600 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+        name="UNFRIEND"
+        className="text-sm bg-red-700 hover:bg-red-900 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
       />
       {!isLastEl && <div className="w-full mt-6 mb-6 h-px bg-slate-500"></div>}
     </div>
