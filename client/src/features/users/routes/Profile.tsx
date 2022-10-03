@@ -20,7 +20,7 @@ export const Profile = () => {
 
   return (
     <div className="flex flex-1 text-white">
-      <div className="container mx-auto">
+      <div className="container mx-auto xl:px-24 2xl:px-52">
         <div className="flex flex-wrap justify-center h-full max-h-full">
           <div className="hidden md:block w-full md:w-4/12 xl:w-3/12 px-3 mb-4">
             <MeCard {...Object(me)} />
@@ -31,7 +31,7 @@ export const Profile = () => {
               return <Post key={index} {...post} isLastEl={isLastEl} />;
             })}
           </div>
-          <div className="hidden md:block md:w-3/12 xl:w-4/12 px-3">
+          <div className="hidden lg:block md:w-3/12 xl:w-4/12 px-3">
             <div className="bg-slate-800 rounded-lg shadow-xl p-5 border border-slate-700">
               {!friends?.length && (
                 <p className="text-center text-slate-300">

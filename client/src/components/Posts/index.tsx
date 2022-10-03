@@ -1,8 +1,8 @@
 import { Link } from "react-router-dom";
 
 interface isLastEl extends Post {
-    isLastEl: boolean;
-  } 
+  isLastEl: boolean;
+}
 export const Post = ({
   _id,
   postAuthor,
@@ -11,11 +11,15 @@ export const Post = ({
   postImage,
   postText,
   commentCount,
-  isLastEl
+  isLastEl,
 }: isLastEl) => {
   const comment = commentCount === 1 ? "comment" : "comments";
   return (
-    <article className={`${isLastEl && "mb-24 md:mb-4"} border border-slate-700 mb-4 break-inside rounded-lg bg-slate-800 flex flex-col bg-clip-border`}>
+    <article
+      className={`${
+        isLastEl && "mb-24 md:mb-4"
+      } border border-slate-700 mb-4 break-inside rounded-lg bg-slate-800 flex flex-col bg-clip-border`}
+    >
       <div className="flex p-6 items-center justify-between">
         <div className="flex w-full border-b border-slate-500 pb-3">
           <Link className="inline-block mr-4" to={`/user/${_id}`}>
@@ -35,7 +39,7 @@ export const Post = ({
               </Link>
             </div>
             <div className="text-slate-500 dark:text-slate-300">
-              <span className="text-slate-500 dark:text-slate-300">
+              <span className="italic text-sm text-slate-500 dark:text-slate-300">
                 {createdAtFormatted}
               </span>
             </div>
@@ -51,11 +55,11 @@ export const Post = ({
       <div className="p-6">
         <div className="flex justify-between items-center">
           <span className="-m-1 rounded-full border-2 border-white dark:border-slate-800">
-            <img
-              className="w-6"
-              src="https://cdn.iconscout.com/icon/free/png-256/like-2387659-1991059.png"
-              alt=""
-            />
+            <i
+              className={`${
+                likeCount > 0 && "bg-blue-600 p-2 rounded-full"
+              } fa-solid fa-thumbs-up`}
+            ></i>
           </span>
           <span className="text-lg font-bold ml-3">{likeCount}</span>
 

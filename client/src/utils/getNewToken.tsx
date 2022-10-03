@@ -13,8 +13,8 @@ export const getNewToken = async () => {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
+        "Access-Control-Allow-Credentials": "true",
         Authorization: `Bearer ${token}`,
-        credentials: "include",
       },
       body: graphql,
     })!;
@@ -43,7 +43,12 @@ export const getNewToken = async () => {
     }
     return new Error("Something went wrong");
   } catch (err: any) {
-    if (err.message === "Refresh token expired, please login again") {
+    console.log("error", err.message);
+    if (
+      err.message === "Refresh token expired, please login again" ||
+      err.message === "No refresh token found" ||
+      err.message === "User not found"
+    ) {
       localStorage.clear();
       window.location.reload();
     }

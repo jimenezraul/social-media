@@ -1,6 +1,6 @@
 const jwt = require('jsonwebtoken');
 const allowedOrigins = require('../config/allowedOrigins');
-let expiration = '15m';
+let expiration = '10s';
 const { getCookies } = require('./cookies');
 
 require('dotenv').config();
@@ -15,7 +15,7 @@ module.exports = {
 
     token = token.split(' ').pop().trim();
   
-    const data = jwt.verify(
+    jwt.verify(
       token,
       process.env.ACCESS_TOKEN_SECRET,
       {
@@ -45,7 +45,7 @@ module.exports = {
   },
   credentials: (req, res, next) => {
     const origin = req.headers.origin;
-
+    console.log("origin is: ", origin);
     if (allowedOrigins.includes(origin)) {
       res.header('Access-Control-Allow-Credentials', true);
     }

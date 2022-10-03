@@ -3,10 +3,15 @@ import { Outlet, Navigate } from "react-router-dom";
 import { lazyImport } from "../utils/lazyImports";
 
 import Navbar from "../components/Navbar";
+import { Dock } from "../components/Dock";
 
 const { Profile } = lazyImport(
   () => import("../features/users"),
   "Profile"
+);
+const {Friends} = lazyImport(
+  () => import("../features/users"),
+  "Friends"
 );
 
 const Protected = () => {
@@ -22,6 +27,7 @@ const Protected = () => {
           <Outlet />
         </div>
       </Suspense>
+      <Dock />
     </div>
   );
 };
@@ -40,8 +46,8 @@ export const protectedRoutes = [
         element: <Profile />,
       },
       {
-        path: "/feed",
-        element: <Profile />,
+        path: "/friends",
+        element: <Friends />,
       },
       { path: "*", element: <Navigate to="." /> },
     ],

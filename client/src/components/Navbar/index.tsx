@@ -7,6 +7,7 @@ import { useMutation } from "@apollo/client";
 import { LOGOUT } from "../../utils/mutations";
 
 const Navbar = () => {
+  const [isOpen, setIsOpen] = useState(false);
   const dispatch = useAppDispatch();
   const [currentPath, setCurrentPath] = useState<String>(
     window.location.pathname
@@ -16,12 +17,12 @@ const Navbar = () => {
 
   const routes = [
     {
-      name: "profile",
-      path: "/profile",
-    },
-    {
       name: "feed",
       path: "/feed",
+    },
+    {
+      name: "profile",
+      path: "/profile",
     },
   ];
 
@@ -37,15 +38,15 @@ const Navbar = () => {
   const { profileUrl } = Object(user);
 
   return (
-    <nav className="flex items-center justify-between flex-wrap p-6  bg-transparent">
+    <nav className="relative flex items-center justify-between flex-wrap p-6">
       <div className="container mx-auto flex flex-wrap items-center justify-between">
         <div className="flex items-center flex-shrink-0 text-white mr-6">
           <span className="font-semibold text-xl tracking-tight">
             Social Media
           </span>
         </div>
-        <div className="text-white block lg:hidden">
-          <button className="flex items-center px-3 py-2 border rounded hover:text-white hover:border-white">
+        <div className="text-slate-400 block lg:hidden" onClick={()=> setIsOpen(!isOpen)}>
+          <button className="flex items-center px-3 py-2 border rounded border-slate-400 hover:text-slate-200 hover:border-slate-200">
             <svg
               className="fill-current h-3 w-3"
               viewBox="0 0 20 20"
@@ -56,7 +57,7 @@ const Navbar = () => {
             </svg>
           </button>
         </div>
-        <div className="w-full block flex-grow lg:flex lg:items-center lg:w-auto">
+        <div className={`w-full ${isOpen ? "block" : "hidden"} flex-grow lg:flex lg:items-center lg:w-auto`}>
           <div className="text-sm lg:flex-grow">
             {routes.map((route, index) => {
               // check if the route is active

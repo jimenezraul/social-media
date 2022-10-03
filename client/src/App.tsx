@@ -25,7 +25,6 @@ const authLink = setContext((_, { headers }) => {
     headers: {
       ...headers,
       authorization: accessToken ? `Bearer ${accessToken}` : "",
-      Credentials: "include",
     },
   };
 });

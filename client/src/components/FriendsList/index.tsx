@@ -19,6 +19,7 @@ export const FriendsList = ({
           className="w-12 h-12 rounded-full object-cover mr-3 border-2 border-slate-500 bg-gradient-to-r from-blue-600 to to-red-500"
           src={`${profileUrl}`}
           alt=""
+          referrerPolicy="no-referrer"
         />
         <h1 className="text-md font-semibold flex justify-center items-center">{fullName}</h1>
       </div>

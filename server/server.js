@@ -2,6 +2,7 @@ const express = require('express');
 const { ApolloServer } = require('apollo-server-express');
 const { ApolloServerPluginInlineTrace } = require('apollo-server-core');
 const path = require('path');
+const cors = require('cors');
 
 const { authMiddleware, credentials } = require('./utils/auth');
 
@@ -20,6 +21,7 @@ const server = new ApolloServer({
 
 const app = express();
 
+app.use(cors());
 app.use(credentials);
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());

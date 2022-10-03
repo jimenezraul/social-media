@@ -8,7 +8,7 @@ module.exports = {
   // refresh access token
   refreshToken: async (parent, { id }, context) => {
     const refresh_token = context.headers.cookie?.split('refresh_token=')[1];
-
+ 
     if (!refresh_token) {
       throw new AuthenticationError('No refresh token found');
     }
@@ -20,7 +20,7 @@ module.exports = {
 
     if (!user) {
       clearCookie(context.res, 'refresh_token');
-      throw new AuthenticationError('User not found');
+      throw new AuthenticationError('r User not found');
     }
 
     if (user._id.toString() !== id) {

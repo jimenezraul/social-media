@@ -42,12 +42,12 @@ export const Login = () => {
       });
 
       const { success, message, access_token, user } = response.data.login;
-      
+
       if (!success) {
         setErrors(message);
         return;
       }
-      console.log(message);
+
       setFormState({
         email: "",
         password: "",
@@ -56,13 +56,14 @@ export const Login = () => {
           password: "",
         },
       });
-
+  
       localStorage.setItem("user", JSON.stringify(user));
+      localStorage.setItem("access_token", access_token);
       dispatch(user_login(user));
       dispatch(setAccessToken(access_token));
 
       return;
-    } catch (err:any) {
+    } catch (err: any) {
       setErrors(err.message);
     }
   };
