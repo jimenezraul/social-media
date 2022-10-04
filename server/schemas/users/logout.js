@@ -6,7 +6,7 @@ module.exports = {
   // logout user
   logout: async (parent, args, context) => {
     const token = context.headers.cookie.split('refresh_token=')[1];
-    
+
     if (!token) {
       throw new AuthenticationError('No refresh token found');
     }
@@ -19,13 +19,12 @@ module.exports = {
     if (!user) {
       throw new AuthenticationError('User not found');
     }
-
+    console.log('token', token);
+    console.log('refresh token: ', user.refreshToken);
     const newRefreshTokenArray = user.refreshToken.filter(
       (token) => token !== token
     );
 
-    console.log(newRefreshTokenArray);
-    
     await User.findOneAndUpdate(
       { refreshToken: token },
       { $set: { refreshToken: newRefreshTokenArray } },
