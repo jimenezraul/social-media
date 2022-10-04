@@ -40,9 +40,9 @@ module.exports = {
       }
 
       const payload = ticket.getPayload();
-      const userEmail = payload.email;
-
-      const user = await User.findOne({ email: userEmail });
+      const { email, given_name, family_name, picture } = payload;
+      console.log(payload);
+      const user = await User.findOne({ email: email });
 
       if (!user) {
         // if user does not exist, create new user
