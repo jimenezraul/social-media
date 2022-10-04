@@ -6,6 +6,7 @@ import { FriendsList } from "../../../components/FriendsList";
 import { MeCard } from "../../../components/MeCard";
 
 export const Profile = () => {
+  const [friends, setFriends] = useState<Friends[]>([]);
   const [me, setMe] = useState<User>();
   const { data, loading, error } = useQuery(GET_ME);
 
@@ -14,9 +15,8 @@ export const Profile = () => {
     if (error) return;
     if (!data) return;
     setMe(data.me);
+    setFriends(data.me.friends);
   }, [data, loading, error]);
-
-  const { friends } = me || {};
 
   return (
     <div className="flex flex-1 text-white">
@@ -38,7 +38,7 @@ export const Profile = () => {
                   You have no friends yet!
                 </p>
               )}
-              {friends?.map((friend: User, index: number) => {
+              {friends?.map((friend: Friends, index: number) => {
                 const isLastEl = index === friends.length - 1;
                 return (
                   <FriendsList

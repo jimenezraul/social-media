@@ -178,3 +178,7 @@ interface Post {
   likeCount: Int;
   createdAtFormatted: String;
 }
+
+interface SearchProps {
+  handleSearch: (searchTerm: string) => void;
+}
