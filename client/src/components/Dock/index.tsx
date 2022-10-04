@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 export const Dock = () => {
   return (
     <div className="absolute bottom-0 flex md:hidden w-full px-3 h-20">
-      <div className="text-white w-full rounded-t-xl flex justify-around items-center border border-b-0 border-slate-700 bg-slate-800">
+      <div className="text-white w-full rounded-t-lg flex justify-around items-center border border-b-0 border-slate-700 bg-slate-800">
         <Link to="/">
           <div className="text-center">
             <i className="text-xl fa-sharp fa-solid fa-house"></i>
