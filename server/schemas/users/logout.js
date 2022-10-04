@@ -24,6 +24,8 @@ module.exports = {
       (token) => token !== token
     );
 
+    console.log(newRefreshTokenArray);
+    
     await User.findOneAndUpdate(
       { refreshToken: token },
       { $set: { refreshToken: newRefreshTokenArray } },
