@@ -7,6 +7,7 @@ require('dotenv').config();
 
 module.exports = {
   authMiddleware: function ({ req }) {
+    console.log("headers", req.headers);
     let token = req.headers.authorization || req.headers.Authorization;
 
     if (!token) {
