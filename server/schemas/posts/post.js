@@ -69,6 +69,7 @@ module.exports = {
 
   // add a post
   addPost: async (parent, args, context) => {
+    console.log("context", context);
     if (!context.user) {
       throw new AuthenticationError('You need to be logged in!');
     }
