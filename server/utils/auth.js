@@ -1,6 +1,6 @@
 const jwt = require('jsonwebtoken');
 const allowedOrigins = require('../config/allowedOrigins');
-let expiration = '10s';
+let expiration = '15m';
 const { getCookies } = require('./cookies');
 
 require('dotenv').config();
@@ -23,6 +23,7 @@ module.exports = {
         maxAge: expiration,
       },
       (err, decoded) => {
+
         if (err) {
           return req;
         }
