@@ -20,13 +20,16 @@ module.exports = {
       throw new AuthenticationError('User not found');
     }
     console.log('token', refreshToken);
-    console.log('refresh token: ', user.refreshToken);
+    console.log(
+      'refresh token: ',
+      user.refreshToken.filter((token) => token !== refreshToken)
+    );
     const newRefreshTokenArray = user.refreshToken.filter(
       (token) => token !== refreshToken
     );
 
     await User.findOneAndUpdate(
-      { refreshToken: token },
+      { refreshToken: refreshToken },
       { $set: { refreshToken: newRefreshTokenArray } },
       { new: true }
     );
