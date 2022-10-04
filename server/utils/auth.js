@@ -7,7 +7,6 @@ require('dotenv').config();
 
 module.exports = {
   authMiddleware: function ({ req }) {
-    console.log("headers", req.headers);
     let token = req.headers.authorization || req.headers.Authorization;
 
     if (!token) {
@@ -47,7 +46,7 @@ module.exports = {
   },
   credentials: (req, res, next) => {
     const origin = req.headers.origin;
-    console.log("origin is: ", origin);
+
     if (allowedOrigins.includes(origin)) {
       res.header('Access-Control-Allow-Credentials', true);
     }
