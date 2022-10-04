@@ -1,4 +1,6 @@
 import { Link } from "react-router-dom";
+import { useMutation } from "@apollo/client";
+import { LIKE_POST } from "../../utils/mutations";
 
 interface isLastEl extends Post {
   isLastEl: boolean;
@@ -14,6 +16,32 @@ export const Post = ({
   isLastEl,
 }: isLastEl) => {
   const comment = commentCount === 1 ? "comment" : "comments";
+  const [likePost] = useMutation(LIKE_POST);
+
+  const likePostHandler = async () => {
+    try {
+      await likePost({
+        variables: {
+          postId: _id,
+        },
+        // update the likeCount in the post cache
+        update(cache, { data: { likes } }) {
+          const userLikes = likes.message === "Like added!" ? +1 : -1;
+          cache.modify({
+            id: `Post:${_id}`,
+            fields: {
+              likeCount() {
+                return likeCount + userLikes;
+              },
+            },
+          });
+        },
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   return (
     <article
       className={`${
@@ -57,8 +85,8 @@ export const Post = ({
           <span className="-m-1 rounded-full border-2 border-white dark:border-slate-800">
             <i
               className={`${
-                likeCount > 0 && "bg-blue-600 p-2 rounded-full"
-              } fa-solid fa-thumbs-up`}
+                likeCount > 0 && "bg-blue-600 rounded-full"
+              } fa-solid fa-thumbs-up p-2`}
             ></i>
           </span>
           <span className="text-lg font-bold ml-3">{likeCount}</span>
@@ -69,7 +97,10 @@ export const Post = ({
         </div>
         <div className="mt-6 mb-6 h-px bg-slate-500"></div>
         <div className="flex items-center justify-between mb-6">
-          <button className="py-2 px-4 font-medium hover:bg-slate-50 dark:hover:bg-slate-700 rounded-lg">
+          <button
+            onClick={likePostHandler}
+            className="py-2 px-4 font-medium hover:bg-slate-50 dark:hover:bg-slate-700 rounded-lg"
+          >
             <i className="fa-solid fa-thumbs-up"></i> Like
           </button>
           <button className="py-2 px-4 font-medium hover:bg-slate-50 dark:hover:bg-slate-700 rounded-lg">
@@ -82,7 +113,7 @@ export const Post = ({
 
         <div className="relative">
           <input
-            className="pt-2 pb-2 pl-3 w-full h-11 bg-slate-100 dark:bg-slate-600 rounded-lg placeholder:text-slate-600 dark:placeholder:text-slate-300 font-medium pr-20"
+            className="pt-2 pb-2 pl-3 w-full h-11 bg-slate-100 dark:bg-slate-700 rounded-lg placeholder:text-slate-600 dark:placeholder:text-slate-300 font-medium pr-20"
             type="text"
             placeholder="Write a comment"
           />

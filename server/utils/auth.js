@@ -1,7 +1,6 @@
 const jwt = require('jsonwebtoken');
 const allowedOrigins = require('../config/allowedOrigins');
 let expiration = '15m';
-const { getCookies } = require('./cookies');
 
 require('dotenv').config();
 

@@ -41,7 +41,7 @@ module.exports = {
 
       const payload = ticket.getPayload();
       const { email, given_name, family_name, picture } = payload;
-      console.log(payload);
+    
       const user = await User.findOne({ email: email });
 
       if (!user) {
