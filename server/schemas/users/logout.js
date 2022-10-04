@@ -19,7 +19,7 @@ module.exports = {
     if (!user) {
       throw new AuthenticationError('User not found');
     }
-    console.log('token', token);
+    console.log('token', refreshToken);
     console.log('refresh token: ', user.refreshToken);
     const newRefreshTokenArray = user.refreshToken.filter(
       (token) => token !== refreshToken
