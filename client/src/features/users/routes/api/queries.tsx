@@ -68,3 +68,43 @@ export const GET_ME = gql`
     }
   }
 `;
+
+export const FEED = gql`
+  query Feed {
+    feed {
+      postText
+      _id
+      likeCount
+      commentCount
+      createdAtFormatted
+      postAuthor {
+        given_name
+        family_name
+        email
+        profileUrl
+        isAdmin
+        isVerified
+        _id
+        fullName
+        friends {
+          _id
+          fullName
+        }
+      }
+      comments {
+        _id
+        commentText
+        commentAuthor {
+          _id
+          fullName
+          createdAtFormatted
+        }
+      }
+      likes {
+        _id
+        fullName
+        profileUrl
+      }
+    }
+  }
+`;

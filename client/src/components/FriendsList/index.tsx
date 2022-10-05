@@ -12,8 +12,8 @@ export const FriendsList = ({
   onClick,
 }: isLastEl) => {
   return (
-    <div className="flex justify-center items-center">
-      <div className="w-full flex xl:w-1/2 xl:mr-3 mb-3 xl:mb-0">
+    <div className="flex flex-wrap justify-center items-center">
+      <div className="w-7/12 flex md:w-full md:mb-3 xl:w-7/12 xl:mr-3 xl:mb-0">
         <img
           className="w-12 h-12 rounded-full object-cover mr-3 border-2 border-slate-500 bg-gradient-to-r from-blue-600 to to-red-500"
           src={`${profileUrl}`}

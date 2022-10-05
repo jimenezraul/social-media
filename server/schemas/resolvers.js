@@ -1,5 +1,5 @@
-const { userQuery, userMutation } = require('./users');
-const { postQuery, postMutation } = require('./posts');
+const { userQuery, userMutation } = require('../controllers/users');
+const { postQuery, postMutation, postSubscription } = require('../controllers/posts');
 
 const resolvers = {
   Query: {
@@ -9,7 +9,7 @@ const resolvers = {
   Mutation: {
     ...userMutation,
     ...postMutation,
-  },
+  }
 };
 
 module.exports = resolvers;

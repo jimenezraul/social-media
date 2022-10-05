@@ -1,9 +1,11 @@
 import { Link } from "react-router-dom";
 import { useMutation } from "@apollo/client";
 import { LIKE_POST } from "../../utils/mutations";
+import { useState } from "react";
 
 interface isLastEl extends Post {
   isLastEl: boolean;
+  isProfile?: boolean;
 }
 export const Post = ({
   _id,
@@ -14,7 +16,9 @@ export const Post = ({
   postText,
   commentCount,
   isLastEl,
+  isProfile,
 }: isLastEl) => {
+  const [isOpen, setIsOpen] = useState(false);
   const comment = commentCount === 1 ? "comment" : "comments";
   const [likePost] = useMutation(LIKE_POST);
 
@@ -42,18 +46,37 @@ export const Post = ({
     }
   };
 
+  const handleDelete = () => {
+    console.log(_id);
+  };
+
   return (
     <article
       className={`${
         isLastEl && "mb-24 md:mb-4"
       } border border-slate-700 mb-4 break-inside rounded-lg bg-slate-800 flex flex-col bg-clip-border`}
     >
-      <div className="flex p-6 items-center justify-between">
+      <div className="relative flex p-6 items-center justify-between">
+        {isProfile && (
+          <>
+            <i
+              onClick={() => setIsOpen(!isOpen)}
+              className="absolute cursor-pointer text-xl top-9 right-8 text-slate-400 fa-solid fa-ellipsis-vertical"
+            ></i>
+            {isOpen && (
+              <div className="absolute top-16 right-7 flex bg-slate-800 border border-slate-600 rounded-lg p-5">
+                <button onClick={handleDelete} className="text-red-400 hover:text-red-500">
+                  <i className="text-xl fa-solid fa-trash"></i>
+                </button>
+              </div>
+            )}
+          </>
+        )}
         <div className="flex w-full border-b border-slate-500 pb-3">
           <Link className="inline-block mr-4" to={`/user/${_id}`}>
             <img
               className="rounded-full max-w-none w-14 h-14 border-2 border-slate-500 bg-gradient-to-r from-blue-600 to to-red-500"
-              src={`${postAuthor.profileUrl}`}
+              src={`${postAuthor?.profileUrl}`}
               alt=""
             />
           </Link>
@@ -63,7 +86,7 @@ export const Post = ({
                 className="inline-block text-lg font-bold mr-2"
                 to={`/user/${_id}`}
               >
-                {postAuthor.fullName}
+                {postAuthor?.fullName}
               </Link>
             </div>
             <div className="text-slate-500 dark:text-slate-300">

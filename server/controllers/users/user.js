@@ -42,6 +42,8 @@ module.exports = {
         select: '-__v -password',
       });
 
+    userData.posts.sort((a, b) => b.createdAt - a.createdAt);
+    
     return userData;
   },
   // Query for all users
@@ -55,7 +57,7 @@ module.exports = {
       .populate('posts')
       .populate('friends')
       .populate('friendRequests')
-      .populate("blockedUsers");
+      .populate('blockedUsers');
   },
 
   // Query for a single user by id

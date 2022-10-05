@@ -1,15 +1,20 @@
 import { useState, useEffect } from "react";
 import { useQuery } from "@apollo/client";
-import { GET_ME } from "./api/queries";
+import { GET_ME, FEED } from "./api/queries";
 import { Post } from "../../../components/Posts";
 import { FriendsList } from "../../../components/FriendsList";
 import { MeCard } from "../../../components/MeCard";
 
-export const Profile = () => {
+export const Feed = () => {
   const [friends, setFriends] = useState<Friends[]>([]);
   const [me, setMe] = useState<User>();
   const { data, loading, error } = useQuery(GET_ME);
- 
+  const {
+    data: feedData,
+    loading: feedLoading,
+    error: feedError,
+  } = useQuery(FEED, { fetchPolicy: "no-cache" });
+
   useEffect(() => {
     if (loading) return;
     if (error) return;
@@ -26,9 +31,9 @@ export const Profile = () => {
             <MeCard {...Object(me)} />
           </div>
           <div className="flex flex-col flex-1 w-full md:w-5/12 xl:w-4/12 px-3 h-full overflow-y-scroll no-scrollbar">
-            {me?.posts.map((post: Post, index) => {
-              const isLastEl = index === me?.posts.length - 1;
-              return <Post key={index} {...post} isLastEl={isLastEl} isProfile />;
+            {feedData?.feed.map((post: Post, index: any) => {
+              const isLastEl = index === feedData?.feed.length - 1;
+              return <Post key={index} {...post} isLastEl={isLastEl} />;
             })}
           </div>
           <div className="hidden lg:block md:w-3/12 xl:w-4/12 px-3">

@@ -34,7 +34,7 @@ module.exports = {
           },
         ],
       })
-      .populate("likes");
+      .populate('likes');
   },
 
   // get a single post by id
@@ -46,41 +46,46 @@ module.exports = {
     }
 
     return Post.findOne({ _id: postId })
-    .select('-__v')
-    .populate({
-      path: 'postAuthor',
-      select: '-__v -password',
-    })
-    .populate({
-      path: 'comments',
-      populate: [
-        {
-          path: 'commentAuthor',
-          model: 'User',
-        },
-        {
-          path: 'likes',
-          model: 'User',
-        },
-      ],
-    })
-    .populate("likes");
+      .select('-__v')
+      .populate({
+        path: 'postAuthor',
+        select: '-__v -password',
+      })
+      .populate({
+        path: 'comments',
+        populate: [
+          {
+            path: 'commentAuthor',
+            model: 'User',
+          },
+          {
+            path: 'likes',
+            model: 'User',
+          },
+        ],
+      })
+      .populate('likes');
   },
 
   // add a post
   addPost: async (parent, args, context) => {
-    console.log("context", context.user);
     if (!context.user) {
       throw new AuthenticationError('You need to be logged in!');
     }
 
     const user = context.user;
+
     const post = await Post.create({
       ...args,
       postAuthor: user._id,
     });
 
-    await User.findByIdAndUpdate(
+    const newPost = await Post.findOne({ _id: post._id }).populate({
+      path: 'postAuthor',
+      select: '-__v -password',
+    });
+  
+    const newposts = await User.findByIdAndUpdate(
       { _id: context.user._id },
       { $push: { posts: post._id } },
       { new: true }
@@ -101,16 +106,15 @@ module.exports = {
     const post = await Post.findOne({ _id: postId });
 
     if (post.postAuthor.toString() !== context.user._id) {
-      throw new ForbiddenError(
-        'You are not authorized to update this post!'
-      );
+      throw new ForbiddenError('You are not authorized to update this post!');
     }
 
     return (updatedPost = await Post.findOneAndUpdate(
       { _id: postId },
       { postText },
       { new: true, runValidators: true }
-    ).populate({
+    )
+      .populate({
         path: 'postAuthor',
         select: '-__v -password',
       })
@@ -127,7 +131,7 @@ module.exports = {
           },
         ],
       })
-      .populate("likes"));
+      .populate('likes'));
   },
 
   // delete a post
@@ -148,9 +152,7 @@ module.exports = {
       post.postAuthor.toString() !== context.user._id.toString() &&
       !context.user.isAdmin
     ) {
-      throw new ForbiddenError(
-        'You are not authorized to delete this post!'
-      );
+      throw new ForbiddenError('You are not authorized to delete this post!');
     }
 
     const deletedPost = await Post.findOneAndDelete({ _id: postId });
@@ -159,5 +161,9 @@ module.exports = {
       success: true,
       message: 'Post deleted!',
     };
+  },
+
+  newPost: {
+    subscribe: () => pubsub.asyncIterator(['NEW_POST']),
   },
 };

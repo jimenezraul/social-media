@@ -5,14 +5,10 @@ import { lazyImport } from "../utils/lazyImports";
 import Navbar from "../components/Navbar";
 import { Dock } from "../components/Dock";
 
-const { Profile } = lazyImport(
-  () => import("../features/users"),
-  "Profile"
-);
-const {Friends} = lazyImport(
-  () => import("../features/users"),
-  "Friends"
-);
+const { Profile } = lazyImport(() => import("../features/users"), "Profile");
+const { Friends } = lazyImport(() => import("../features/users"), "Friends");
+
+const { Feed } = lazyImport(() => import("../features/users"), "Feed");
 
 const Protected = () => {
   return (
@@ -39,7 +35,11 @@ export const protectedRoutes = [
     children: [
       {
         path: "/",
-        element: <Profile />,
+        element: <Navigate to="/feed" />,
+      },
+      {
+        path: "/feed",
+        element: <Feed />,
       },
       {
         path: "/profile",
