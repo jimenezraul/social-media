@@ -9,7 +9,7 @@ export const Profile = () => {
   const [friends, setFriends] = useState<Friends[]>([]);
   const [me, setMe] = useState<User>();
   const { data, loading, error } = useQuery(GET_ME);
- 
+
   useEffect(() => {
     if (loading) return;
     if (error) return;
@@ -26,10 +26,20 @@ export const Profile = () => {
             <MeCard {...Object(me)} />
           </div>
           <div className="flex flex-col flex-1 w-full md:w-5/12 xl:w-4/12 px-3 h-full overflow-y-scroll no-scrollbar">
-            {me?.posts.map((post: Post, index) => {
-              const isLastEl = index === me?.posts.length - 1;
-              return <Post key={index} {...post} isLastEl={isLastEl} isProfile />;
-            })}
+            {me?.posts.length ? (
+              me?.posts.map((post: Post, index) => {
+                const isLastEl = index === me?.posts.length - 1;
+                return (
+                  <Post key={index} {...post} isLastEl={isLastEl} isProfile />
+                );
+              })
+            ) : (
+              <div className="h-20 border border-slate-700 mb-4 break-inside rounded-lg bg-slate-800 flex flex-col justify-center bg-clip-border">
+                <p className="text-lg font-semibold text-center text-slate-300">
+                  You have no posts yet!
+                </p>
+              </div>
+            )}
           </div>
           <div className="hidden lg:block md:w-3/12 xl:w-4/12 px-3">
             <div className="bg-slate-800 rounded-lg shadow-xl p-5 border border-slate-700">

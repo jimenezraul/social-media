@@ -8,7 +8,7 @@ module.exports = {
   // refresh access token
   refreshToken: async (parent, { id }, context) => {
     const refresh_token = context.headers.cookie?.split('refresh_token=')[1];
- 
+    
     if (!refresh_token) {
       throw new AuthenticationError('No refresh token found');
     }
@@ -17,15 +17,17 @@ module.exports = {
     const isValidToken = validToken(refresh_token);
 
     const user = await User.findOne({ refreshToken: refresh_token });
-
+  
     if (!user) {
+      console.log("something went wrong");
       clearCookie(context.res, 'refresh_token');
-      throw new AuthenticationError('r User not found');
+      throw new AuthenticationError('User not found');
     }
 
     if (user._id.toString() !== id) {
+      console.log("something's wrong");
       clearCookie(context.res, 'refresh_token');
-      throw new AuthenticationError('User not found');
+      throw new AuthenticationError('r User not found');
     }
 
     const newRefreshTokenArray = user.refreshToken.filter(

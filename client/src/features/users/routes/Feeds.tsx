@@ -1,27 +1,36 @@
 import { useState, useEffect } from "react";
-import { useQuery } from "@apollo/client";
-import { GET_ME, FEED } from "./api/queries";
+import { useQuery, useLazyQuery } from "@apollo/client";
+import { FEED, GET_ME } from "./api/queries";
 import { Post } from "../../../components/Posts";
 import { FriendsList } from "../../../components/FriendsList";
 import { MeCard } from "../../../components/MeCard";
+import { AddPost } from "../../../components/AddPost";
 
 export const Feed = () => {
+  const [Me, { data: meData, loading: meLoading, error: meError }] =
+    useLazyQuery(GET_ME);
+  const [feed, setFeed] = useState<Post[]>([]);
   const [friends, setFriends] = useState<Friends[]>([]);
-  const [me, setMe] = useState<User>();
-  const { data, loading, error } = useQuery(GET_ME);
+
   const {
     data: feedData,
     loading: feedLoading,
     error: feedError,
-  } = useQuery(FEED, { fetchPolicy: "no-cache" });
+  } = useQuery(FEED);
 
   useEffect(() => {
-    if (loading) return;
-    if (error) return;
-    if (!data) return;
-    setMe(data.me);
-    setFriends(data.me.friends);
-  }, [data, loading, error]);
+    if (feedLoading) return;
+    if (feedError) return;
+    if (!feedData) return;
+    setFeed(feedData.feed);
+    Me();
+    if (meLoading) return;
+    if (meError) return;
+    if (!meData) return;
+    setFriends(meData.me.friends);
+  }, [feedData, feedLoading, feedError, Me, meData, meLoading, meError]);
+
+  const me = meData ? meData.me : {};
 
   return (
     <div className="flex flex-1 text-white">
@@ -31,7 +40,8 @@ export const Feed = () => {
             <MeCard {...Object(me)} />
           </div>
           <div className="flex flex-col flex-1 w-full md:w-5/12 xl:w-4/12 px-3 h-full overflow-y-scroll no-scrollbar">
-            {feedData?.feed.map((post: Post, index: any) => {
+            <AddPost me={me} />
+            {feed?.map((post: Post, index: any) => {
               const isLastEl = index === feedData?.feed.length - 1;
               return <Post key={index} {...post} isLastEl={isLastEl} />;
             })}
@@ -44,7 +54,7 @@ export const Feed = () => {
                 </p>
               )}
               {friends?.map((friend: Friends, index: number) => {
-                const isLastEl = index === friends.length - 1;
+                const isLastEl = index === me.friends.length - 1;
                 return (
                   <FriendsList
                     key={index}

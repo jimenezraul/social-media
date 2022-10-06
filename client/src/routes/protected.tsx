@@ -35,7 +35,7 @@ export const protectedRoutes = [
     children: [
       {
         path: "/",
-        element: <Navigate to="/feed" />,
+        element: <Feed />,
       },
       {
         path: "/feed",

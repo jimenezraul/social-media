@@ -26,3 +26,8 @@ code {
   -ms-overflow-style: none;  /* IE and Edge */
   scrollbar-width: none;  /* Firefox */
 }
+
+.bg-default {
+  /* gradiant color */
+  background: linear-gradient(90deg, rgb(54, 54, 255) 20%, rgb(201, 61, 61) 100%);
+}

@@ -1,7 +1,9 @@
 import { Link } from "react-router-dom";
 import { useMutation } from "@apollo/client";
 import { LIKE_POST } from "../../utils/mutations";
-import { useState } from "react";
+import { useState, useRef } from "react";
+import { useOutside } from "../../utils/useOutside";
+import { DELETE_POST } from "../../utils/mutations";
 
 interface isLastEl extends Post {
   isLastEl: boolean;
@@ -18,9 +20,11 @@ export const Post = ({
   isLastEl,
   isProfile,
 }: isLastEl) => {
+  const menuRef = useRef(null);
   const [isOpen, setIsOpen] = useState(false);
   const comment = commentCount === 1 ? "comment" : "comments";
   const [likePost] = useMutation(LIKE_POST);
+  const [deletePost] = useMutation(DELETE_POST);
 
   const likePostHandler = async () => {
     try {
@@ -46,8 +50,17 @@ export const Post = ({
     }
   };
 
+  useOutside(menuRef, setIsOpen);
+
   const handleDelete = () => {
-    console.log(_id);
+    deletePost({
+      variables: {
+        postId: _id,
+      },
+      update(cache) {
+        cache.evict({ id: `Post:${_id}` });
+      },
+    });
   };
 
   return (
@@ -64,8 +77,14 @@ export const Post = ({
               className="absolute cursor-pointer text-xl top-9 right-8 text-slate-400 fa-solid fa-ellipsis-vertical"
             ></i>
             {isOpen && (
-              <div className="absolute top-16 right-7 flex bg-slate-800 border border-slate-600 rounded-lg p-5">
-                <button onClick={handleDelete} className="text-red-400 hover:text-red-500">
+              <div
+                ref={menuRef}
+                className="absolute top-16 right-7 flex bg-slate-800 border border-slate-600 rounded-lg p-5"
+              >
+                <button
+                  onClick={handleDelete}
+                  className="text-red-400 hover:text-red-500"
+                >
                   <i className="text-xl fa-solid fa-trash"></i>
                 </button>
               </div>
@@ -78,6 +97,7 @@ export const Post = ({
               className="rounded-full max-w-none w-14 h-14 border-2 border-slate-500 bg-gradient-to-r from-blue-600 to to-red-500"
               src={`${postAuthor?.profileUrl}`}
               alt=""
+              referrerPolicy="no-referrer"
             />
           </Link>
           <div className="flex flex-col">

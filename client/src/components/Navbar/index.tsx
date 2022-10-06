@@ -1,13 +1,15 @@
 import { Link } from "react-router-dom";
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { useAppSelector } from "../../app/hooks";
 import { selectUser, user_logout } from "../../features/users/userSlice";
 import { useAppDispatch } from "../../app/hooks";
 import { useMutation } from "@apollo/client";
 import { LOGOUT } from "../../utils/mutations";
 import { Dropdown } from "../Dropdown";
+import { useOutside } from "../../utils/useOutside";
 
 const Navbar = () => {
+  const menuRef = useRef(null);
   const [isOpen, setIsOpen] = useState(false);
   const dispatch = useAppDispatch();
   const [currentPath, setCurrentPath] = useState<String>(
@@ -26,6 +28,8 @@ const Navbar = () => {
       path: "/profile",
     },
   ];
+
+  useOutside(menuRef, setIsOpen);
 
   const logoutUser = async () => {
     dispatch(user_logout());
@@ -81,7 +85,7 @@ const Navbar = () => {
           {/* <button type="button" onClick={logoutUser} className="text-white">
             Logout
           </button> */}
-          {isOpen && <Dropdown logoutUser={logoutUser} />}
+          {isOpen && <Dropdown menuRef={menuRef} logoutUser={logoutUser} />}
         </div>
       </div>
     </nav>
