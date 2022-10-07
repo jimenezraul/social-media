@@ -58,6 +58,23 @@ export const LIKE_POST = gql`
   }
 `;
 
+export const ADD_POST = gql`
+  mutation AddPost($postText: String!) {
+    addPost(postText: $postText) {
+      _id
+      postText
+      postAuthor {
+        _id
+        fullName
+        profileUrl
+      }
+      createdAtFormatted
+      likeCount
+      commentCount
+    }
+  }
+`;
+
 export const DELETE_POST = gql`
   mutation DeletePost($postId: ID!) {
     deletePost(postId: $postId) {

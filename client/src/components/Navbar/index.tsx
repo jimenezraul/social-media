@@ -74,7 +74,7 @@ const Navbar = () => {
             })}
           </div>
         </div>
-        <div className="flex relative">
+        <div className="flex relative" ref={menuRef}>
           <img
             className="mr-2 h-10 bg-gradient-to-r from-blue-600 to to-red-500 rounded-full p-0.5"
             src={`${profileUrl}`}
@@ -85,7 +85,7 @@ const Navbar = () => {
           {/* <button type="button" onClick={logoutUser} className="text-white">
             Logout
           </button> */}
-          {isOpen && <Dropdown menuRef={menuRef} logoutUser={logoutUser} />}
+          {isOpen && <Dropdown logoutUser={logoutUser} />}
         </div>
       </div>
     </nav>

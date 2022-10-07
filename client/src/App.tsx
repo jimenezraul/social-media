@@ -40,15 +40,15 @@ const errorLink = onError(
                 return;
               })
             ).flatMap((accessToken) => {
-                const oldHeaders = operation.getContext().headers;
-                operation.setContext({
-                  headers: {
-                    ...oldHeaders,
-                    authorization: `Bearer ${accessToken}`,
-                  },
-                });
-                return forward(operation);
+              const oldHeaders = operation.getContext().headers;
+              operation.setContext({
+                headers: {
+                  ...oldHeaders,
+                  authorization: `Bearer ${accessToken}`,
+                },
               });
+              return forward(operation);
+            });
         }
       }
     }

@@ -4,6 +4,8 @@ import { LIKE_POST } from "../../utils/mutations";
 import { useState, useRef } from "react";
 import { useOutside } from "../../utils/useOutside";
 import { DELETE_POST } from "../../utils/mutations";
+import { useAppSelector } from "../../app/hooks";
+import { selectUser } from "../../features//users/userSlice";
 
 interface isLastEl extends Post {
   isLastEl: boolean;
@@ -19,12 +21,14 @@ export const Post = ({
   commentCount,
   isLastEl,
   isProfile,
+  likes,
 }: isLastEl) => {
   const menuRef = useRef(null);
   const [isOpen, setIsOpen] = useState(false);
   const comment = commentCount === 1 ? "comment" : "comments";
   const [likePost] = useMutation(LIKE_POST);
   const [deletePost] = useMutation(DELETE_POST);
+  const user = useAppSelector(selectUser).user as User;
 
   const likePostHandler = async () => {
     try {
@@ -33,13 +37,18 @@ export const Post = ({
           postId: _id,
         },
         // update the likeCount in the post cache
-        update(cache, { data: { likes } }) {
-          const userLikes = likes.message === "Like added!" ? +1 : -1;
+        update(cache, { data: { likes: userLike } }) {
+          const userLikes = userLike.message === "Like added!" ? +1 : -1;
           cache.modify({
             id: `Post:${_id}`,
             fields: {
               likeCount() {
                 return likeCount + userLikes;
+              },
+              likes() {
+                return userLike.message === "Like added!"
+                  ? [...likes, user]
+                  : likes.filter((like: any) => like._id !== user._id);
               },
             },
           });
@@ -61,6 +70,8 @@ export const Post = ({
         cache.evict({ id: `Post:${_id}` });
       },
     });
+
+    setIsOpen(false);
   };
 
   return (
@@ -73,12 +84,12 @@ export const Post = ({
         {isProfile && (
           <>
             <i
+            ref={menuRef}
               onClick={() => setIsOpen(!isOpen)}
               className="absolute cursor-pointer text-xl top-9 right-8 text-slate-400 fa-solid fa-ellipsis-vertical"
             ></i>
             {isOpen && (
               <div
-                ref={menuRef}
                 className="absolute top-16 right-7 flex bg-slate-800 border border-slate-600 rounded-lg p-5"
               >
                 <button
@@ -133,7 +144,30 @@ export const Post = ({
             ></i>
           </span>
           <span className="text-lg font-bold ml-3">{likeCount}</span>
-
+          {/* images of the friends that like the post */}
+          {likes.length > 0 && (
+            <div className="ml-3 flex items-center">
+              {likes.map((like, index) => {
+                if (index < 3) {
+                  return (
+                    <img
+                      key={like._id}
+                      className="w-8 h-8 rounded-full border-2 border-slate-500 bg-gradient-to-r from-blue-600 to to-red-500"
+                      src={`${like.profileUrl}`}
+                      alt=""
+                      referrerPolicy="no-referrer"
+                    />
+                  );
+                }
+                return null;
+              })}
+              {likes.length > 3 && (
+                <span className="text-slate-500 dark:text-slate-300 ml-2">
+                  +{likes.length - 3}
+                </span>
+              )}
+            </div>
+          )}
           <Link className="ml-auto" to="#">
             {commentCount} {comment}
           </Link>
