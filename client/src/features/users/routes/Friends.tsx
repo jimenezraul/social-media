@@ -6,14 +6,12 @@ import { Search } from "../../../components/Search";
 
 export const Friends = () => {
   const [friends, setFriends] = useState<Friends[]>([]);
-  const [me, setMe] = useState<User>();
   const { data, loading, error } = useQuery(GET_ME);
 
   useEffect(() => {
     if (loading) return;
     if (error) return;
     if (!data) return;
-    setMe(data.me);
     setFriends(data.me.friends);
   }, [data, loading, error]);
 

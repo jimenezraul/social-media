@@ -146,13 +146,13 @@ export const Post = ({
           <span className="text-lg font-bold ml-3">{likeCount}</span>
           {/* images of the friends that like the post */}
           {likes.length > 0 && (
-            <div className="ml-3 flex items-center">
+            <div className="ml-3 flex items-center relative w-1/2">
               {likes.map((like, index) => {
                 if (index < 3) {
                   return (
                     <img
                       key={like._id}
-                      className="w-8 h-8 rounded-full border-2 border-slate-500 bg-gradient-to-r from-blue-600 to to-red-500"
+                      className={`absolute left-${index * 4}  w-8 h-8 rounded-full border border-slate-500 bg-default`}
                       src={`${like.profileUrl}`}
                       alt=""
                       referrerPolicy="no-referrer"
