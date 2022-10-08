@@ -84,14 +84,12 @@ export const Post = ({
         {isProfile && (
           <>
             <i
-            ref={menuRef}
+              ref={menuRef}
               onClick={() => setIsOpen(!isOpen)}
               className="absolute cursor-pointer text-xl top-9 right-8 text-slate-400 fa-solid fa-ellipsis-vertical"
             ></i>
             {isOpen && (
-              <div
-                className="absolute top-16 right-7 flex bg-slate-800 border border-slate-600 rounded-lg p-5"
-              >
+              <div className="absolute top-16 right-7 flex bg-slate-800 border border-slate-600 rounded-lg p-5">
                 <button
                   onClick={handleDelete}
                   className="text-red-400 hover:text-red-500"
@@ -148,11 +146,15 @@ export const Post = ({
           {likes.length > 0 && (
             <div className="ml-3 flex items-center relative w-1/2">
               {likes.map((like, index) => {
+                console.log(index === 0 ? index : index + 2);
+                console.log({ postText });
                 if (index < 3) {
                   return (
                     <img
                       key={like._id}
-                      className={`absolute left-${index * 4}  w-8 h-8 rounded-full border border-slate-500 bg-default`}
+                      className={`left-${
+                        index * 2
+                      } absolute w-8 h-8 rounded-full border border-slate-500 bg-default`}
                       src={`${like.profileUrl}`}
                       alt=""
                       referrerPolicy="no-referrer"

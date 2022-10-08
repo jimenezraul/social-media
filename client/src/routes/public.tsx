@@ -1,7 +1,7 @@
 import { Suspense } from "react";
 import { lazyImport } from "../utils/lazyImports";
 import { Outlet, Navigate } from "react-router-dom";
-import { Landing } from "../features/misc";
+import { Landing } from "../features/home";
 
 const { Login } = lazyImport(() => import("../features/users"), "Login");
 const { Register } = lazyImport(() => import("../features/users"), "Register");
