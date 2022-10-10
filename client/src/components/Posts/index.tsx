@@ -3,7 +3,7 @@ import { useMutation } from "@apollo/client";
 import { LIKE_POST } from "../../utils/mutations";
 import { useState, useRef } from "react";
 import { useOutside } from "../../utils/useOutside";
-import { DELETE_POST } from "../../utils/mutations";
+import { DELETE_POST, ADD_COMMENT } from "../../utils/mutations";
 import { useAppSelector } from "../../app/hooks";
 import { selectUser } from "../../features//users/userSlice";
 
@@ -23,12 +23,16 @@ export const Post = ({
   isProfile,
   likes,
 }: isLastEl) => {
-  const menuRef = useRef(null);
+  const commentRef = useRef() as React.MutableRefObject<HTMLInputElement>;
+  const menuRef = useRef() as React.MutableRefObject<HTMLInputElement>;
   const [isOpen, setIsOpen] = useState(false);
   const comment = commentCount === 1 ? "comment" : "comments";
   const [likePost] = useMutation(LIKE_POST);
   const [deletePost] = useMutation(DELETE_POST);
   const user = useAppSelector(selectUser).user as User;
+  const [AddComment] = useMutation(ADD_COMMENT);
+
+  useOutside(menuRef, setIsOpen);
 
   const likePostHandler = async () => {
     try {
@@ -59,8 +63,6 @@ export const Post = ({
     }
   };
 
-  useOutside(menuRef, setIsOpen);
-
   const handleDelete = () => {
     deletePost({
       variables: {
@@ -74,6 +76,31 @@ export const Post = ({
     setIsOpen(false);
   };
 
+  const addCommentHandler = () => {
+    // console.log values from the comment form
+    console.log(commentRef.current.value);
+    // add the comment to the database
+    AddComment({
+      variables: {
+        postId: _id,
+        commentText: commentRef.current.value,
+      },
+      // update the commentCount in the post cache
+      update(cache, { data: { addComment: comment } }) {
+        cache.modify({
+          id: `Post:${_id}`,
+          fields: {
+            commentCount() {
+              return commentCount + 1;
+            },
+          },
+        });
+      },
+    });
+    // clear the comment form
+    commentRef.current.value = "";
+  };
+
   return (
     <article
       className={`${
@@ -81,25 +108,26 @@ export const Post = ({
       } border border-slate-700 mb-4 break-inside rounded-lg bg-slate-800 flex flex-col bg-clip-border`}
     >
       <div className="relative flex p-6 items-center justify-between">
-        {isProfile && (
-          <>
-            <i
-              ref={menuRef}
-              onClick={() => setIsOpen(!isOpen)}
-              className="absolute cursor-pointer text-xl top-9 right-8 text-slate-400 fa-solid fa-ellipsis-vertical"
-            ></i>
-            {isOpen && (
-              <div className="absolute top-16 right-7 flex bg-slate-800 border border-slate-600 rounded-lg p-5">
-                <button
-                  onClick={handleDelete}
-                  className="text-red-400 hover:text-red-500"
-                >
-                  <i className="text-xl fa-solid fa-trash"></i>
-                </button>
-              </div>
-            )}
-          </>
-        )}
+        <div ref={menuRef}>
+          {isProfile && (
+            <>
+              <i
+                onClick={() => setIsOpen(!isOpen)}
+                className="p-3 absolute cursor-pointer text-xl top-6 right-6 text-slate-400 fa-solid fa-ellipsis-vertical"
+              ></i>
+              {isOpen && (
+                <div className="absolute top-16 right-7 flex bg-slate-800 border border-slate-600 rounded-lg p-5">
+                  <button
+                    onClick={handleDelete}
+                    className="text-red-400 hover:text-red-500"
+                  >
+                    <i className="text-xl fa-solid fa-trash"></i>
+                  </button>
+                </div>
+              )}
+            </>
+          )}
+        </div>
         <div className="flex w-full border-b border-slate-500 pb-3">
           <Link className="inline-block mr-4" to={`/user/${_id}`}>
             <img
@@ -146,15 +174,13 @@ export const Post = ({
           {likes.length > 0 && (
             <div className="ml-3 flex items-center relative w-1/2">
               {likes.map((like, index) => {
-                console.log(index === 0 ? index : index + 2);
-                console.log({ postText });
                 if (index < 3) {
                   return (
                     <img
                       key={like._id}
-                      className={`left-${
+                      className={`absolute w-8 h-8 left-${
                         index * 2
-                      } absolute w-8 h-8 rounded-full border border-slate-500 bg-default`}
+                      } rounded-full border border-slate-500 bg-default`}
                       src={`${like.profileUrl}`}
                       alt=""
                       referrerPolicy="no-referrer"
@@ -192,11 +218,15 @@ export const Post = ({
 
         <div className="relative">
           <input
+            ref={commentRef}
             className="pt-2 pb-2 pl-3 w-full h-11 bg-slate-100 dark:bg-slate-700 rounded-lg placeholder:text-slate-600 dark:placeholder:text-slate-300 font-medium pr-20"
             type="text"
             placeholder="Write a comment"
           />
-          <span className="flex absolute right-3 top-2/4 -mt-3 items-center">
+          <span
+            onClick={addCommentHandler}
+            className="flex absolute right-3 top-2/4 -mt-3 items-center"
+          >
             <svg
               className="fill-blue-500 dark:fill-slate-50 h-6 cursor-pointer"
               viewBox="0 0 24 24"
