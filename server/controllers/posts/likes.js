@@ -1,5 +1,8 @@
 const { AuthenticationError } = require('apollo-server-express');
 const { Post } = require('../../models');
+const { PubSub } = require('graphql-subscriptions');
+
+const pubsub = new PubSub();
 
 module.exports = {
   likes: async (parent, { postId }, context) => {
@@ -22,6 +25,8 @@ module.exports = {
         new: true,
       }
     );
+
+    pubsub.publish('NEW_LIKE', { newLikeSubscription: post });
 
     return {
       success: true,

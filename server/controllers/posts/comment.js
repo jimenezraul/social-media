@@ -1,5 +1,8 @@
 const { AuthenticationError } = require('apollo-server-express');
 const { Post, Comment } = require('../../models');
+const { PubSub } = require('graphql-subscriptions');
+
+const pubsub = new PubSub();
 
 module.exports = {
   addComment: async (parent, { postId, commentText }, context) => {
@@ -33,6 +36,9 @@ module.exports = {
       }
     );
 
+    // publish the new comment to the NEW_COMMENT subscription
+    pubsub.publish('NEW_COMMENT', { newCommentSubscription: comment });
+
     return comment;
   },
 
@@ -56,7 +62,6 @@ module.exports = {
 
   // delete a comment
   deleteComment: async (parent, { postId, commentId }, context) => {
-   
     if (!context.user) {
       throw new AuthenticationError('You need to be logged in!');
     }

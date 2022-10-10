@@ -98,6 +98,12 @@ const typeDefs = gql`
     forgotPassword(email: String!): Message
     resendVerificationEmail(email: String!): Message
   }
+
+  type Subscription {
+    newPostSubscription: Post
+    newCommentSubscription(postId: ID!): Comment
+    newLikeSubscription(postId: ID!): Post
+  }
 `;
 
 module.exports = typeDefs;

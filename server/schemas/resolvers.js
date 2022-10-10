@@ -9,7 +9,10 @@ const resolvers = {
   Mutation: {
     ...userMutation,
     ...postMutation,
-  }
+  },
+  Subscription: {
+    ...postSubscription,
+  },
 };
 
 module.exports = resolvers;
