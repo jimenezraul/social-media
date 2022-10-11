@@ -3,17 +3,28 @@ import {
   ApolloClient,
   InMemoryCache,
   ApolloProvider,
-  createHttpLink,
   from,
   fromPromise,
+  split,
+  HttpLink,
 } from "@apollo/client";
 import { setContext } from "@apollo/client/link/context";
 import { getNewToken } from "./utils/getNewToken";
 import { onError } from "@apollo/client/link/error";
 
+import { getMainDefinition } from "@apollo/client/utilities";
+import { GraphQLWsLink } from "@apollo/client/link/subscriptions";
+import { createClient } from "graphql-ws";
+
 import AppRoutes from "./routes";
 
-const link = createHttpLink({
+const wsLink = new GraphQLWsLink(
+  createClient({
+    url: "ws://localhost:3001/graphql",
+  })
+);
+
+const httpLink = new HttpLink({
   uri: "/graphql",
   credentials: "include",
 });
@@ -29,11 +40,23 @@ const authLink = setContext((_, { headers }) => {
   };
 });
 
+const splitLink = split(
+  ({ query }) => {
+    const definition = getMainDefinition(query);
+    return (
+      definition.kind === "OperationDefinition" &&
+      definition.operation === "subscription"
+    );
+  },
+  wsLink,
+  authLink.concat(httpLink)
+);
+
 const errorLink = onError(
   ({ graphQLErrors, networkError, operation, forward }) => {
     if (graphQLErrors) {
       for (let err of graphQLErrors) {
-        switch (err.extensions.code) {
+        switch (err.extensions?.code) {
           case "UNAUTHENTICATED":
             return fromPromise(
               getNewToken().catch((error) => {
@@ -57,8 +80,33 @@ const errorLink = onError(
 
 const client = new ApolloClient({
   uri: "/graphql",
-  cache: new InMemoryCache(),
-  link: from([errorLink, authLink, link]),
+  cache: new InMemoryCache({
+    typePolicies: {
+      Query: {
+        fields: {
+          posts: {
+            keyArgs: false,
+            merge(existing = [], incoming) {
+              return [...existing, ...incoming];
+            },
+          },
+          user: {
+            keyArgs: false,
+            merge(existing = [], incoming) {
+              return [...existing, ...incoming];
+            },
+          },
+          users: {
+            keyArgs: false,
+            merge(existing = [], incoming) {
+              return [...existing, ...incoming];
+            },
+          },
+        },
+      },
+    },
+  }),
+  link: from([errorLink, splitLink]),
 });
 
 function App() {

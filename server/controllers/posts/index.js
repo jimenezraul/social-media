@@ -1,12 +1,7 @@
-const { post, posts, addPost, updatePost, deletePost } = require('./post');
-const { addComment, deleteComment, updateComment } = require('./comment');
-const { likes } = require('./likes');
+const { post, posts, addPost, updatePost, deletePost, newPostSubscription } = require('./post');
+const { addComment, deleteComment, updateComment, newCommentSubscription } = require('./comment');
+const { likes, newLikeSubscription } = require('./likes');
 const { feed } = require('./feed');
-const {
-  newPostSubscription,
-  newLikeSubscription,
-  newCommentSubscription,
-} = require('./Subscriptions');
 
 const postResolvers = {
   postQuery: {

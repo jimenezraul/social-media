@@ -26,11 +26,15 @@ module.exports = {
       }
     );
 
-    pubsub.publish('NEW_LIKE', { newLikeSubscription: post });
+    pubsub.publish('NEW_LIKE', { newLikeSubscription: {} });
 
     return {
       success: true,
       message: likeExists ? 'Like removed!' : 'Like added!',
     };
+  },
+
+  newLikeSubscription: {
+    subscribe: () => pubsub.asyncIterator(['NEW_LIKE']),
   },
 };

@@ -10,6 +10,7 @@ import { selectUser } from "../../features//users/userSlice";
 interface isLastEl extends Post {
   isLastEl: boolean;
   isProfile?: boolean;
+  subscribeToMore?: any;
 }
 export const Post = ({
   _id,
@@ -22,6 +23,7 @@ export const Post = ({
   isLastEl,
   isProfile,
   likes,
+  subscribeToMore,
 }: isLastEl) => {
   const commentRef = useRef() as React.MutableRefObject<HTMLInputElement>;
   const menuRef = useRef() as React.MutableRefObject<HTMLInputElement>;
@@ -39,23 +41,6 @@ export const Post = ({
       await likePost({
         variables: {
           postId: _id,
-        },
-        // update the likeCount in the post cache
-        update(cache, { data: { likes: userLike } }) {
-          const userLikes = userLike.message === "Like added!" ? +1 : -1;
-          cache.modify({
-            id: `Post:${_id}`,
-            fields: {
-              likeCount() {
-                return likeCount + userLikes;
-              },
-              likes() {
-                return userLike.message === "Like added!"
-                  ? [...likes, user]
-                  : likes.filter((like: any) => like._id !== user._id);
-              },
-            },
-          });
         },
       });
     } catch (error) {
@@ -77,24 +62,11 @@ export const Post = ({
   };
 
   const addCommentHandler = () => {
-    // console.log values from the comment form
-    console.log(commentRef.current.value);
     // add the comment to the database
     AddComment({
       variables: {
         postId: _id,
         commentText: commentRef.current.value,
-      },
-      // update the commentCount in the post cache
-      update(cache, { data: { addComment: comment } }) {
-        cache.modify({
-          id: `Post:${_id}`,
-          fields: {
-            commentCount() {
-              return commentCount + 1;
-            },
-          },
-        });
       },
     });
     // clear the comment form

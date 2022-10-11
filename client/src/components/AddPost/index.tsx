@@ -20,32 +20,6 @@ export const AddPost = ({ me }: AddPostProps) => {
           variables: {
             postText,
           },
-          // update the cache with the new post to feed
-          update(cache, { data: { addPost } }) {
-            const { feed } = cache.readQuery({
-              query: FEED,
-            }) as { feed: Post[] };
-
-            // update feed cache
-            cache.writeQuery({
-              query: FEED,
-              data: {
-                feed: [addPost, ...feed],
-              },
-            });
-            // update me cache
-            cache.modify({
-              id: `User:${me._id}`,
-              fields: {
-                posts() {
-                  return [...me.posts, addPost];
-                },
-                postCount() {
-                  return me.postCount + 1;
-                },
-              },
-            });
-          },
         });
         textRef.current!.value = "";
       } catch (error) {

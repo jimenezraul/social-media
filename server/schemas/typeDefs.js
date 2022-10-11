@@ -72,6 +72,11 @@ const typeDefs = gql`
     feed: [Post]
   }
 
+  type CommentSub {
+    comment: Comment
+    postId: ID
+  }
+
   type Mutation {
     register(
       given_name: String!
@@ -82,7 +87,7 @@ const typeDefs = gql`
     verifyUser(token: String!): Message
     login(email: String!, password: String!): Auth
     logout: Auth
-    refreshToken(id:ID!): Auth
+    refreshToken(id: ID!): Auth
     addPost(postText: String!): Post
     addComment(postId: ID!, commentText: String!): Comment
     updateComment(postId: ID!, commentId: ID!, commentText: String!): Comment
@@ -101,8 +106,8 @@ const typeDefs = gql`
 
   type Subscription {
     newPostSubscription: Post
-    newCommentSubscription(postId: ID!): Comment
-    newLikeSubscription(postId: ID!): Post
+    newCommentSubscription: CommentSub
+    newLikeSubscription: Post
   }
 `;
 

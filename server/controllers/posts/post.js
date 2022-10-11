@@ -4,6 +4,7 @@ const {
 } = require('apollo-server-express');
 const { User, Post } = require('../../models');
 const { PubSub } = require('graphql-subscriptions');
+const { withFilter } = require('graphql-subscriptions');
 
 const pubsub = new PubSub();
 
@@ -88,13 +89,15 @@ module.exports = {
       select: '-__v -password',
     });
 
-    const newposts = await User.findByIdAndUpdate(
+    await User.findByIdAndUpdate(
       { _id: context.user._id },
       { $push: { posts: post._id } },
       { new: true }
     );
 
-    pubsub.publish('NEW_POST', { newPostSubscription: newPost });
+    pubsub.publish('NEW_POST', {
+      newPostSubscription: newPost,
+    });
 
     return post.populate({
       path: 'postAuthor',
@@ -166,5 +169,9 @@ module.exports = {
       success: true,
       message: 'Post deleted!',
     };
+  },
+
+  newPostSubscription: {
+    subscribe: () => pubsub.asyncIterator('NEW_POST'),
   },
 };

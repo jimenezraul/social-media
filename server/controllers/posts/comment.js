@@ -37,7 +37,12 @@ module.exports = {
     );
 
     // publish the new comment to the NEW_COMMENT subscription
-    pubsub.publish('NEW_COMMENT', { newCommentSubscription: comment });
+    pubsub.publish('NEW_COMMENT', {
+      newCommentSubscription: {
+        comment: comment,
+        postId: postId,
+      },
+    });
 
     return comment;
   },
@@ -93,5 +98,9 @@ module.exports = {
       success: true,
       message: 'Comment removed!',
     };
+  },
+
+  newCommentSubscription: {
+    subscribe: () => pubsub.asyncIterator(['NEW_COMMENT']),
   },
 };

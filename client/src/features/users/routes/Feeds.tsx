@@ -5,6 +5,11 @@ import { Post } from "../../../components/Posts";
 import { FriendsList } from "../../../components/FriendsList";
 import { MeCard } from "../../../components/MeCard";
 import { AddPost } from "../../../components/AddPost";
+import {
+  subscribeToNewPost,
+  subscribeToNewComment,
+  subscribeToNewLike,
+} from "../../../utils/subscriptions";
 
 export const Feed = () => {
   const [Me, { data: meData, loading: meLoading, error: meError }] =
@@ -16,6 +21,7 @@ export const Feed = () => {
     data: feedData,
     loading: feedLoading,
     error: feedError,
+    subscribeToMore,
   } = useQuery(FEED);
 
   useEffect(() => {
@@ -28,7 +34,23 @@ export const Feed = () => {
     if (meError) return;
     if (!meData) return;
     setFriends(meData.me.friends);
-  }, [feedData, feedLoading, feedError, Me, meData, meLoading, meError]);
+  }, [
+    feedData,
+    feedLoading,
+    feedError,
+    Me,
+    meData,
+    meLoading,
+    meError,
+    subscribeToMore,
+  ]);
+
+  useEffect(() => {
+    if (subscribeToMore) {
+      subscribeToNewPost(subscribeToMore);
+      subscribeToNewComment(subscribeToMore);
+    }
+  }, [subscribeToMore]);
 
   const me = meData ? meData.me : {};
 
@@ -43,7 +65,14 @@ export const Feed = () => {
             <AddPost me={me} />
             {feed?.map((post: Post, index: any) => {
               const isLastEl = index === feedData?.feed.length - 1;
-              return <Post key={index} {...post} isLastEl={isLastEl} />;
+              return (
+                <Post
+                  subscribeToMore={subscribeToMore}
+                  key={index}
+                  {...post}
+                  isLastEl={isLastEl}
+                />
+              );
             })}
           </div>
           <div className="hidden lg:block md:w-3/12 xl:w-4/12 px-3">
