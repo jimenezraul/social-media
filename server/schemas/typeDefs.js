@@ -77,6 +77,12 @@ const typeDefs = gql`
     postId: ID
   }
 
+  type LikeSub {
+    postId: ID
+    likeExists: Boolean
+    user: User
+  }
+
   type Mutation {
     register(
       given_name: String!
@@ -107,7 +113,7 @@ const typeDefs = gql`
   type Subscription {
     newPostSubscription: Post
     newCommentSubscription: CommentSub
-    newLikeSubscription: Post
+    newLikeSubscription: LikeSub
   }
 `;
 

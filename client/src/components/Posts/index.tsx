@@ -1,16 +1,12 @@
 import { Link } from "react-router-dom";
 import { useMutation } from "@apollo/client";
-import { LIKE_POST } from "../../utils/mutations";
+import { LIKE_POST, DELETE_POST, ADD_COMMENT } from "../../utils/mutations";
 import { useState, useRef } from "react";
 import { useOutside } from "../../utils/useOutside";
-import { DELETE_POST, ADD_COMMENT } from "../../utils/mutations";
-import { useAppSelector } from "../../app/hooks";
-import { selectUser } from "../../features//users/userSlice";
 
 interface isLastEl extends Post {
   isLastEl: boolean;
   isProfile?: boolean;
-  subscribeToMore?: any;
 }
 export const Post = ({
   _id,
@@ -23,15 +19,13 @@ export const Post = ({
   isLastEl,
   isProfile,
   likes,
-  subscribeToMore,
 }: isLastEl) => {
   const commentRef = useRef() as React.MutableRefObject<HTMLInputElement>;
   const menuRef = useRef() as React.MutableRefObject<HTMLInputElement>;
   const [isOpen, setIsOpen] = useState(false);
-  const comment = commentCount === 1 ? "comment" : "comments";
+  const comment = commentCount <= 1 ? "comment" : "comments";
   const [likePost] = useMutation(LIKE_POST);
   const [deletePost] = useMutation(DELETE_POST);
-  const user = useAppSelector(selectUser).user as User;
   const [AddComment] = useMutation(ADD_COMMENT);
 
   useOutside(menuRef, setIsOpen);
@@ -115,7 +109,7 @@ export const Post = ({
                 className="inline-block text-lg font-bold mr-2"
                 to={`/user/${_id}`}
               >
-                {postAuthor?.fullName}
+                {postAuthor?.given_name} {postAuthor?.family_name}
               </Link>
             </div>
             <div className="text-slate-500 dark:text-slate-300">

@@ -69,8 +69,23 @@ export const ADD_POST = gql`
         profileUrl
       }
       createdAtFormatted
+      createdAt
       likeCount
       commentCount
+      comments {
+        _id
+        commentText
+        commentAuthor {
+          _id
+          fullName
+          profileUrl
+        }
+      }
+      likes {
+        _id
+        fullName
+        profileUrl
+      }
     }
   }
 `;

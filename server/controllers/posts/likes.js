@@ -1,5 +1,5 @@
 const { AuthenticationError } = require('apollo-server-express');
-const { Post } = require('../../models');
+const { Post, User } = require('../../models');
 const { PubSub } = require('graphql-subscriptions');
 
 const pubsub = new PubSub();
@@ -26,7 +26,15 @@ module.exports = {
       }
     );
 
-    pubsub.publish('NEW_LIKE', { newLikeSubscription: {} });
+    const currentUser = await User.findOne({
+      _id: context.user._id,
+    }).select('-__v -password');
+  
+    pubsub.publish('NEW_LIKE', { newLikeSubscription: {
+      postId: postId,
+      likeExists: likeExists,
+      user: currentUser,
+    } });
 
     return {
       success: true,

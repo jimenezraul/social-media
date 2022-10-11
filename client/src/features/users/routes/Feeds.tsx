@@ -28,27 +28,25 @@ export const Feed = () => {
     if (feedLoading) return;
     if (feedError) return;
     if (!feedData) return;
+
     setFeed(feedData.feed);
-    Me();
+
+    if (feed.length === 0) {
+      Me();
+    }
+
     if (meLoading) return;
     if (meError) return;
     if (!meData) return;
+
     setFriends(meData.me.friends);
-  }, [
-    feedData,
-    feedLoading,
-    feedError,
-    Me,
-    meData,
-    meLoading,
-    meError,
-    subscribeToMore,
-  ]);
+  }, [feedData, feedLoading, feedError, Me, meData, meLoading, meError, feed]);
 
   useEffect(() => {
     if (subscribeToMore) {
       subscribeToNewPost(subscribeToMore);
       subscribeToNewComment(subscribeToMore);
+      subscribeToNewLike(subscribeToMore);
     }
   }, [subscribeToMore]);
 
@@ -65,14 +63,7 @@ export const Feed = () => {
             <AddPost me={me} />
             {feed?.map((post: Post, index: any) => {
               const isLastEl = index === feedData?.feed.length - 1;
-              return (
-                <Post
-                  subscribeToMore={subscribeToMore}
-                  key={index}
-                  {...post}
-                  isLastEl={isLastEl}
-                />
-              );
+              return <Post key={index} {...post} isLastEl={isLastEl} />;
             })}
           </div>
           <div className="hidden lg:block md:w-3/12 xl:w-4/12 px-3">

@@ -1,5 +1,4 @@
 import { gql } from "@apollo/client";
-import { ID } from "graphql-ws";
 
 export const NEW_POST_SUBSCRIPTION = gql`
   subscription New_Post_Subscription {
@@ -65,9 +64,9 @@ export const NEW_COMMENT_SUBSCRIPTION = gql`
 export const NEW_LIKE_SUBSCRIPTION = gql`
   subscription New_Like_Subscription {
     newLikeSubscription {
-      _id
-      likeCount
-      likes {
+      postId
+      likeExists
+      user {
         _id
         fullName
         profileUrl
@@ -119,5 +118,29 @@ export const subscribeToNewComment = (subscribeToMore: any) => {
 export const subscribeToNewLike = (subscribeToMore: any) => {
   subscribeToMore({
     document: NEW_LIKE_SUBSCRIPTION,
+    updateQuery: (prev: any, { subscriptionData }: any) => {
+      // update feed cache with new like
+      if (!subscriptionData.data) return prev;
+      const newLike = subscriptionData.data.newLikeSubscription;
+      const updatedFeed = prev.feed.map((post: any) => {
+
+        if (post._id === newLike.postId) {
+          return {
+            ...post,
+            likes: !newLike.likeExists
+              ? [...post.likes, newLike.user]
+              : post.likes.filter((like: any) => like._id !== newLike.user._id),
+            likeCount: !newLike.likeExists
+              ? post.likeCount + 1
+              : post.likeCount - 1,
+          };
+        }
+        return post;
+      });
+
+      return Object.assign({}, prev, {
+        feed: [...updatedFeed],
+      });
+    },
   });
 };

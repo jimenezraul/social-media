@@ -2,7 +2,7 @@ import { Button } from "../CustomButton";
 import { useRef } from "react";
 import { useMutation } from "@apollo/client";
 import { ADD_POST } from "../../utils/mutations";
-import { FEED } from "../../features/users/routes/api/queries";
+import { GET_ME } from "../../features/users/routes/api/queries";
 
 interface AddPostProps {
   me: User;
@@ -19,6 +19,23 @@ export const AddPost = ({ me }: AddPostProps) => {
         await addPost({
           variables: {
             postText,
+          },
+          // update user post count
+          update(cache, { data: { addPost } }) {
+            const { me } = cache.readQuery({
+              query: GET_ME,
+            }) as { me: User };
+            
+            cache.writeQuery({
+              query: GET_ME,
+              data: {
+                me: {
+                  ...me,
+                  postCount: me.postCount + 1,
+                  posts: [addPost, ...me.posts],
+                },
+              },
+            });
           },
         });
         textRef.current!.value = "";

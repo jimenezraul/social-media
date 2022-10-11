@@ -82,6 +82,24 @@ const client = new ApolloClient({
   uri: "/graphql",
   cache: new InMemoryCache({
     typePolicies: {
+      Post: {
+        fields: {
+          likes: {
+            merge(existing = [], incoming) {
+              return incoming;
+            },
+          },
+        },
+      },
+      User: {
+        fields: {
+          posts: {
+            merge(existing = [], incoming) {
+              return incoming;
+            },
+          },
+        },
+      },
       Query: {
         fields: {
           posts: {
@@ -93,6 +111,7 @@ const client = new ApolloClient({
           user: {
             keyArgs: false,
             merge(existing = [], incoming) {
+              console.log("hello");
               return [...existing, ...incoming];
             },
           },
@@ -100,6 +119,12 @@ const client = new ApolloClient({
             keyArgs: false,
             merge(existing = [], incoming) {
               return [...existing, ...incoming];
+            },
+          },
+          feed: {
+            keyArgs: false,
+            merge(existing = [], incoming) {
+              return [...incoming];
             },
           },
         },
