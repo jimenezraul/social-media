@@ -78,14 +78,9 @@ export const FEED = gql`
       commentCount
       createdAtFormatted
       postAuthor {
-        given_name
-        family_name
-        email
-        profileUrl
-        isAdmin
-        isVerified
         _id
         fullName
+        profileUrl
         friends {
           _id
           fullName

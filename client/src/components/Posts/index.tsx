@@ -42,16 +42,16 @@ export const Post = ({
     }
   };
 
-  const handleDelete = () => {
-    deletePost({
+  const handleDelete = async () => {
+    await deletePost({
       variables: {
         postId: _id,
       },
-      update(cache) {
+      update(cache: any) {
         cache.evict({ id: `Post:${_id}` });
       },
     });
-
+  
     setIsOpen(false);
   };
 
@@ -109,7 +109,7 @@ export const Post = ({
                 className="inline-block text-lg font-bold mr-2"
                 to={`/user/${_id}`}
               >
-                {postAuthor?.given_name} {postAuthor?.family_name}
+                {postAuthor?.fullName}
               </Link>
             </div>
             <div className="text-slate-500 dark:text-slate-300">

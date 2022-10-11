@@ -44,7 +44,7 @@ const Navbar = () => {
 
   return (
     <nav className="relative flex items-center justify-between flex-wrap p-6">
-      <div className="container mx-auto flex flex-wrap items-center justify-between">
+      <div className="container mx-auto flex flex-wrap  justify-between">
         <div className="flex items-center flex-shrink-0 text-white mr-6">
           <span className="font-semibold text-xl tracking-tight">
             Social Media
@@ -74,18 +74,26 @@ const Navbar = () => {
             })}
           </div>
         </div>
-        <div className="flex relative" ref={menuRef}>
-          <img
-            className="mr-2 h-10 bg-gradient-to-r from-blue-600 to to-red-500 rounded-full p-0.5"
-            src={`${profileUrl}`}
-            alt=""
-            referrerPolicy="no-referrer"
-            onClick={() => setIsOpen(!isOpen)}
-          />
-          {/* <button type="button" onClick={logoutUser} className="text-white">
+        <div className="flex items-center space-x-5">
+          <Link to="/messages">
+            <i className="text-xl fa-solid fa-comment text-slate-300"></i>
+          </Link>
+          <Link to="/notifications">
+            <i className="text-xl fa-solid fa-bell text-slate-300"></i>
+          </Link>
+          <div className="flex relative" ref={menuRef}>
+            <img
+              className="mr-2 h-10 bg-gradient-to-r from-blue-600 to to-red-500 rounded-full p-0.5"
+              src={`${profileUrl}`}
+              alt=""
+              referrerPolicy="no-referrer"
+              onClick={() => setIsOpen(!isOpen)}
+            />
+            {/* <button type="button" onClick={logoutUser} className="text-white">
             Logout
           </button> */}
-          {isOpen && <Dropdown logoutUser={logoutUser} />}
+            {isOpen && <Dropdown logoutUser={logoutUser} />}
+          </div>
         </div>
       </div>
     </nav>

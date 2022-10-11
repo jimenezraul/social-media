@@ -13,7 +13,9 @@ import {
 
 export const Feed = () => {
   const [Me, { data: meData, loading: meLoading, error: meError }] =
-    useLazyQuery(GET_ME);
+    useLazyQuery(GET_ME, {
+      fetchPolicy: "no-cache",
+    });
   const [feed, setFeed] = useState<Post[]>([]);
   const [friends, setFriends] = useState<Friends[]>([]);
 
@@ -28,17 +30,19 @@ export const Feed = () => {
     if (feedLoading) return;
     if (feedError) return;
     if (!feedData) return;
+    
+    if (feedData.feed.length > 0) {
+      setFeed(feedData.feed);
+    }
 
-    setFeed(feedData.feed);
-
-    if (feed.length === 0) {
+    if (!meData && !meLoading && !meError) {
       Me();
     }
 
     if (meLoading) return;
     if (meError) return;
     if (!meData) return;
-
+    
     setFriends(meData.me.friends);
   }, [feedData, feedLoading, feedError, Me, meData, meLoading, meError, feed]);
 

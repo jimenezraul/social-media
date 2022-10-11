@@ -147,7 +147,7 @@ module.exports = {
     if (!context.user) {
       throw new AuthenticationError('You need to be logged in!');
     }
-
+   
     // check if the post exists
     const post = await Post.findOne({ _id: postId });
 
@@ -157,14 +157,18 @@ module.exports = {
 
     // check if the logged in user is the post author or is an admin
     if (
-      post.postAuthor.toString() !== context.user._id.toString() &&
+      post.postAuthor._id.toString() !== context.user._id.toString() &&
       !context.user.isAdmin
     ) {
       throw new ForbiddenError('You are not authorized to delete this post!');
     }
 
-    const deletedPost = await Post.findOneAndDelete({ _id: postId });
-
+    await Post.findOneAndDelete({ _id: postId });
+    await User.findByIdAndUpdate(
+      { _id: context.user._id },
+      { $pull: { posts: postId } },
+      { new: true }
+    );
     return {
       success: true,
       message: 'Post deleted!',
