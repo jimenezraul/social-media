@@ -135,20 +135,21 @@ export const subscribeToNewLike = (subscribeToMore: any) => {
               user._id === post.postAuthor._id &&
               post.postAuthor._id !== newLike.user._id
             ) {
+              
               const data = {
                 type: "like",
                 postId: post._id,
                 message: `${newLike.user.fullName} liked your post.`,
-                user: newLike.user._id
+                user: newLike.user,
+                post: post
               };
-
+         
               if (notifications.length > 0) {
                 const notificationExists = notifications.find(
-                  (notification: any) => notification.user === newLike.user._id
+                  (notification: any) => notification.user._id === newLike.user._id
                 );
                 if (!notificationExists) {
                   notifications.push(data);
-                  console.log(notifications);
                   localStorage.setItem(
                     "notifications",
                     JSON.stringify(notifications)
@@ -166,7 +167,7 @@ export const subscribeToNewLike = (subscribeToMore: any) => {
               post.postAuthor._id !== newLike.user._id
             ) {
               const data = notifications.filter(
-                (notification: any) => notification.user !== newLike.user._id
+                (notification: any) => notification.user._id !== newLike.user._id
               );
               localStorage.setItem("notifications", JSON.stringify(data));
               store.dispatch(setNotifications(data));

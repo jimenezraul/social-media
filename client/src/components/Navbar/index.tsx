@@ -11,10 +11,13 @@ import { useMutation } from "@apollo/client";
 import { LOGOUT } from "../../utils/mutations";
 import { Dropdown } from "../Dropdown";
 import { useOutside } from "../../utils/useOutside";
+import { Notifications } from "../Notifications";
 
 const Navbar = () => {
   const menuRef = useRef(null);
+  const notificationsRef = useRef(null);
   const [isOpen, setIsOpen] = useState(false);
+  const [notificationsOpen, setNotificationsOpen] = useState(false);
   const dispatch = useAppDispatch();
   const [currentPath, setCurrentPath] = useState<String>(
     window.location.pathname
@@ -37,6 +40,7 @@ const Navbar = () => {
   ];
 
   useOutside(menuRef, setIsOpen);
+  useOutside(notificationsRef, setNotificationsOpen);
 
   const logoutUser = async () => {
     dispatch(user_logout());
@@ -85,8 +89,11 @@ const Navbar = () => {
           <Link to="/messages">
             <i className="text-xl fa-solid fa-comment text-slate-300"></i>
           </Link>
-          <Link to="/notifications" className="relative">
-            <i className="text-xl fa-solid fa-bell text-slate-300"></i>
+          <div className="relative" ref={notificationsRef}>
+            <div onClick={() => setNotificationsOpen(!notificationsOpen)} className="cursor-pointer">
+            <i
+              className="text-xl fa-solid fa-bell text-slate-300"
+            ></i>
             <div
               className={`${
                 notification.length > 0 ? "flex" : "hidden"
@@ -94,7 +101,9 @@ const Navbar = () => {
             >
               {notification.length}
             </div>
-          </Link>
+            </div>
+            {notificationsOpen && <Notifications />}
+          </div>
           <div className="flex relative" ref={menuRef}>
             <img
               className="mr-2 h-10 bg-gradient-to-r from-blue-600 to to-red-500 rounded-full p-0.5"
@@ -103,9 +112,6 @@ const Navbar = () => {
               referrerPolicy="no-referrer"
               onClick={() => setIsOpen(!isOpen)}
             />
-            {/* <button type="button" onClick={logoutUser} className="text-white">
-            Logout
-          </button> */}
             {isOpen && <Dropdown logoutUser={logoutUser} />}
           </div>
         </div>
