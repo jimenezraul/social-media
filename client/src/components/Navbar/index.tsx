@@ -1,7 +1,11 @@
 import { Link } from "react-router-dom";
 import { useState, useRef } from "react";
 import { useAppSelector } from "../../app/hooks";
-import { selectUser, user_logout } from "../../features/users/userSlice";
+import {
+  selectUser,
+  user_logout,
+  notifications,
+} from "../../features/users/userSlice";
 import { useAppDispatch } from "../../app/hooks";
 import { useMutation } from "@apollo/client";
 import { LOGOUT } from "../../utils/mutations";
@@ -15,6 +19,9 @@ const Navbar = () => {
   const [currentPath, setCurrentPath] = useState<String>(
     window.location.pathname
   );
+
+  // get notifications from the local storage
+  const notification = useAppSelector(notifications);
 
   const [logout] = useMutation(LOGOUT);
 
@@ -78,8 +85,15 @@ const Navbar = () => {
           <Link to="/messages">
             <i className="text-xl fa-solid fa-comment text-slate-300"></i>
           </Link>
-          <Link to="/notifications">
+          <Link to="/notifications" className="relative">
             <i className="text-xl fa-solid fa-bell text-slate-300"></i>
+            <div
+              className={`${
+                notification.length > 0 ? "flex" : "hidden"
+              } absolute -top-2 -right-4 justify-center items-center w-6 h-6 text-xs font-bold text-white bg-red-500 rounded-full border-2 border-white dark:border-gray-900`}
+            >
+              {notification.length}
+            </div>
           </Link>
           <div className="flex relative" ref={menuRef}>
             <img

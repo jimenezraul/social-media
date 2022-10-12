@@ -1,5 +1,8 @@
 import { gql } from "@apollo/client";
 
+import { store } from "../app/store";
+import { setNotifications } from "../features/users/userSlice";
+
 export const NEW_POST_SUBSCRIPTION = gql`
   subscription New_Post_Subscription {
     newPostSubscription {
@@ -123,8 +126,53 @@ export const subscribeToNewLike = (subscribeToMore: any) => {
       if (!subscriptionData.data) return prev;
       const newLike = subscriptionData.data.newLikeSubscription;
       const updatedFeed = prev.feed.map((post: any) => {
-
+        const user = JSON.parse(localStorage.getItem("user")!) || {};
+        const notifications =
+          JSON.parse(localStorage.getItem("notifications")!) || [];
         if (post._id === newLike.postId) {
+          if (!newLike.likeExists) {
+            if (
+              user._id === post.postAuthor._id &&
+              post.postAuthor._id !== newLike.user._id
+            ) {
+              const data = {
+                type: "like",
+                postId: post._id,
+                message: `${newLike.user.fullName} liked your post.`,
+                user: newLike.user._id
+              };
+
+              if (notifications.length > 0) {
+                const notificationExists = notifications.find(
+                  (notification: any) => notification.user === newLike.user._id
+                );
+                if (!notificationExists) {
+                  notifications.push(data);
+                  console.log(notifications);
+                  localStorage.setItem(
+                    "notifications",
+                    JSON.stringify(notifications)
+                  );
+                  store.dispatch(setNotifications(notifications));
+                }
+              } else {
+                localStorage.setItem("notifications", JSON.stringify([data]));
+                store.dispatch(setNotifications([data]));
+              }
+            }
+          } else {
+            if (
+              user._id === post.postAuthor._id &&
+              post.postAuthor._id !== newLike.user._id
+            ) {
+              const data = notifications.filter(
+                (notification: any) => notification.user !== newLike.user._id
+              );
+              localStorage.setItem("notifications", JSON.stringify(data));
+              store.dispatch(setNotifications(data));
+            }
+          }
+
           return {
             ...post,
             likes: !newLike.likeExists
