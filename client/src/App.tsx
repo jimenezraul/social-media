@@ -15,6 +15,8 @@ import { onError } from "@apollo/client/link/error";
 import { getMainDefinition } from "@apollo/client/utilities";
 import { GraphQLWsLink } from "@apollo/client/link/subscriptions";
 import { createClient } from "graphql-ws";
+import { policies } from "./utils/typePolices";
+import { store } from "./app/store";
 
 import AppRoutes from "./routes";
 
@@ -30,7 +32,8 @@ const httpLink = new HttpLink({
 });
 
 const authLink = setContext((_, { headers }) => {
-  const accessToken = localStorage.getItem("access_token");
+  const { user } = store.getState();
+  const accessToken = user.access_token;
 
   return {
     headers: {
@@ -80,57 +83,7 @@ const errorLink = onError(
 
 const client = new ApolloClient({
   uri: "/graphql",
-  cache: new InMemoryCache({
-    typePolicies: {
-      Post: {
-        fields: {
-          likes: {
-            merge(existing = [], incoming) {
-              return incoming;
-            },
-          },
-        },
-      },
-      User: {
-        fields: {
-          posts: {
-            merge(existing = [], incoming) {
-              return incoming;
-            },
-          },
-        },
-      },
-      Query: {
-        fields: {
-          posts: {
-            keyArgs: false,
-            merge(existing = [], incoming) {
-              return [...existing, ...incoming];
-            },
-          },
-          user: {
-            keyArgs: false,
-            merge(existing = [], incoming) {
-              console.log("hello");
-              return [...existing, ...incoming];
-            },
-          },
-          users: {
-            keyArgs: false,
-            merge(existing = [], incoming) {
-              return [...existing, ...incoming];
-            },
-          },
-          feed: {
-            keyArgs: false,
-            merge(existing = [], incoming) {
-              return [...incoming];
-            },
-          },
-        },
-      },
-    },
-  }),
+  cache: new InMemoryCache(policies),
   link: from([errorLink, splitLink]),
 });
 

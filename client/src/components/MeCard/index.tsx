@@ -1,9 +1,16 @@
-export const MeCard = ({ profileUrl, fullName, posts, friends }: User) => {
+interface ME {
+  me: User;
+}
+
+export const MeCard = ({ me }: ME) => {
+  if (me === undefined) return <div>Loading...</div>;
+  
+  const { profileUrl, fullName, posts, friends } = me
   const postCount = posts?.length;
   const postOrPosts = posts?.length === 1 ? "post" : "posts";
   const friendCount = friends?.length;
   const friendOrFriends = friends?.length === 1 ? "friend" : "friends";
-  
+
   return (
     <div className="overflow-hidden bg-slate-800 border border-slate-600 rounded-lg w-full hover:shadow-none relative flex flex-col mx-auto shadow-lg">
       <img

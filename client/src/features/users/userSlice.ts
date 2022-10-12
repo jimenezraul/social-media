@@ -3,8 +3,15 @@ import { RootState } from "../../app/store";
 
 interface UserState {
   _id: string | null;
-  user: object | null;
-  access_token: object | null;
+  user: {
+    _id?: string;
+    given_name?: string;
+    family_name?: string;
+    isAdmin?: boolean;
+    isVerified?: boolean;
+    profileUrl?: string;
+  }
+  access_token: String | null;
   isLoggedIn: boolean;
   notifications: [] | object[];
 }
@@ -14,9 +21,9 @@ export const UserSlice = createSlice({
   initialState: {
     user: localStorage.getItem("user")
       ? JSON.parse(localStorage.getItem("user") || "{}")
-      : null,
+      : {},
     access_token: localStorage.getItem("access_token")
-      ? localStorage.getItem("access_token") || "{}"
+      ? localStorage.getItem("access_token") || ""
       : null,
     isLoggedIn: localStorage.getItem("user") ? true : false,
     notifications: localStorage.getItem("notifications") ? JSON.parse(localStorage.getItem("notifications") || "[]") : [],
@@ -27,11 +34,11 @@ export const UserSlice = createSlice({
       state.isLoggedIn = true;
     },
     user_logout: (state) => {
-      state.user = null;
+      state.user = {};
       state.access_token = null;
       state.isLoggedIn = false;
     },
-    setAccessToken: (state, action: PayloadAction<object>) => {
+    setAccessToken: (state, action: PayloadAction<String>) => {
       state.access_token = action.payload;
     },
     setNotifications: (state, action: PayloadAction<object[]>) => {

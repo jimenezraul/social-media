@@ -45,11 +45,13 @@ export const AddPost = ({ me }: AddPostProps) => {
     }
   };
 
+  if (me === undefined) return <div>Loading...</div>;
+  
   return (
     <div className="hidden md:flex items-center p-2 border border-slate-700 mb-4 break-inside rounded-lg bg-slate-800 bg-clip-border">
       <img
         className="h-10 w-10 bg-default rounded-full p-0.5"
-        src={`${me.profileUrl}`}
+        src={`${me?.profileUrl}`}
         alt=""
       />
       <div className="px-3 flex w-full">

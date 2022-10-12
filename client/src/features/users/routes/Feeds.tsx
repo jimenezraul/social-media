@@ -13,9 +13,7 @@ import {
 
 export const Feed = () => {
   const [Me, { data: meData, loading: meLoading, error: meError }] =
-    useLazyQuery(GET_ME, {
-      fetchPolicy: "no-cache",
-    });
+    useLazyQuery(GET_ME);
   const [feed, setFeed] = useState<Post[]>([]);
   const [friends, setFriends] = useState<Friends[]>([]);
 
@@ -54,14 +52,14 @@ export const Feed = () => {
     }
   }, [subscribeToMore]);
 
-  const me = meData ? meData.me : {};
+  const me = meData && meData.me;
 
   return (
     <div className="flex flex-1 text-white">
       <div className="container mx-auto xl:px-24 2xl:px-52">
         <div className="flex flex-wrap justify-center h-full max-h-full">
           <div className="hidden md:block w-full md:w-4/12 xl:w-3/12 px-3 mb-4">
-            <MeCard {...Object(me)} />
+            <MeCard me={me} />
           </div>
           <div className="flex flex-col flex-1 w-full md:w-5/12 xl:w-4/12 px-3 h-full overflow-y-scroll no-scrollbar">
             <AddPost me={me} />

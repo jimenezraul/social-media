@@ -58,7 +58,6 @@ export const Login = () => {
       });
   
       localStorage.setItem("user", JSON.stringify(user));
-      localStorage.setItem("access_token", access_token);
       dispatch(user_login(user));
       dispatch(setAccessToken(access_token));
 
