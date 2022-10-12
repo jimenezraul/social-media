@@ -6,11 +6,11 @@ import {
 
 export const Notifications = () => {
   const dispatch = useAppDispatch();
-  const notification = useAppSelector(notifications);
+  const myNotification = useAppSelector(notifications);
 
-  if (notification.length === 0) {
+  if (myNotification.length === 0) {
     return (
-      <div className="w-80 text-center z-50 absolute bg-slate-800 top-8 -right-2 p-4 rounded-md border border-slate-700 text-white">
+      <div className="w-80 text-center z-50 absolute bg-slate-800 top-8 -right-14 md:-right-2 p-4 rounded-md border border-slate-700 text-white">
         <h1>No Notifications</h1>
       </div>
     );
@@ -22,7 +22,7 @@ export const Notifications = () => {
   };
 
   const removeNotificationHandler = (id: string) => {
-    const newNotifications = notification.filter((n: any) => n.user._id !== id);
+    const newNotifications = myNotification.filter((n: any) => n.user._id !== id);
     localStorage.setItem("notifications", JSON.stringify(newNotifications));
     dispatch(setNotifications(newNotifications));
   };
@@ -37,14 +37,13 @@ export const Notifications = () => {
           Clear All
         </span>
       </div>
-      {notification.map((notification: any, index: number) => {
-        const isLast = index === notifications.length - 1;
-
+      {myNotification.map((notification: any, index: number) => {
+        const isLast = index === myNotification.length - 1;
         return (
           <div
             key={index}
             className={`${
-              !isLast && "border-b border-slate-500"
+              !isLast && "border-b border-slate-700"
             } flex flex-wrap items-center space-x-2 py-3 px-4`}
           >
             <img
