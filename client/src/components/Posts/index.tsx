@@ -5,7 +5,7 @@ import { useState, useRef } from "react";
 import { useOutside } from "../../utils/useOutside";
 
 interface isLastEl extends Post {
-  isLastEl: boolean;
+  isLastEl?: boolean;
   isProfile?: boolean;
 }
 export const Post = ({
@@ -51,7 +51,7 @@ export const Post = ({
         cache.evict({ id: `Post:${_id}` });
       },
     });
-  
+
     setIsOpen(false);
   };
 
@@ -162,9 +162,9 @@ export const Post = ({
               )}
             </div>
           )}
-          <Link className="ml-auto" to="#">
+          <p className="ml-auto">
             {commentCount} {comment}
-          </Link>
+          </p>
         </div>
         <div className="mt-6 mb-6 h-px bg-slate-500"></div>
         <div className="flex items-center justify-between mb-6">
@@ -174,9 +174,11 @@ export const Post = ({
           >
             <i className="fa-solid fa-thumbs-up"></i> Like
           </button>
-          <button className="py-2 px-4 font-medium hover:bg-slate-50 dark:hover:bg-slate-700 rounded-lg">
-            <i className="fa-sharp fa-solid fa-comment-dots"></i> Comment
-          </button>
+          <Link to={`/post/${_id}`}>
+            <button className="py-2 px-4 font-medium hover:bg-slate-50 dark:hover:bg-slate-700 rounded-lg">
+              <i className="fa-sharp fa-solid fa-comment-dots"></i> Comment
+            </button>
+          </Link>
           <button className="py-2 px-4 font-medium hover:bg-slate-50 dark:hover:bg-slate-700 rounded-lg">
             <i className="fa-sharp fa-solid fa-share-nodes"></i> Share
           </button>

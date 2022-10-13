@@ -7,8 +7,8 @@ import { Dock } from "../components/Dock";
 
 const { Profile } = lazyImport(() => import("../features/users"), "Profile");
 const { Friends } = lazyImport(() => import("../features/users"), "Friends");
-
 const { Feed } = lazyImport(() => import("../features/users"), "Feed");
+const { PostById } = lazyImport(() => import("../features/posts"), "PostById");
 
 const Protected = () => {
   return (
@@ -48,6 +48,10 @@ export const protectedRoutes = [
       {
         path: "/friends",
         element: <Friends />,
+      },
+      {
+        path: "/post/:id",
+        element: <PostById />,
       },
       { path: "*", element: <Navigate to="." /> },
     ],
