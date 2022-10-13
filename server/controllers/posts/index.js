@@ -1,6 +1,18 @@
-const { post, posts, addPost, updatePost, deletePost, newPostSubscription } = require('./post');
-const { addComment, deleteComment, updateComment, newCommentSubscription } = require('./comment');
-const { likes, newLikeSubscription } = require('./likes');
+const {
+  post,
+  posts,
+  addPost,
+  updatePost,
+  deletePost,
+  newPostSubscription,
+} = require('./post');
+const {
+  addComment,
+  deleteComment,
+  updateComment,
+  newCommentSubscription,
+} = require('./comment');
+const { likes, likeComment, newLikeSubscription, newLikeCommentSubscription } = require('./likes');
 const { feed } = require('./feed');
 
 const postResolvers = {
@@ -17,11 +29,13 @@ const postResolvers = {
     updateComment: updateComment,
     deleteComment: deleteComment,
     likes: likes,
+    likeComment: likeComment,
   },
   postSubscription: {
     newCommentSubscription: newCommentSubscription,
     newLikeSubscription: newLikeSubscription,
     newPostSubscription: newPostSubscription,
+    newLikeCommentSubscription: newLikeCommentSubscription,
   },
 };
 

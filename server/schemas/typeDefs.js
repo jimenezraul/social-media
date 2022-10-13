@@ -83,6 +83,12 @@ const typeDefs = gql`
     user: User
   }
 
+  type likeCommentSub {
+    commentId: ID
+    likeExists: Boolean
+    user: User
+  }
+
   type Mutation {
     register(
       given_name: String!
@@ -103,6 +109,7 @@ const typeDefs = gql`
     friendRequest(friendId: ID!): Message
     acceptFriendRequest(friendId: ID!): Message
     likes(postId: ID!): Message
+    likeComment(commentId: ID!): Message
     googleLogin(tokenId: String!): Auth
     removeFriend(friendId: ID!): Message
     resetPassword(token: String!, password: String!): Message
@@ -114,6 +121,7 @@ const typeDefs = gql`
     newPostSubscription: Post
     newCommentSubscription: CommentSub
     newLikeSubscription: LikeSub
+    newLikeCommentSubscription: likeCommentSub
   }
 `;
 

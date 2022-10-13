@@ -102,7 +102,7 @@ const Navbar = () => {
               {notification.length}
             </div>
             </div>
-            {notificationsOpen && <Notifications />}
+            {notificationsOpen && <Notifications setNotificationsOpen={setNotificationsOpen} />}
           </div>
           <div className="flex relative" ref={menuRef}>
             <img

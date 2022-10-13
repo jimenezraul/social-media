@@ -4,7 +4,7 @@ import {
   setNotifications,
 } from "../../features/users/userSlice";
 
-export const Notifications = () => {
+export const Notifications = ({ setNotificationsOpen }: Notifications) => {
   const dispatch = useAppDispatch();
   const myNotification = useAppSelector(notifications);
 
@@ -19,12 +19,16 @@ export const Notifications = () => {
   const clearAllHandler = () => {
     localStorage.setItem("notifications", JSON.stringify([]));
     dispatch(setNotifications([]));
+    setNotificationsOpen(false);
   };
 
   const removeNotificationHandler = (id: string) => {
-    const newNotifications = myNotification.filter((n: any) => n.user._id !== id);
+    const newNotifications = myNotification.filter(
+      (n: any) => n.post._id !== id
+    );
     localStorage.setItem("notifications", JSON.stringify(newNotifications));
     dispatch(setNotifications(newNotifications));
+    setNotificationsOpen(false);
   };
 
   return (
@@ -62,7 +66,7 @@ export const Notifications = () => {
                   : notification.post.postText}
               </p>
               <button
-                onClick={() => removeNotificationHandler(notification.user._id)}
+                onClick={() => removeNotificationHandler(notification.post._id)}
                 type="button"
                 className="absolute right-0 bg-slate-700 rounded-md p-2 inline-flex items-center justify-center text-gray-400 hover:text-slate-300 hover:bg-slate-600 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-indigo-500"
               >

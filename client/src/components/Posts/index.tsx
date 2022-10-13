@@ -4,10 +4,6 @@ import { LIKE_POST, DELETE_POST, ADD_COMMENT } from "../../utils/mutations";
 import { useState, useRef } from "react";
 import { useOutside } from "../../utils/useOutside";
 
-interface isLastEl extends Post {
-  isLastEl?: boolean;
-  isProfile?: boolean;
-}
 export const Post = ({
   _id,
   postAuthor,
@@ -19,7 +15,7 @@ export const Post = ({
   isLastEl,
   isProfile,
   likes,
-}: isLastEl) => {
+}: Post) => {
   const commentRef = useRef() as React.MutableRefObject<HTMLInputElement>;
   const menuRef = useRef() as React.MutableRefObject<HTMLInputElement>;
   const [isOpen, setIsOpen] = useState(false);
@@ -43,26 +39,34 @@ export const Post = ({
   };
 
   const handleDelete = async () => {
-    await deletePost({
-      variables: {
-        postId: _id,
-      },
-      update(cache: any) {
-        cache.evict({ id: `Post:${_id}` });
-      },
-    });
+    try {
+      await deletePost({
+        variables: {
+          postId: _id,
+        },
+        update(cache: any) {
+          cache.evict({ id: `Post:${_id}` });
+        },
+      });
+    } catch (error) {
+      console.log(error);
+    }
 
     setIsOpen(false);
   };
 
-  const addCommentHandler = () => {
+  const addCommentHandler = async () => {
     // add the comment to the database
-    AddComment({
-      variables: {
-        postId: _id,
-        commentText: commentRef.current.value,
-      },
-    });
+    try {
+      await AddComment({
+        variables: {
+          postId: _id,
+          commentText: commentRef.current.value,
+        },
+      });
+    } catch (error) {
+      console.log(error);
+    }
     // clear the comment form
     commentRef.current.value = "";
   };
@@ -125,7 +129,7 @@ export const Post = ({
           <img className="w-full" src={`${postImage}`} alt="" />
         </div>
       )}
-      <p className="pr-6 pl-6">{postText}</p>
+      <p className="px-6">{postText}</p>
       <div className="p-6">
         <div className="flex justify-between items-center">
           <span className="-m-1 rounded-full border-2 border-white dark:border-slate-800">

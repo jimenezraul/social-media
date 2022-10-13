@@ -78,6 +78,22 @@ export const NEW_LIKE_SUBSCRIPTION = gql`
   }
 `;
 
+export const NEW_LIKE_COMMENT_SUBSCRIPTION = gql`
+  subscription Subscription {
+    newLikeCommentSubscription {
+      commentId
+      likeExists
+      user {
+        _id
+        given_name
+        family_name
+        profileUrl
+        fullName
+      }
+    }
+  }
+`;
+
 export const subscribeToNewPost = (subscribeToMore: any) => {
   subscribeToMore({
     document: NEW_POST_SUBSCRIPTION,
@@ -100,14 +116,30 @@ export const subscribeToNewComment = (subscribeToMore: any) => {
       // update feed cache with new comment
       if (!subscriptionData.data) return prev;
       const newComment = subscriptionData.data.newCommentSubscription;
+      const state = store.getState().user;
+      const user = state.user;
       const updatedFeed = prev.feed.map((post: any) => {
-        if (post._id === newComment.postId) {
-          return {
-            ...post,
-            comments: [...post.comments, newComment.comment],
-            commentCount: post.commentCount + 1,
-          };
+        const data = {
+          type: "comment",
+          postId: post._id,
+          message: `${newComment.comment.commentAuthor.fullName} commented on your post`,
+          user: newComment.comment.commentAuthor,
+          post: {
+            ...newComment.comment,
+            postText: newComment.comment.commentText,
+          },
+        };
+        if (
+          post.postAuthor._id === user._id &&
+          newComment.comment.commentAuthor._id !== user._id
+        ) {
+          store.dispatch(setNotifications([...state.notifications, data]));
+          localStorage.setItem(
+            "notifications",
+            JSON.stringify([...state.notifications, data])
+          );
         }
+
         return post;
       });
 
@@ -135,18 +167,18 @@ export const subscribeToNewLike = (subscribeToMore: any) => {
               user._id === post.postAuthor._id &&
               post.postAuthor._id !== newLike.user._id
             ) {
-              
               const data = {
                 type: "like",
                 postId: post._id,
                 message: `${newLike.user.fullName} liked your post.`,
                 user: newLike.user,
-                post: post
+                post: post,
               };
-         
+
               if (notifications.length > 0) {
                 const notificationExists = notifications.find(
-                  (notification: any) => notification.user._id === newLike.user._id
+                  (notification: any) =>
+                    notification.user._id === newLike.user._id
                 );
                 if (!notificationExists) {
                   notifications.push(data);
@@ -167,7 +199,8 @@ export const subscribeToNewLike = (subscribeToMore: any) => {
               post.postAuthor._id !== newLike.user._id
             ) {
               const data = notifications.filter(
-                (notification: any) => notification.user._id !== newLike.user._id
+                (notification: any) =>
+                  notification.user._id !== newLike.user._id
               );
               localStorage.setItem("notifications", JSON.stringify(data));
               store.dispatch(setNotifications(data));
@@ -190,6 +223,44 @@ export const subscribeToNewLike = (subscribeToMore: any) => {
       return Object.assign({}, prev, {
         feed: [...updatedFeed],
       });
+    },
+  });
+};
+
+export const subscribeToNewLikeComment = (subscribeToMore: any) => {
+  subscribeToMore({
+    document: NEW_LIKE_COMMENT_SUBSCRIPTION,
+    updateQuery: (prev: any, { subscriptionData }: any) => {
+      const newLike = subscriptionData.data.newLikeCommentSubscription;
+
+      if (!subscriptionData.data) return prev;
+
+      // update current post object that is not an array
+      if (prev.post) {
+        const updatedPost = prev.post.comments.map((comment: any) => {
+          if (comment._id === newLike.commentId) {
+            return {
+              ...comment,
+              likes: !newLike.likeExists
+                ? [...comment.likes, newLike.user]
+                : comment.likes.filter(
+                    (like: any) => like._id !== newLike.user._id
+                  ),
+              likesCount: !newLike.likeExists
+                ? comment.likesCount + 1
+                : comment.likesCount - 1,
+            };
+          }
+          return comment;
+        });
+
+        return Object.assign({}, prev, {
+          post: {
+            ...prev.post,
+            comments: [...updatedPost],
+          },
+        });
+      }
     },
   });
 };

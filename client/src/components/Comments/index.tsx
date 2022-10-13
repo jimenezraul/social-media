@@ -1,10 +1,8 @@
 import { Link } from "react-router-dom";
+import { useMutation } from "@apollo/client";
+import { LIKE_COMMENT } from "../../utils/mutations";
 
-interface PropsComment extends Comment {
-  isLastEl?: boolean;
-}
-
-export const Comment = ({
+export const CommentCard = ({
   _id,
   commentAuthor,
   createdAtFormatted,
@@ -13,11 +11,29 @@ export const Comment = ({
   likes,
   replies,
   isLastEl,
-}: PropsComment) => {
+}: Comments) => {
+  const [LikeComment] = useMutation(LIKE_COMMENT);
   const reply = replies.length <= 1 ? "reply" : "replies";
   const repliesCount = replies.length;
+
+  const likeCommentHandler = async () => {
+    try {
+      await LikeComment({
+        variables: {
+          commentId: _id,
+        },
+      });
+    } catch (error: any) {
+      console.log(error.message);
+    }
+  };
+
   return (
-    <div className={`${isLastEl && "mb-24 md:mb-6"} my-2 bg-slate-800 rounded-lg shadow-xl p-5 border border-slate-700`}>
+    <div
+      className={`${
+        isLastEl && "mb-24 md:mb-6"
+      } my-2 bg-slate-800 rounded-lg shadow-xl p-5 border border-slate-700`}
+    >
       <div className="flex items-start mb-4" key={_id}>
         <img
           className="w-10 h-10 rounded-full mr-4 bg-default p-0.5"
@@ -37,7 +53,7 @@ export const Comment = ({
             </span>
           </div>
           <p className="text-slate-600 dark:text-slate-300">{commentText}</p>
-          <div className="">
+          <div className="pt-6">
             <div className="flex justify-between items-center">
               <span className="-m-1 rounded-full border-2 border-white dark:border-slate-800">
                 <i
@@ -80,14 +96,14 @@ export const Comment = ({
             <div className="mt-6 mb-6 h-px bg-slate-500"></div>
             <div className="flex items-center justify-between mb-6">
               <button
-                // onClick={likePostHandler}
+                onClick={likeCommentHandler}
                 className="py-2 px-4 font-medium hover:bg-slate-50 dark:hover:bg-slate-700 rounded-lg"
               >
                 <i className="fa-solid fa-thumbs-up"></i> Like
               </button>
               <Link to={`/comment/${_id}`}>
                 <button className="py-2 px-4 font-medium hover:bg-slate-50 dark:hover:bg-slate-700 rounded-lg">
-                  <i className="fa-sharp fa-solid fa-comment-dots"></i> Comment
+                  <i className="fa-sharp fa-solid fa-comment-dots"></i> Replies
                 </button>
               </Link>
               <button className="py-2 px-4 font-medium hover:bg-slate-50 dark:hover:bg-slate-700 rounded-lg">

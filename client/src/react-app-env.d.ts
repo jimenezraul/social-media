@@ -155,7 +155,7 @@ interface User {
   createdAtFormatted: String;
 }
 
-interface Comment {
+interface Comments {
   _id: ID;
   commentText: String;
   commentAuthor: User;
@@ -164,6 +164,7 @@ interface Comment {
   likes: [User];
   likesCount: Int;
   replies: [Comment];
+  isLastEl?: boolean;
 }
 
 interface Post {
@@ -177,8 +178,14 @@ interface Post {
   likes: [User];
   likeCount: Int;
   createdAtFormatted: String;
+  isLastEl?: boolean;
+  isProfile?: boolean;
 }
 
 interface SearchProps {
   handleSearch: (searchTerm: string) => void;
+}
+
+interface Notifications {
+  setNotificationsOpen: (open: boolean) => void;
 }
