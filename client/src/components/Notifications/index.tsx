@@ -31,7 +31,7 @@ export const Notifications = ({ setNotificationsOpen }: Notifications) => {
     dispatch(setNotifications(newNotifications));
     setNotificationsOpen(false);
   };
-  
+
   return (
     <div className="overflow-hidden w-80 z-50 absolute bg-slate-800 top-10 -right-14 md:-right-2 rounded-md border border-slate-700 text-white">
       <div className="w-full py-1 px-5 text-end bg-slate-700">
@@ -68,6 +68,7 @@ export const Notifications = ({ setNotificationsOpen }: Notifications) => {
               </p>
               {notification.type === "comment" && (
                 <Link
+                  onClick={() => removeNotificationHandler(notification.post._id)}
                   to={`/post/${notification.postId}/#${notification.post._id}`}
                 >
                   see comment

@@ -123,7 +123,7 @@ export const subscribeToNewComment = (subscribeToMore: any) => {
       const newComment = subscriptionData.data.newCommentSubscription;
       const state = store.getState().user;
       const user = state.user;
-      console.log(newComment);
+    
       const updatedFeed = prev.feed.map((post: any) => {
         const data = {
           type: "comment",
@@ -188,7 +188,9 @@ export const subscribeToNewLike = (subscribeToMore: any) => {
               if (notifications.length > 0) {
                 const notificationExists = notifications.find(
                   (notification: any) =>
-                    notification.user._id === newLike.user._id
+                    notification.user._id === newLike.user._id &&
+                    notification.type === "like" &&
+                    notification.postId === post._id
                 );
                 if (!notificationExists) {
                   notifications.push(data);
@@ -210,8 +212,10 @@ export const subscribeToNewLike = (subscribeToMore: any) => {
             ) {
               const data = notifications.filter(
                 (notification: any) =>
-                  notification.user._id !== newLike.user._id
+                  notification.user._id !== user._id &&
+                  notification.type !== "like"
               );
+          
               localStorage.setItem("notifications", JSON.stringify(data));
               store.dispatch(setNotifications(data));
             }

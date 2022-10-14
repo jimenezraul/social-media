@@ -22,8 +22,18 @@ export const CommentCard = ({
     const hashLink = window.location.hash;
     if (commentRef.current && hashLink === `#${_id}`) {
       commentRef.current.scrollIntoView({ behavior: "smooth" });
+      // get the div element with the id of newComment
+      const newComment = document.querySelector('#new-comment');
+      
+      if (!newComment) {
+        const div = document.createElement("div");
+        div.id = "new-comment";
+        div.classList.add("bg-default", "p-2", "rounded-md", "text-white", "mb-2");
+        div.innerText = `New comment from ${commentAuthor.fullName}.`;
+        commentRef.current.prepend(div);
+      }
     }
-  }, [_id]);
+  }, [_id, commentAuthor.fullName]);
 
   const likeCommentHandler = async () => {
     try {
@@ -43,7 +53,7 @@ export const CommentCard = ({
       id={_id}
       className={`${
         isLastEl && "mb-24 md:mb-6"
-      } my-2 bg-slate-800 rounded-lg shadow-xl p-5 border border-slate-700`}
+      } my-2 bg-slate-800 rounded-lg shadow-xl p-5 border border-slate-700 transition-all duration-300`}
     >
       <div className="flex items-start mb-4" key={_id}>
         <img
