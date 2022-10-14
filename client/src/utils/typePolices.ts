@@ -7,6 +7,11 @@ export const policies = {
             return incoming;
           },
         },
+        comments: {
+          merge(existing = [], incoming: any) {
+            return incoming;
+          },
+        },
       },
     },
     User: {

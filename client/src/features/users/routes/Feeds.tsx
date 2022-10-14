@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useQuery, useLazyQuery } from "@apollo/client";
+import { useLazyQuery, useQuery } from "@apollo/client";
 import { FEED, GET_ME } from "./api/queries";
 import { Post } from "../../../components/Posts";
 import { FriendsList } from "../../../components/FriendsList";
@@ -10,8 +10,13 @@ import {
   subscribeToNewComment,
   subscribeToNewLike,
 } from "../../../utils/subscriptions";
+import { useAppSelector, useAppDispatch } from "../../../app/hooks";
+import { newPost, setNewPost } from "../../posts/postSlice";
 
 export const Feed = () => {
+  const dispatch = useAppDispatch();
+  const newPostNotification = useAppSelector(newPost).newPost;
+
   const [Me, { data: meData, loading: meLoading, error: meError }] =
     useLazyQuery(GET_ME);
   const [feed, setFeed] = useState<Post[]>([]);
@@ -22,13 +27,14 @@ export const Feed = () => {
     loading: feedLoading,
     error: feedError,
     subscribeToMore,
+    refetch,
   } = useQuery(FEED);
 
   useEffect(() => {
     if (feedLoading) return;
     if (feedError) return;
     if (!feedData) return;
-    
+
     if (feedData.feed.length > 0) {
       setFeed(feedData.feed);
     }
@@ -40,7 +46,7 @@ export const Feed = () => {
     if (meLoading) return;
     if (meError) return;
     if (!meData) return;
-    
+
     setFriends(meData.me.friends);
   }, [feedData, feedLoading, feedError, Me, meData, meLoading, meError, feed]);
 
@@ -52,6 +58,11 @@ export const Feed = () => {
     }
   }, [subscribeToMore]);
 
+  const refreshHandler = () => {
+    refetch();
+    dispatch(setNewPost(false));
+  };
+  
   const me = meData && meData.me;
 
   return (
@@ -61,8 +72,27 @@ export const Feed = () => {
           <div className="hidden md:block w-full md:w-4/12 xl:w-3/12 px-3 mb-4">
             <MeCard me={me} />
           </div>
-          <div className="flex flex-col w-full md:w-8/12 xl:w-5/12 px-3 h-full overflow-y-scroll no-scrollbar">
+          <div className="relative flex flex-col w-full md:w-8/12 xl:w-5/12 px-3 h-full overflow-y-scroll no-scrollbar">
             <AddPost me={me} />
+
+            <div className="flex justify-center">
+              <div
+                className={`${
+                  newPostNotification ? "opacity-100" : "opacity-0"
+                } absolute transition-all ease-in-out delay-150 duration-500 top-12 flex my-2 justify-center w-1/2`}
+              >
+                <button
+                  type="button"
+                  onClick={refreshHandler}
+                  className="rounded-full text-slate-800 bg-slate-300 px-3 py-1 text-sm"
+                  // if newPost is true, desable button
+                  disabled={!newPostNotification}
+                >
+                  New Posts
+                </button>
+              </div>
+            </div>
+
             {feed?.map((post: Post, index: any) => {
               const isLastEl = index === feedData?.feed.length - 1;
               return <Post key={index} {...post} isLastEl={isLastEl} />;

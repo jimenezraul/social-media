@@ -11,6 +11,7 @@ interface AddPostProps {
 export const AddPost = ({ me }: AddPostProps) => {
   const textRef = useRef<HTMLTextAreaElement>(null);
   const [addPost] = useMutation(ADD_POST);
+  if (me === undefined) return <div>Loading...</div>;
 
   const handlePost = async () => {
     const postText = textRef.current?.value.trim();
@@ -44,8 +45,6 @@ export const AddPost = ({ me }: AddPostProps) => {
       }
     }
   };
-
-  if (me === undefined) return <div>Loading...</div>;
   
   return (
     <div className="hidden md:flex items-center p-2 border border-slate-700 mb-4 break-inside rounded-lg bg-slate-800 bg-clip-border">
