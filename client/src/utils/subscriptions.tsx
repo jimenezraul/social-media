@@ -123,10 +123,11 @@ export const subscribeToNewComment = (subscribeToMore: any) => {
       const newComment = subscriptionData.data.newCommentSubscription;
       const state = store.getState().user;
       const user = state.user;
+      console.log(newComment);
       const updatedFeed = prev.feed.map((post: any) => {
         const data = {
           type: "comment",
-          postId: post._id,
+          postId: newComment.postId,
           message: `${newComment.comment.commentAuthor.fullName} commented on your post`,
           user: newComment.comment.commentAuthor,
           post: {

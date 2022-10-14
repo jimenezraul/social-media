@@ -3,6 +3,7 @@ import {
   notifications,
   setNotifications,
 } from "../../features/users/userSlice";
+import { Link } from "react-router-dom";
 
 export const Notifications = ({ setNotificationsOpen }: Notifications) => {
   const dispatch = useAppDispatch();
@@ -30,7 +31,7 @@ export const Notifications = ({ setNotificationsOpen }: Notifications) => {
     dispatch(setNotifications(newNotifications));
     setNotificationsOpen(false);
   };
-
+  
   return (
     <div className="overflow-hidden w-80 z-50 absolute bg-slate-800 top-10 -right-14 md:-right-2 rounded-md border border-slate-700 text-white">
       <div className="w-full py-1 px-5 text-end bg-slate-700">
@@ -58,13 +59,20 @@ export const Notifications = ({ setNotificationsOpen }: Notifications) => {
             />
 
             <div className="flex flex-1 flex-col justify-center relative">
-              <p className="text-xs">{notification.message}</p>
-              <p className="text-xs text-slate-400">
+              <p className="text-xs w-10/12 mb-2">{notification.message}</p>
+              <p className="text-xs text-slate-400 w-10/12">
                 {/* check if postText is more than 20 words */}
                 {notification.post.postText?.length > 20
                   ? notification.post.postText.slice(0, 20) + "..."
                   : notification.post.postText}
               </p>
+              {notification.type === "comment" && (
+                <Link
+                  to={`/post/${notification.postId}/#${notification.post._id}`}
+                >
+                  see comment
+                </Link>
+              )}
               <button
                 onClick={() => removeNotificationHandler(notification.post._id)}
                 type="button"

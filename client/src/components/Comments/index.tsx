@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import { useMutation } from "@apollo/client";
 import { LIKE_COMMENT } from "../../utils/mutations";
+import { useRef, useEffect } from "react";
 
 export const CommentCard = ({
   _id,
@@ -12,9 +13,17 @@ export const CommentCard = ({
   replies,
   isLastEl,
 }: Comments) => {
+  const commentRef = useRef<HTMLDivElement>(null);
   const [LikeComment] = useMutation(LIKE_COMMENT);
   const reply = replies.length <= 1 ? "reply" : "replies";
   const repliesCount = replies.length;
+
+  useEffect(() => {
+    const hashLink = window.location.hash;
+    if (commentRef.current && hashLink === `#${_id}`) {
+      commentRef.current.scrollIntoView({ behavior: "smooth" });
+    }
+  }, [_id]);
 
   const likeCommentHandler = async () => {
     try {
@@ -30,6 +39,8 @@ export const CommentCard = ({
 
   return (
     <div
+      ref={commentRef}
+      id={_id}
       className={`${
         isLastEl && "mb-24 md:mb-6"
       } my-2 bg-slate-800 rounded-lg shadow-xl p-5 border border-slate-700`}
