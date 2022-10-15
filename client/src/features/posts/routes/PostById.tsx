@@ -6,7 +6,6 @@ import { CommentCard } from "../../../components/Comments";
 import { useEffect } from "react";
 import {
   subscribeToNewLikeComment,
-  subscribeToNewComment,
 } from "../../../utils/subscriptions";
 
 export const PostById = () => {
@@ -18,7 +17,6 @@ export const PostById = () => {
 
   useEffect(() => {
     if (subscribeToMore) {
-      subscribeToNewComment(subscribeToMore);
       subscribeToNewLikeComment(subscribeToMore);
     }
   }, [subscribeToMore]);

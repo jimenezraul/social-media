@@ -11,7 +11,7 @@ export const Notifications = ({ setNotificationsOpen }: Notifications) => {
 
   if (myNotification.length === 0) {
     return (
-      <div className="w-80 text-center z-50 absolute bg-slate-800 top-8 -right-14 md:-right-2 p-4 rounded-md border border-slate-700 text-white">
+      <div className="w-80 text-center z-50 absolute bg-slate-800 top-8 -right-16 md:-right-2 p-4 rounded-md border border-slate-700 text-white">
         <h1>No Notifications</h1>
       </div>
     );
@@ -24,9 +24,11 @@ export const Notifications = ({ setNotificationsOpen }: Notifications) => {
   };
 
   const removeNotificationHandler = (id: string) => {
+ 
     const newNotifications = myNotification.filter(
       (n: any) => n.post._id !== id
     );
+
     localStorage.setItem("notifications", JSON.stringify(newNotifications));
     dispatch(setNotifications(newNotifications));
     setNotificationsOpen(false);

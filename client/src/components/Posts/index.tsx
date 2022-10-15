@@ -73,7 +73,7 @@ export const Post = ({
 
   return (
     <article
-    data-aos="zoom-in"
+      data-aos="zoom-in"
       className={`${
         isLastEl && "mb-24 md:mb-4"
       }  border border-slate-700 mb-4 break-inside rounded-lg bg-slate-800 flex flex-col bg-clip-border`}
@@ -143,15 +143,14 @@ export const Post = ({
           <span className="text-lg font-bold ml-3">{likeCount}</span>
           {/* images of the friends that like the post */}
           {likes.length > 0 && (
-            <div className="ml-3 flex items-center relative w-1/2">
+            <div className="flex justify-items-start ml-3 w-1/2 h-8 relative">
               {likes.map((like, index) => {
+                const position = index === 0 ? "left-0" : index === 1 ? "left-4" : "left-8";
                 if (index < 3) {
                   return (
                     <img
                       key={like._id}
-                      className={`absolute w-8 h-8 left-${
-                        index * 2
-                      } rounded-full border border-slate-500 bg-default`}
+                      className={`absolute w-8 h-8 ${position} rounded-full border border-slate-500 bg-default`}
                       src={`${like.profileUrl}`}
                       alt=""
                       referrerPolicy="no-referrer"
@@ -167,7 +166,7 @@ export const Post = ({
               )}
             </div>
           )}
-          <p className="ml-auto">
+          <p className="ml-auto text-sm">
             {commentCount} {comment}
           </p>
         </div>
