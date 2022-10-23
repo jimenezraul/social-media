@@ -63,15 +63,6 @@ const typeDefs = gql`
     isLoggedIn: Boolean
   }
 
-  type Query {
-    me: User
-    users: [User]
-    user(id: ID!): User
-    posts: [Post]
-    post(postId: ID!): Post
-    feed: [Post]
-  }
-
   type CommentSub {
     comment: Comment
     postId: ID
@@ -87,6 +78,15 @@ const typeDefs = gql`
     commentId: ID
     likeExists: Boolean
     user: User
+  }
+
+  type Query {
+    me: User
+    users: [User]
+    user(id: ID!): User
+    posts: [Post]
+    post(postId: ID!): Post
+    feed: [Post]
   }
 
   type Mutation {
@@ -118,7 +118,7 @@ const typeDefs = gql`
   }
 
   type Subscription {
-    newPostSubscription: Post
+    newPostSubscription(userId: ID!): Post
     newCommentSubscription: CommentSub
     newLikeSubscription: LikeSub
     newLikeCommentSubscription: likeCommentSub

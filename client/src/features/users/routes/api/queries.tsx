@@ -54,6 +54,8 @@ export const GET_ME = gql`
       friendRequestCount
       friends {
         _id
+        given_name
+        family_name
         fullName
         email
         isVerified
@@ -80,6 +82,8 @@ export const FEED = gql`
       postAuthor {
         _id
         fullName
+        given_name
+        family_name
         profileUrl
         friends {
           _id

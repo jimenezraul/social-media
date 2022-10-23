@@ -16,6 +16,7 @@ export const Post = ({
   isProfile,
   likes,
 }: Post) => {
+
   const commentRef = useRef() as React.MutableRefObject<HTMLInputElement>;
   const menuRef = useRef() as React.MutableRefObject<HTMLInputElement>;
   const [isOpen, setIsOpen] = useState(false);
@@ -114,7 +115,7 @@ export const Post = ({
                 className="inline-block text-lg font-bold mr-2"
                 to={`/user/${_id}`}
               >
-                {postAuthor?.fullName}
+                {postAuthor.given_name} {postAuthor.family_name}
               </Link>
             </div>
             <div className="text-slate-500 dark:text-slate-300">

@@ -31,11 +31,7 @@ const Navbar = () => {
   const routes = [
     {
       name: "feed",
-      path: "/feed",
-    },
-    {
-      name: "profile",
-      path: "/profile",
+      path: "/feed" || "/",
     },
   ];
 
@@ -63,21 +59,21 @@ const Navbar = () => {
         </div>
 
         <div
-          className={`w-full hidden flex-grow lg:flex lg:items-center lg:w-auto`}
+          className={`w-full hidden flex-grow md:flex md:items-center md:w-auto`}
         >
           <div className="text-sm lg:flex-grow">
             {routes.map((route, index) => {
               // check if the route is active
               const isActive = currentPath === route.path;
-
+           
               return (
                 <Link
                   key={index}
                   to={route.path}
                   onClick={() => setCurrentPath(route.path)}
                   className={`${
-                    isActive && "text-gray-50"
-                  } uppercase block mt-4 lg:inline-block lg:mt-0 text-slate-400 hover:text-white mr-4`}
+                    isActive ? "text-white" : "text-gray-400"
+                  } uppercase block lg:inline-block lg:mt-0  hover:text-white mr-4`}
                 >
                   {route.name}
                 </Link>
@@ -90,19 +86,22 @@ const Navbar = () => {
             <i className="text-xl fa-solid fa-comment text-slate-300"></i>
           </Link>
           <div className="relative" ref={notificationsRef}>
-            <div onClick={() => setNotificationsOpen(!notificationsOpen)} className="cursor-pointer">
-            <i
-              className="text-xl fa-solid fa-bell text-slate-300"
-            ></i>
             <div
-              className={`${
-                notification.length > 0 ? "flex" : "hidden"
-              } absolute -top-2 -right-4 justify-center items-center w-6 h-6 text-xs font-bold text-white bg-red-500 rounded-full border-2 border-white dark:border-gray-900`}
+              onClick={() => setNotificationsOpen(!notificationsOpen)}
+              className="cursor-pointer"
             >
-              {notification.length}
+              <i className="text-xl fa-solid fa-bell text-slate-300"></i>
+              <div
+                className={`${
+                  notification.length > 0 ? "flex" : "hidden"
+                } absolute -top-2 -right-4 justify-center items-center w-6 h-6 text-xs font-bold text-white bg-red-500 rounded-full border-2 border-white dark:border-gray-900`}
+              >
+                {notification.length}
+              </div>
             </div>
-            </div>
-            {notificationsOpen && <Notifications setNotificationsOpen={setNotificationsOpen} />}
+            {notificationsOpen && (
+              <Notifications setNotificationsOpen={setNotificationsOpen} />
+            )}
           </div>
           <div className="flex relative" ref={menuRef}>
             <img
@@ -112,7 +111,9 @@ const Navbar = () => {
               referrerPolicy="no-referrer"
               onClick={() => setIsOpen(!isOpen)}
             />
-            {isOpen && <Dropdown logoutUser={logoutUser} />}
+            {isOpen && (
+              <Dropdown logoutUser={logoutUser} setIsOpen={setIsOpen} setCurrentPath={setCurrentPath} />
+            )}
           </div>
         </div>
       </div>

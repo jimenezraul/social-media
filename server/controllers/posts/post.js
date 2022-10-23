@@ -2,7 +2,7 @@ const {
   AuthenticationError,
   ForbiddenError,
 } = require('apollo-server-express');
-const { User, Post } = require('../../models');
+const { User, Post, Comment } = require('../../models');
 const { PubSub } = require('graphql-subscriptions');
 const { withFilter } = require('graphql-subscriptions');
 
@@ -147,7 +147,7 @@ module.exports = {
     if (!context.user) {
       throw new AuthenticationError('You need to be logged in!');
     }
-   
+
     // check if the post exists
     const post = await Post.findOne({ _id: postId });
 
@@ -163,6 +163,9 @@ module.exports = {
       throw new ForbiddenError('You are not authorized to delete this post!');
     }
 
+    // delete all the comments associated with the post
+    await Comment.deleteMany({ _id: { $in: post.comments } });
+    console.log('Comments deleted');
     await Post.findOneAndDelete({ _id: postId });
     await User.findByIdAndUpdate(
       { _id: context.user._id },
@@ -176,6 +179,19 @@ module.exports = {
   },
 
   newPostSubscription: {
-    subscribe: () => pubsub.asyncIterator('NEW_POST'),
+    // return pubsub.asyncIterator('NEW_POST'); to post author friends
+    subscribe: withFilter(
+      () => pubsub.asyncIterator('NEW_POST'),
+      (payload, variables) => {
+        // return to post author and post author friends
+        return (
+          payload.newPostSubscription.postAuthor._id.toString() ===
+            variables.userId.toString() ||
+          payload.newPostSubscription.postAuthor.friends.includes(
+            variables.userId
+          )
+        );
+      }
+    ),
   },
 };

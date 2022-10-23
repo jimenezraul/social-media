@@ -11,6 +11,7 @@ export const Me = gql`
       isAdmin
       isVerified
       postCount
+      fullName
       posts {
         _id
         postText

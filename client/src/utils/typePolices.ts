@@ -23,10 +23,18 @@ export const policies = {
         },
       },
     },
-
     Comment: {
       fields: {
         likes: {
+          merge(existing = [], incoming: any) {
+            return incoming;
+          },
+        },
+      },
+    },
+    Query: {
+      fields: {
+        feed: {
           merge(existing = [], incoming: any) {
             return incoming;
           },

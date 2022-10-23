@@ -5,8 +5,8 @@ import { setNotifications } from "../features/users/userSlice";
 import { setNewPost } from "../features/posts/postSlice";
 
 export const NEW_POST_SUBSCRIPTION = gql`
-  subscription New_Post_Subscription {
-    newPostSubscription {
+  subscription New_Post_Subscription($userId: ID!) {
+    newPostSubscription(userId: $userId) {
       postText
       _id
       likeCount
@@ -96,16 +96,21 @@ export const NEW_LIKE_COMMENT_SUBSCRIPTION = gql`
 `;
 
 export const subscribeToNewPost = (subscribeToMore: any) => {
+  const user = store.getState().user.user;
+
   subscribeToMore({
     document: NEW_POST_SUBSCRIPTION,
+    variables: { userId: user._id },
     updateQuery: (prev: any, { subscriptionData }: any) => {
-      const user = store.getState().user.user;
+
       if (!subscriptionData.data) return prev;
       const newPost = subscriptionData.data.newPostSubscription;
+
       if (user._id !== newPost.postAuthor._id) {
         store.dispatch(setNewPost(true));
-        return;
+        return prev;
       }
+
       return Object.assign({}, prev, {
         feed: [newPost, ...prev.feed],
       });
@@ -123,7 +128,7 @@ export const subscribeToNewComment = (subscribeToMore: any) => {
       const newComment = subscriptionData.data.newCommentSubscription;
       const state = store.getState().user;
       const user = state.user;
-    
+
       const updatedFeed = prev.feed.map((post: any) => {
         const data = {
           type: "comment",
@@ -215,7 +220,7 @@ export const subscribeToNewLike = (subscribeToMore: any) => {
                   notification.user._id !== user._id &&
                   notification.type !== "like"
               );
-          
+
               localStorage.setItem("notifications", JSON.stringify(data));
               store.dispatch(setNotifications(data));
             }

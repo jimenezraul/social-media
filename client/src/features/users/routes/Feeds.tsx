@@ -62,7 +62,7 @@ export const Feed = () => {
     refetch();
     dispatch(setNewPost(false));
   };
-  
+
   const me = meData && meData.me;
 
   return (
@@ -93,7 +93,7 @@ export const Feed = () => {
               </div>
             </div>
 
-            {feed?.map((post: Post, index: any) => {
+            {feed?.map((post: Post, index: number) => {
               const isLastEl = index === feedData?.feed.length - 1;
               return <Post key={index} {...post} isLastEl={isLastEl} />;
             })}

@@ -24,7 +24,7 @@ export const MeCard = ({ me }: ME) => {
       </div>
     );
 
-  const { profileUrl, fullName, posts, friends } = me;
+  const { profileUrl, given_name, family_name, posts, friends, email } = me;
   const postCount = posts?.length;
   const postOrPosts = posts?.length === 1 ? "post" : "posts";
   const friendCount = friends?.length;
@@ -43,7 +43,9 @@ export const MeCard = ({ me }: ME) => {
           src={`${profileUrl}`}
           alt=""
         />
-        <div className="mt-3 font-bold flex flex-col">{fullName}</div>
+        <div className="mt-3 font-bold flex flex-col">
+          {given_name} {family_name}
+        </div>
       </div>
       {friendCount !== undefined && (
         <div className="flex justify-center font-bold  text-xs text-slate-300 my-4">

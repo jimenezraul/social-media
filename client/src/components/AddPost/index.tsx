@@ -25,8 +25,7 @@ export const AddPost = ({ me }: AddPostProps) => {
           update(cache, { data: { addPost } }) {
             const { me } = cache.readQuery({
               query: GET_ME,
-            }) as { me: User };
-            
+            }) as { me: User } || { me: null };
             cache.writeQuery({
               query: GET_ME,
               data: {
