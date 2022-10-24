@@ -25,6 +25,7 @@ module.exports = {
     }
 
     if (user._id.toString() !== id) {
+      console.log(user._id.toString(), id);
       console.log("something's wrong");
       clearCookie(context.res, 'refresh_token');
       throw new AuthenticationError('r User not found');

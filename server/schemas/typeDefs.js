@@ -80,6 +80,12 @@ const typeDefs = gql`
     user: User
   }
 
+  type friendRequestSub {
+    user: User
+    friendId: ID
+    requestExists: Boolean
+  }
+
   type Query {
     me: User
     users: [User]
@@ -122,6 +128,7 @@ const typeDefs = gql`
     newCommentSubscription: CommentSub
     newLikeSubscription: LikeSub
     newLikeCommentSubscription: likeCommentSub
+    newFriendRequestSubscription: friendRequestSub
   }
 `;
 

@@ -11,6 +11,7 @@ const {
   friendRequest,
   acceptFriendRequest,
   removeFriend,
+  newFriendRequestSubscription,
 } = require('./friendRequest');
 const { googleLogin } = require('./googleLogin');
 
@@ -33,6 +34,9 @@ const userResolvers = {
     resetPassword: resetPassword,
     forgotPassword: forgotPassword,
     resendVerificationEmail: resendVerificationEmail,
+  },
+  userSubscription: {
+    newFriendRequestSubscription: newFriendRequestSubscription,
   },
 };
 

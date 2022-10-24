@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { useAppSelector } from "../../app/hooks";
 import {
   selectUser,
@@ -7,11 +7,13 @@ import {
   notifications,
 } from "../../features/users/userSlice";
 import { useAppDispatch } from "../../app/hooks";
-import { useMutation } from "@apollo/client";
+import { useMutation, useQuery } from "@apollo/client";
 import { LOGOUT } from "../../utils/mutations";
 import { Dropdown } from "../Dropdown";
 import { useOutside } from "../../utils/useOutside";
 import { Notifications } from "../Notifications";
+import { GET_ME } from "../../features/users/routes/api/queries";
+import { subscribeToFriendRequests } from "../../features/users/routes/api/subscriptions";
 
 const Navbar = () => {
   const menuRef = useRef(null);
@@ -22,6 +24,17 @@ const Navbar = () => {
   const [currentPath, setCurrentPath] = useState<String>(
     window.location.pathname
   );
+  const { data, loading, error, subscribeToMore } = useQuery(GET_ME);
+
+  useEffect(() => {
+    if (loading) return;
+    if (error) return;
+    if (!data) return;
+
+    if (subscribeToMore) {
+      subscribeToFriendRequests(subscribeToMore);
+    }
+  }, [data, loading, error, subscribeToMore]);
 
   // get notifications from the local storage
   const notification = useAppSelector(notifications);
@@ -69,7 +82,7 @@ const Navbar = () => {
             {routes.map((route, index) => {
               // check if the route is active
               const isActive = currentPath === route.path;
-           
+
               return (
                 <Link
                   key={index}
@@ -116,7 +129,11 @@ const Navbar = () => {
               onClick={() => setIsOpen(!isOpen)}
             />
             {isOpen && (
-              <Dropdown logoutUser={logoutUser} setIsOpen={setIsOpen} setCurrentPath={setCurrentPath} />
+              <Dropdown
+                logoutUser={logoutUser}
+                setIsOpen={setIsOpen}
+                setCurrentPath={setCurrentPath}
+              />
             )}
           </div>
         </div>

@@ -7,7 +7,8 @@ interface isLastEl extends Friends {
 
 export const FriendsList = ({
   profileUrl,
-  fullName,
+  given_name,
+  family_name,
   isLastEl,
   onClick,
 }: isLastEl) => {
@@ -20,7 +21,9 @@ export const FriendsList = ({
           alt=""
           referrerPolicy="no-referrer"
         />
-        <h1 className="text-md font-semibold flex justify-center items-center">{fullName}</h1>
+        <h1 className="text-md font-semibold flex justify-center items-center">
+          {given_name} {family_name}
+        </h1>
       </div>
       <Button
         onClick={onClick}

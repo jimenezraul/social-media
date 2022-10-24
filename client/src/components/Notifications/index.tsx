@@ -24,7 +24,6 @@ export const Notifications = ({ setNotificationsOpen }: Notifications) => {
   };
 
   const removeNotificationHandler = (id: string) => {
- 
     const newNotifications = myNotification.filter(
       (n: any) => n.post._id !== id
     );
@@ -64,13 +63,26 @@ export const Notifications = ({ setNotificationsOpen }: Notifications) => {
               <p className="text-xs w-10/12 mb-2">{notification.message}</p>
               <p className="text-xs text-slate-400 w-10/12">
                 {/* check if postText is more than 20 words */}
-                {notification.post.postText?.length > 20
-                  ? notification.post.postText.slice(0, 20) + "..."
-                  : notification.post.postText}
+                {notification.post?.postText?.length > 20
+                  ? notification.post?.postText.slice(0, 20) + "..."
+                  : notification.post?.postText}
               </p>
+              {notification.type === "friendRequest" && (
+                <Link
+                  onClick={() =>
+                    removeNotificationHandler(notification.post._id)
+                  }
+                  to={`/profile/${notification.user._id}`}
+                  className="text-xs text-blue-500"
+                >
+                  View Profile
+                </Link>
+              )}
               {notification.type === "comment" && (
                 <Link
-                  onClick={() => removeNotificationHandler(notification.post._id)}
+                  onClick={() =>
+                    removeNotificationHandler(notification.post._id)
+                  }
                   to={`/post/${notification.postId}/#${notification.post._id}`}
                 >
                   see comment

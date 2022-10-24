@@ -165,7 +165,7 @@ module.exports = {
 
     // delete all the comments associated with the post
     await Comment.deleteMany({ _id: { $in: post.comments } });
-    console.log('Comments deleted');
+
     await Post.findOneAndDelete({ _id: postId });
     await User.findByIdAndUpdate(
       { _id: context.user._id },

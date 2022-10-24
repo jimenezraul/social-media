@@ -1,5 +1,13 @@
-const { userQuery, userMutation } = require('../controllers/users');
-const { postQuery, postMutation, postSubscription } = require('../controllers/posts');
+const {
+  userQuery,
+  userMutation,
+  userSubscription,
+} = require('../controllers/users');
+const {
+  postQuery,
+  postMutation,
+  postSubscription,
+} = require('../controllers/posts');
 
 const resolvers = {
   Query: {
@@ -12,6 +20,7 @@ const resolvers = {
   },
   Subscription: {
     ...postSubscription,
+    ...userSubscription,
   },
 };
 

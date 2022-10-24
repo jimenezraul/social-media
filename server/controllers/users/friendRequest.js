@@ -1,5 +1,8 @@
 const { AuthenticationError } = require('apollo-server-express');
 const { User } = require('../../models');
+const { PubSub } = require('graphql-subscriptions');
+
+const pubsub = new PubSub();
 
 module.exports = {
   // friend request
@@ -10,7 +13,7 @@ module.exports = {
       throw new AuthenticationError('You need to be logged in!');
     }
 
-    const user = await User.findOne({ _id: friendId });
+    const user = await User.findOne({ _id: friendId }).select('-__v -password');
 
     if (!user) {
       throw new AuthenticationError('User not found');
@@ -20,6 +23,15 @@ module.exports = {
       user.friendRequests.pull(context.user._id);
       user.friendRequestCount -= 1;
       user.save();
+
+      pubsub.publish('NEW_FRIEND_REQUEST', {
+        newFriendRequestSubscription: {
+          friendId: friendId,
+          user: user,
+          requestExists: false,
+        },
+      });
+
       return {
         success: true,
         message: 'Friend request removed',
@@ -29,6 +41,14 @@ module.exports = {
     user.friendRequests.push(context.user._id);
     user.friendRequestCount = user.friendRequestCount + 1;
     user.save();
+
+    pubsub.publish('NEW_FRIEND_REQUEST', {
+      newFriendRequestSubscription: {
+        friendId: friendId,
+        user: user,
+        requestExists: true,
+      },
+    });
 
     return {
       success: true,
@@ -113,5 +133,12 @@ module.exports = {
       success: true,
       message: 'Friend removed successfully',
     };
+  },
+
+  // subscribe to friend request
+  newFriendRequestSubscription: {
+    subscribe: () => {
+      return pubsub.asyncIterator('NEW_FRIEND_REQUEST');
+    },
   },
 };

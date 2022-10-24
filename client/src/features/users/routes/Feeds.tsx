@@ -17,8 +17,14 @@ export const Feed = () => {
   const dispatch = useAppDispatch();
   const newPostNotification = useAppSelector(newPost).newPost;
 
-  const [Me, { data: meData, loading: meLoading, error: meError }] =
-    useLazyQuery(GET_ME);
+  const [
+    Me,
+    {
+      data: meData,
+      loading: meLoading,
+      error: meError,
+    },
+  ] = useLazyQuery(GET_ME);
   const [feed, setFeed] = useState<Post[]>([]);
   const [friends, setFriends] = useState<Friends[]>([]);
 
@@ -79,7 +85,7 @@ export const Feed = () => {
               <div
                 className={`${
                   newPostNotification ? "opacity-100" : "opacity-0"
-                } absolute transition-all ease-in-out delay-150 duration-500 top-12 flex my-2 justify-center w-1/2`}
+                } absolute transition-all ease-in-out delay-150 duration-500 z-50 top-0 md:top-12 flex my-2 justify-center w-1/2`}
               >
                 <button
                   type="button"
