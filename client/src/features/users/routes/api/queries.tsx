@@ -20,6 +20,8 @@ export const GET_ME = gql`
         postAuthor {
           _id
           fullName
+          given_name
+          family_name
           profileUrl
         }
         createdAt
@@ -103,6 +105,22 @@ export const FEED = gql`
         _id
         fullName
         profileUrl
+      }
+    }
+  }
+`;
+
+export const GET_ALL_USER = gql`
+  query GetAllUser {
+    users {
+      _id
+      given_name
+      family_name
+      profileUrl
+      fullName
+      isVerified
+      friendRequests {
+        _id
       }
     }
   }

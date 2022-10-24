@@ -18,4 +18,12 @@ export const LOGIN = gql`
   }
 `;
 
+export const SEND_FRIEND_REQUEST = gql`
+  mutation Send_Friend_Request($friendId: ID!) {
+    friendRequest(friendId: $friendId) {
+      success
+      message
+    }
+  }
+`;
 

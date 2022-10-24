@@ -4,6 +4,7 @@ import { lazyImport } from "../utils/lazyImports";
 
 import Navbar from "../components/Navbar";
 import { Dock } from "../components/Dock";
+import { SearchForFriends } from "../features/users/routes/SearchForFriends";
 
 const { Profile } = lazyImport(() => import("../features/users"), "Profile");
 const { Friends } = lazyImport(() => import("../features/users"), "Friends");
@@ -52,6 +53,10 @@ export const protectedRoutes = [
       {
         path: "/post/:id",
         element: <PostById />,
+      },
+      {
+        path: "search",
+        element: <SearchForFriends />,
       },
       { path: "*", element: <Navigate to="." /> },
     ],

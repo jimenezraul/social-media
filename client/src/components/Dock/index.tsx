@@ -31,7 +31,7 @@ const iconList = [
 export const Dock = () => {
   return (
     <div className="absolute bottom-0 flex md:hidden w-full px-1 h-20">
-      <div className="text-white w-full rounded-t-lg flex justify-around items-center border border-b-0 border-slate-900 bg-slate-700">
+      <div className="text-white w-full rounded-t-lg flex justify-around items-center border border-b-0 border-slate-700 bg-slate-800">
         {iconList.map((icon) => (
           <Link key={icon.name} to={icon.link}>
             <div className="flex justify-center">

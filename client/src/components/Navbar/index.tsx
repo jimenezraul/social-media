@@ -33,6 +33,10 @@ const Navbar = () => {
       name: "feed",
       path: "/feed" || "/",
     },
+    {
+      name: "search",
+      path: "/search",
+    },
   ];
 
   useOutside(menuRef, setIsOpen);
@@ -61,7 +65,7 @@ const Navbar = () => {
         <div
           className={`w-full hidden flex-grow md:flex md:items-center md:w-auto`}
         >
-          <div className="text-sm lg:flex-grow">
+          <div className="text-sm flex">
             {routes.map((route, index) => {
               // check if the route is active
               const isActive = currentPath === route.path;

@@ -17,12 +17,12 @@ export const Profile = () => {
     setMe(data.me);
     setFriends(data.me.friends);
   }, [data, loading, error]);
-  
-  if (me === undefined) return <div>Loading...</div>;
 
+  if (me === undefined) return <div>Loading...</div>;
+  console.log(me);
   return (
     <div className="flex flex-1 text-white">
-      <div className="container mx-auto xl:px-24 2xl:px-52">
+      <div className="container mx-auto">
         <div className="flex flex-wrap justify-center h-full max-h-full">
           <div className="hidden md:block w-full md:w-4/12 xl:w-3/12 px-3 mb-4">
             <MeCard me={me} />
