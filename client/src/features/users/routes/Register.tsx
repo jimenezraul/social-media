@@ -2,16 +2,7 @@ import { ChangeEvent, FC, FormEvent, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { GoogleLoginButton } from '../../../components/GoogleLogin';
 import { Button } from '../../../components/CustomButton';
-
-interface formInfo {
-  name: string;
-  type: string;
-  placeholder: string;
-}
-
-type T = {
-  [key: string]: string;
-};
+import { registerValidation } from '../../../utils/validation';
 
 const inputFields: Array<formInfo> = [
   {
@@ -38,37 +29,50 @@ const inputFields: Array<formInfo> = [
     name: 'confirm_password',
     type: 'password',
     placeholder: 'Confirm Password',
-  }
+  },
 ];
 
 export const Register: FC = () => {
   const [errors, setErrors] = useState<String>('');
-  const [formState, setFormState] = useState<T>({
+  const [formState, setFormState] = useState<RegisterFormState>({
     given_name: '',
     family_name: '',
     email: '',
     password: '',
     confirm_password: '',
+    error: {
+      given_name: '',
+      family_name: '',
+      email: '',
+      password: '',
+      confirm_password: '',
+    },
   });
-  const [errorState, setErrorState] = useState<T>({
-    given_name: '',
-    family_name: '',
-    email: '',
-    password: '',
-    confirm_password: '',
-  });
-  
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
-    console.log('Register');
+
+    const isValid = registerValidation(formState, setFormState);
+    console.log(isValid);
+    if (!isValid) {
+      return;
+    }
+    
+    setErrors('This is a test');
   };
 
   const handleChange = (e: ChangeEvent) => {
     const { name, value } = e.target as HTMLInputElement;
-    setFormState({ ...formState, [name]: value });
+    setFormState({
+      ...formState,
+      [name]: value,
+      error: {
+        ...formState.error,
+        [name]: '',
+      },
+    });
 
-    console.log(formState);
+    if (errors) setErrors('');
   };
 
   return (
@@ -87,18 +91,19 @@ export const Register: FC = () => {
             alt=''
           />
           <div className='mt-3'>
-            {inputFields.map(({name,type,placeholder}:formInfo) => (
-              <div key={name} className="mb-4">
-            <input
-              type={type}
-              name={name}
-              value={formState[name as keyof typeof formState]}
-              onChange={(e) => handleChange(e)}
-              className='bg-slate-700 shadow appearance-none rounded w-full py-2 px-3 text-gray-200 leading-tight focus:outline focus:shadow-outline'
-              placeholder={placeholder}
-            />
-            <div className='text-red-500 text-xs'>{errorState[name as keyof typeof errorState]}</div>
+            {inputFields.map(({ name, type, placeholder }) => (
+              <div key={name} className='mb-4'>
+                <input
+                  type={type}
+                  name={name}
+                  onChange={(e) => handleChange(e)}
+                  className='bg-slate-700 shadow appearance-none rounded w-full py-2 px-3 text-gray-200 leading-tight focus:outline focus:shadow-outline'
+                  placeholder={placeholder}
+                />
+                <div className='text-red-500 text-xs'>
+                  {formState.error[name as keyof RegisterFormState['error']]}
                 </div>
+              </div>
             ))}
           </div>
           <div className='text-red-500 text-xs'>{errors}</div>
