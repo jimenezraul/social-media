@@ -51,7 +51,8 @@ export const AddPost = ({ me }: AddPostProps) => {
         className='h-10 w-10 bg-default rounded-full p-0.5'
         src={`${me?.profileUrl}`}
         alt=''
-      />
+        referrerPolicy='no-referrer'
+      ></img>
       <div className='px-3 flex w-full'>
         <div className='flex w-full'>
           <textarea

@@ -76,7 +76,7 @@ export const MeCard = ({ me, inFriendRequest }: ME) => {
           src={`${profileUrl400}`}
           alt=''
           referrerPolicy='no-referrer'
-        />
+        ></img>
         <div className='mt-3 font-bold flex flex-col'>
           {given_name} {family_name}
         </div>

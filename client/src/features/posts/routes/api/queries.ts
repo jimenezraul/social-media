@@ -9,6 +9,8 @@ export const POST_BY_ID = gql`
       createdAtFormatted
       postAuthor {
         _id
+        given_name
+        family_name
         fullName
         profileUrl
       }

@@ -57,7 +57,11 @@ export const Post = ({
   };
 
   const addCommentHandler = async () => {
-    // add the comment to the database
+    // check if comment is empty
+    if (commentRef.current.value.trim() === "") {
+      return;
+    }
+    
     try {
       await AddComment({
         variables: {
