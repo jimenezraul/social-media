@@ -1,4 +1,5 @@
 import { Button } from '../CustomButton';
+import { Link } from 'react-router-dom';
 
 interface isLastEl extends Friends {
   isLastEl: boolean;
@@ -15,17 +16,19 @@ export const FriendsList = ({
 }: isLastEl) => {
   return (
     <div className='flex flex-wrap justify-center items-center'>
-      <div className='w-7/12 flex md:w-1/2 xl:w-7/12 xl:mr-3'>
-        <img
-          className='w-12 h-12 rounded-full object-cover mr-3 border-2 border-slate-500 bg-gradient-to-r from-blue-600 to to-red-500'
-          src={`${profileUrl}`}
-          alt=''
-          referrerPolicy='no-referrer'
-        />
-        <h1 className='text-md font-semibold flex justify-center items-center'>
-          {given_name} {family_name}
-        </h1>
-      </div>
+      <Link to={`/profile/${_id}`} className="w-7/12 flex md:w-1/2 xl:w-7/12 xl:mr-3">
+        <div className='w-full flex'>
+          <img
+            className='w-12 h-12 rounded-full object-cover mr-3 border-2 border-slate-500 bg-gradient-to-r from-blue-600 to to-red-500'
+            src={`${profileUrl}`}
+            alt=''
+            referrerPolicy='no-referrer'
+          />
+          <h1 className='text-md font-semibold flex justify-center items-center'>
+            {given_name} {family_name}
+          </h1>
+        </div>
+      </Link>
       <Button
         onClick={() => onClick(_id)}
         name='UNFRIEND'

@@ -1,13 +1,13 @@
-import { FriendRequest } from "../../../components/FriendRequest";
-import { useQuery } from "@apollo/client";
-import { GET_ALL_USER } from "./api/queries";
-import { useState } from "react";
+import { FriendRequest } from '../../../components/FriendRequest';
+import { useQuery } from '@apollo/client';
+import { GET_ALL_USER } from './api/queries';
+import { useState } from 'react';
 
-import { Search } from "../../../components/Search";
+import { Search } from '../../../components/Search';
 
 export const SearchForFriends = () => {
   const { data, loading, error } = useQuery(GET_ALL_USER);
-  const [search, setSearch] = useState("");
+  const [search, setSearch] = useState('');
 
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error</p>;
@@ -22,9 +22,9 @@ export const SearchForFriends = () => {
   });
 
   return (
-    <div className="container mx-auto">
-      <div className="flex flex-col justify-center items-center w-full">
-        <div className="w-full md:w-1/2 lg:w-5/12 px-2">
+    <div className='container mx-auto'>
+      <div className='flex flex-col justify-center items-center w-full'>
+        <div className='w-full md:w-1/2 lg:w-5/12 px-2'>
           <Search handleSearch={handleSearch} />
           {filteredUsers.map((user: User, index: any) => (
             <FriendRequest key={index} {...user} />
