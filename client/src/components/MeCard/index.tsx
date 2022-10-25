@@ -10,7 +10,7 @@ interface ME {
 export const MeCard = ({ me, inFriendRequest }: ME) => {
   const [acceptFriend] = useMutation(ACCEPT_FRIEND_REQUEST);
   const navigate = useNavigate();
-
+  
   if (me === undefined)
     return (
       <div className='overflow-hidden bg-slate-800 border border-slate-600 rounded-lg w-full hover:shadow-none relative flex flex-col mx-auto shadow-lg'>

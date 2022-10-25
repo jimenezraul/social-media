@@ -105,7 +105,7 @@ export const Post = ({
           )}
         </div>
         <div className="flex w-full border-b border-slate-500 pb-3">
-          <Link className="inline-block mr-4" to={`/user/${_id}`}>
+          <Link className="inline-block mr-4" to={`/profile/${postAuthor._id}`}>
             <img
               className="rounded-full max-w-none w-14 h-14 border-2 border-slate-500 bg-gradient-to-r from-blue-600 to to-red-500"
               src={`${postAuthor?.profileUrl}`}
@@ -117,7 +117,7 @@ export const Post = ({
             <div className="flex items-center">
               <Link
                 className="inline-block text-lg font-bold mr-2"
-                to={`/user/${_id}`}
+                to={`/profile/${postAuthor._id}`}
               >
                 {postAuthor.given_name} {postAuthor.family_name}
               </Link>
