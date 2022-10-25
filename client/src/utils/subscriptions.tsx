@@ -1,8 +1,8 @@
-import { gql } from "@apollo/client";
+import { gql } from '@apollo/client';
 
-import { store } from "../app/store";
-import { setNotifications } from "../features/users/userSlice";
-import { setNewPost } from "../features/posts/postSlice";
+import { store } from '../app/store';
+import { setNotifications } from '../features/users/userSlice';
+import { setNewPost } from '../features/posts/postSlice';
 
 export const NEW_POST_SUBSCRIPTION = gql`
   subscription New_Post_Subscription($userId: ID!) {
@@ -60,6 +60,15 @@ export const NEW_COMMENT_SUBSCRIPTION = gql`
         createdAt
         createdAtFormatted
         likesCount
+        likes {
+          _id
+          given_name
+          family_name
+          profileUrl
+        }
+        replies {
+          _id
+        }
       }
     }
   }
@@ -102,7 +111,6 @@ export const subscribeToNewPost = (subscribeToMore: any) => {
     document: NEW_POST_SUBSCRIPTION,
     variables: { userId: user._id },
     updateQuery: (prev: any, { subscriptionData }: any) => {
-
       if (!subscriptionData.data) return prev;
       const newPost = subscriptionData.data.newPostSubscription;
 
@@ -129,38 +137,62 @@ export const subscribeToNewComment = (subscribeToMore: any) => {
       const state = store.getState().user;
       const user = state.user;
 
-      const updatedFeed = prev.feed.map((post: any) => {
-        const data = {
-          type: "comment",
-          postId: newComment.postId,
-          message: `${newComment.comment.commentAuthor.fullName} commented on your post`,
-          user: newComment.comment.commentAuthor,
-          post: {
-            ...newComment.comment,
-            postText: newComment.comment.commentText,
-          },
-        };
+      const data = {
+        type: 'comment',
+        postId: newComment.postId,
+        message: `${newComment.comment.commentAuthor.fullName} commented on your post`,
+        user: newComment.comment.commentAuthor,
+        post: {
+          ...newComment.comment,
+          postText: newComment.comment.commentText,
+        },
+      };
+
+      if (prev.post) {
+        const post = prev.post;
         if (
           post.postAuthor._id === user._id &&
           newComment.comment.commentAuthor._id !== user._id
         ) {
           store.dispatch(setNotifications([...state.notifications, data]));
           localStorage.setItem(
-            "notifications",
+            'notifications',
             JSON.stringify([...state.notifications, data])
           );
         }
-
-        return {
+     
+        const updatePost = {
           ...post,
-          comments: [newComment.comment, ...post.comments],
+          comments: [...post.comments, newComment.comment],
           commentCount: post.commentCount + 1,
         };
-      });
 
-      return Object.assign({}, prev, {
-        feed: [...updatedFeed],
-      });
+        return Object.assign({}, prev, {
+          post: updatePost,
+        });
+      } else {
+        const updatedFeed = prev.feed.map((post: any) => {
+          if (
+            post.postAuthor._id === user._id &&
+            newComment.comment.commentAuthor._id !== user._id
+          ) {
+            store.dispatch(setNotifications([...state.notifications, data]));
+            localStorage.setItem(
+              'notifications',
+              JSON.stringify([...state.notifications, data])
+            );
+          }
+
+          return {
+            ...post,
+            comments: [newComment.comment, ...post.comments],
+            commentCount: post.commentCount + 1,
+          };
+        });
+        return Object.assign({}, prev, {
+          feed: [...updatedFeed],
+        });
+      }
     },
   });
 };
@@ -173,9 +205,9 @@ export const subscribeToNewLike = (subscribeToMore: any) => {
       if (!subscriptionData.data) return prev;
       const newLike = subscriptionData.data.newLikeSubscription;
       const updatedFeed = prev.feed.map((post: any) => {
-        const user = JSON.parse(localStorage.getItem("user")!) || {};
+        const user = JSON.parse(localStorage.getItem('user')!) || {};
         const notifications =
-          JSON.parse(localStorage.getItem("notifications")!) || [];
+          JSON.parse(localStorage.getItem('notifications')!) || [];
         if (post._id === newLike.postId) {
           if (!newLike.likeExists) {
             if (
@@ -183,7 +215,7 @@ export const subscribeToNewLike = (subscribeToMore: any) => {
               post.postAuthor._id !== newLike.user._id
             ) {
               const data = {
-                type: "like",
+                type: 'like',
                 postId: post._id,
                 message: `${newLike.user.fullName} liked your post.`,
                 user: newLike.user,
@@ -194,19 +226,19 @@ export const subscribeToNewLike = (subscribeToMore: any) => {
                 const notificationExists = notifications.find(
                   (notification: any) =>
                     notification.user._id === newLike.user._id &&
-                    notification.type === "like" &&
+                    notification.type === 'like' &&
                     notification.postId === post._id
                 );
                 if (!notificationExists) {
                   notifications.push(data);
                   localStorage.setItem(
-                    "notifications",
+                    'notifications',
                     JSON.stringify(notifications)
                   );
                   store.dispatch(setNotifications(notifications));
                 }
               } else {
-                localStorage.setItem("notifications", JSON.stringify([data]));
+                localStorage.setItem('notifications', JSON.stringify([data]));
                 store.dispatch(setNotifications([data]));
               }
             }
@@ -218,10 +250,10 @@ export const subscribeToNewLike = (subscribeToMore: any) => {
               const data = notifications.filter(
                 (notification: any) =>
                   notification.user._id !== user._id &&
-                  notification.type !== "like"
+                  notification.type !== 'like'
               );
 
-              localStorage.setItem("notifications", JSON.stringify(data));
+              localStorage.setItem('notifications', JSON.stringify(data));
               store.dispatch(setNotifications(data));
             }
           }

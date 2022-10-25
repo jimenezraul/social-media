@@ -24,7 +24,7 @@ export const policies = {
         friends: {
           merge(existing = [], incoming: any) {
             return incoming;
-          }
+          },
         },
       },
     },
@@ -40,6 +40,11 @@ export const policies = {
     Query: {
       fields: {
         feed: {
+          merge(existing = [], incoming: any) {
+            return incoming;
+          },
+        },
+        post: {
           merge(existing = [], incoming: any) {
             return incoming;
           },

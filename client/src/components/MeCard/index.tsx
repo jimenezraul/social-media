@@ -83,10 +83,10 @@ export const MeCard = ({ me, inFriendRequest }: ME) => {
       </div>
       {friendCount !== undefined && (
         <div className='flex justify-center font-bold  text-xs text-slate-300 my-4'>
-          <div className='bg-slate-700 border rounded-l-2xl rounded-r-sm border-gray-300 p-1 px-4'>
+          <div className='bg-slate-700 border border-r-0 rounded-l-2xl border-gray-500 p-1 px-4'>
             {postCount} {postOrPosts}
           </div>
-          <div className='bg-slate-700 border rounded-r-2xl rounded-l-sm border-gray-300 p-1 px-4'>
+          <div className='bg-slate-700 border rounded-r-2xl border-gray-500 p-1 px-4'>
             {friendCount} {friendOrFriends}
           </div>
         </div>

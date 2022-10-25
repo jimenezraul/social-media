@@ -58,9 +58,9 @@ export const Friends = () => {
   };
 
   return (
-    <div className='container mx-auto p-3 text-white'>
+    <div className='container mx-auto text-white'>
       <div className='flex justify-center'>
-        <div className='flex flex-col justify-center w-full max-w-md'>
+        <div className='flex flex-col justify-center w-full max-w-md px-2'>
           <Search handleSearch={handleSearch} />
           <div className='bg-slate-800 rounded-lg shadow-xl p-2 sm:p-3 border border-slate-700'>
             {!friends?.length && (
