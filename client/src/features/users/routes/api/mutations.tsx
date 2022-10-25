@@ -1,4 +1,24 @@
-import { gql } from "@apollo/client";
+import { gql } from '@apollo/client';
+
+export const REGISTER = gql`
+  mutation Register(
+    $givenName: String!
+    $familyName: String!
+    $email: String!
+    $password: String!
+  ) {
+    register(
+      given_name: $givenName
+      family_name: $familyName
+      email: $email
+      password: $password
+    ) {
+      success
+      message
+      subMessage
+    }
+  }
+`;
 
 export const LOGIN = gql`
   mutation Login($email: String!, $password: String!) {
@@ -27,3 +47,11 @@ export const SEND_FRIEND_REQUEST = gql`
   }
 `;
 
+export const ACCEPT_FRIEND_REQUEST = gql`
+  mutation Accept_Friend($friendId: ID!) {
+    acceptFriendRequest(friendId: $friendId) {
+      success
+      message
+    }
+  }
+`;

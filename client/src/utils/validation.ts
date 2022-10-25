@@ -54,13 +54,12 @@ export const registerValidation = (
     setFormState({
       ...formState,
       error: {
-        given_name: !formState.given_name ? 'First name is required' : '',
-        family_name: !formState.family_name ? 'Last name is required' : '',
-        email: !formState.email ? 'Email is required' : '',
-        password: !formState.password ? 'Password is required' : '',
-        confirm_password: !formState.confirm_password
-          ? 'Confirm password is required'
-          : '',
+        given_name: !formState.given_name && 'First name is required',
+        family_name: !formState.family_name && 'Last name is required',
+        email: !formState.email && 'Email is required',
+        password: !formState.password && 'Password is required',
+        confirm_password:
+          !formState.confirm_password && 'Confirm password is required',
       },
     });
     isValid = false;

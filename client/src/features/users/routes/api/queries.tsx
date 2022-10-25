@@ -1,4 +1,4 @@
-import { gql } from "@apollo/client";
+import { gql } from '@apollo/client';
 
 export const GET_ME = gql`
   query Me {
@@ -120,6 +120,23 @@ export const GET_ALL_USER = gql`
       fullName
       isVerified
       friendRequests {
+        _id
+      }
+    }
+  }
+`;
+
+export const GET_FRIEND = gql`
+  query GetFriend($friendId: ID!) {
+    user(id: $friendId) {
+      _id
+      given_name
+      family_name
+      profileUrl
+      friends {
+        _id
+      }
+      posts {
         _id
       }
     }

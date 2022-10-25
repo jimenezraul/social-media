@@ -231,3 +231,9 @@ interface formInfo {
   type: string;
   placeholder: string;
 }
+
+interface RegisterInfo {
+  success: boolean;
+  message: string;
+  subMessage: string;
+}

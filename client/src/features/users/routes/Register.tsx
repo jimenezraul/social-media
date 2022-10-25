@@ -3,6 +3,8 @@ import { Link } from 'react-router-dom';
 import { GoogleLoginButton } from '../../../components/GoogleLogin';
 import { Button } from '../../../components/CustomButton';
 import { registerValidation } from '../../../utils/validation';
+import { useMutation } from '@apollo/client';
+import { REGISTER } from '../../../features/users/routes/api/mutations';
 
 const inputFields: Array<formInfo> = [
   {
@@ -32,33 +34,80 @@ const inputFields: Array<formInfo> = [
   },
 ];
 
-export const Register: FC = () => {
-  const [errors, setErrors] = useState<String>('');
-  const [formState, setFormState] = useState<RegisterFormState>({
+const initialState = {
+  given_name: '',
+  family_name: '',
+  email: '',
+  password: '',
+  confirm_password: '',
+  error: {
     given_name: '',
     family_name: '',
     email: '',
     password: '',
     confirm_password: '',
-    error: {
-      given_name: '',
-      family_name: '',
-      email: '',
-      password: '',
-      confirm_password: '',
-    },
+  },
+};
+
+export const Register: FC = () => {
+  const [loading, setLoading] = useState<boolean>(false);
+  const [errors, setErrors] = useState<String>('');
+  const [registerError, setRegisterError] = useState<RegisterInfo>({
+    success: false,
+    message: '',
+    subMessage: '',
   });
+  const [formState, setFormState] = useState<RegisterFormState>(initialState);
+  const [register] = useMutation(REGISTER);
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
 
+    setLoading(true);
     const isValid = registerValidation(formState, setFormState);
-    console.log(isValid);
+
     if (!isValid) {
+      setLoading(false);
       return;
     }
-    
-    setErrors('This is a test');
+
+    try {
+      const response = await register({
+        variables: {
+          givenName: formState.given_name,
+          familyName: formState.family_name,
+          email: formState.email,
+          password: formState.password,
+        },
+      });
+
+      const { success, message, subMessage } = response.data.register;
+
+      setRegisterError({
+        success,
+        message,
+        subMessage,
+      });
+
+      setLoading(false);
+      setFormState(initialState);
+    } catch (err: any) {
+      if (err.message === 'Email already exists') {
+        setRegisterError({
+          success: false,
+          message: 'Email already exists,',
+          subMessage: 'Please try another email.',
+        });
+
+        setLoading(false);
+        setFormState(initialState);
+        return;
+      } else {
+        setErrors('Something went wrong. Please try again later.');
+        setLoading(false);
+        return;
+      }
+    }
   };
 
   const handleChange = (e: ChangeEvent) => {
@@ -99,6 +148,7 @@ export const Register: FC = () => {
                   onChange={(e) => handleChange(e)}
                   className='bg-slate-700 shadow appearance-none rounded w-full py-2 px-3 text-gray-200 leading-tight focus:outline focus:shadow-outline'
                   placeholder={placeholder}
+                  value={formState[name as keyof RegisterFormState['error']]}
                 />
                 <div className='text-red-500 text-xs'>
                   {formState.error[name as keyof RegisterFormState['error']]}
@@ -106,9 +156,24 @@ export const Register: FC = () => {
               </div>
             ))}
           </div>
+          <div
+            className={`${
+              registerError.success ? 'text-blue-300' : 'text-red-500'
+            } text-xs`}
+          >
+            {registerError.message}
+          </div>
+          <div
+            className={`${
+              registerError.success ? 'text-blue-300' : 'text-red-500'
+            } text-xs`}
+          >
+            {registerError.subMessage}
+          </div>
           <div className='text-red-500 text-xs'>{errors}</div>
           <div className='flex items-center justify-between'>
             <Button
+              disabled={loading}
               type='submit'
               name='Register'
               className='bg-gradient-to-r from-blue-600 to to-red-500 hover:from-blue-700 hover:to-red-600 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline mt-5'

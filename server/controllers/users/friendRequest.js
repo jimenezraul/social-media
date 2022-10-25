@@ -14,7 +14,10 @@ module.exports = {
     }
 
     const user = await User.findOne({ _id: friendId }).select('-__v -password');
-
+    const friend = await User.findOne({ _id: context.user._id }).select(
+      '-__v -password'
+    );
+     
     if (!user) {
       throw new AuthenticationError('User not found');
     }
@@ -27,7 +30,7 @@ module.exports = {
       pubsub.publish('NEW_FRIEND_REQUEST', {
         newFriendRequestSubscription: {
           friendId: friendId,
-          user: user,
+          user: friend,
           requestExists: false,
         },
       });
@@ -45,7 +48,7 @@ module.exports = {
     pubsub.publish('NEW_FRIEND_REQUEST', {
       newFriendRequestSubscription: {
         friendId: friendId,
-        user: user,
+        user: friend,
         requestExists: true,
       },
     });

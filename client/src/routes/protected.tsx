@@ -1,26 +1,30 @@
-import { Suspense } from "react";
-import { Outlet, Navigate } from "react-router-dom";
-import { lazyImport } from "../utils/lazyImports";
+import { Suspense } from 'react';
+import { Outlet, Navigate } from 'react-router-dom';
+import { lazyImport } from '../utils/lazyImports';
 
-import Navbar from "../components/Navbar";
-import { Dock } from "../components/Dock";
-import { SearchForFriends } from "../features/users/routes/SearchForFriends";
+import Navbar from '../components/Navbar';
+import { Dock } from '../components/Dock';
+import { SearchForFriends } from '../features/users/routes/SearchForFriends';
 
-const { Profile } = lazyImport(() => import("../features/users"), "Profile");
-const { Friends } = lazyImport(() => import("../features/users"), "Friends");
-const { Feed } = lazyImport(() => import("../features/users"), "Feed");
-const { PostById } = lazyImport(() => import("../features/posts"), "PostById");
+const { Profile } = lazyImport(() => import('../features/users'), 'Profile');
+const { Friends } = lazyImport(() => import('../features/users'), 'Friends');
+const { Feed } = lazyImport(() => import('../features/users'), 'Feed');
+const { PostById } = lazyImport(() => import('../features/posts'), 'PostById');
+const { FriendProfile } = lazyImport(
+  () => import('../features/users'),
+  'FriendProfile'
+);
 
 const Protected = () => {
   return (
-    <div className="bg-slate-900 h-screen flex flex-col">
+    <div className='bg-slate-900 h-screen flex flex-col'>
       <Navbar />
       <Suspense
         fallback={
-          <div className="h-full w-full flex items-center justify-center"></div>
+          <div className='h-full w-full flex items-center justify-center'></div>
         }
       >
-        <div className="flex max-h-full overflow-hidden">
+        <div className='flex max-h-full overflow-hidden'>
           <Outlet />
         </div>
       </Suspense>
@@ -31,34 +35,38 @@ const Protected = () => {
 
 export const protectedRoutes = [
   {
-    path: "/",
+    path: '/',
     element: <Protected />,
     children: [
       {
-        path: "/",
+        path: '/',
         element: <Feed />,
       },
       {
-        path: "/feed",
+        path: '/feed',
         element: <Feed />,
       },
       {
-        path: "/profile",
+        path: '/profile',
         element: <Profile />,
       },
       {
-        path: "/friends",
+        path: '/profile/:id',
+        element: <FriendProfile />,
+      },
+      {
+        path: '/friends',
         element: <Friends />,
       },
       {
-        path: "/post/:id",
+        path: '/post/:id',
         element: <PostById />,
       },
       {
-        path: "search",
+        path: 'search',
         element: <SearchForFriends />,
       },
-      { path: "*", element: <Navigate to="." /> },
+      { path: '*', element: <Navigate to='.' /> },
     ],
   },
 ];

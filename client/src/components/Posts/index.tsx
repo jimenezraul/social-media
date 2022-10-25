@@ -134,7 +134,7 @@ export const Post = ({
       <p className="px-6">{postText}</p>
       <div className="p-6">
         <div className="flex justify-between items-center">
-          <span className="-m-1 rounded-full border-2 border-white dark:border-slate-800">
+          <span className="-m-1 rounded-full border-2 border-slate-800">
             <i
               className={`${
                 likeCount > 0 && "bg-blue-600 rounded-full"
@@ -175,16 +175,16 @@ export const Post = ({
         <div className="flex items-center justify-between mb-6">
           <button
             onClick={likePostHandler}
-            className="py-2 px-4 font-medium hover:bg-slate-50 dark:hover:bg-slate-700 rounded-lg"
+            className="py-2 px-4 font-medium hover:bg-slate-700 rounded-lg"
           >
             <i className="fa-solid fa-thumbs-up"></i> Like
           </button>
           <Link to={`/post/${_id}`}>
-            <button className="py-2 px-4 font-medium hover:bg-slate-50 dark:hover:bg-slate-700 rounded-lg">
+            <button className="py-2 px-4 font-medium hover:bg-slate-700 rounded-lg">
               <i className="fa-sharp fa-solid fa-comment-dots"></i> Comment
             </button>
           </Link>
-          <button className="py-2 px-4 font-medium hover:bg-slate-50 dark:hover:bg-slate-700 rounded-lg">
+          <button className="py-2 px-4 font-medium hover:bg-slate-700 rounded-lg">
             <i className="fa-sharp fa-solid fa-share-nodes"></i> Share
           </button>
         </div>
@@ -192,7 +192,7 @@ export const Post = ({
         <div className="relative">
           <input
             ref={commentRef}
-            className="pt-2 pb-2 pl-3 w-full h-11 bg-slate-100 dark:bg-slate-700 rounded-lg placeholder:text-slate-600 dark:placeholder:text-slate-300 font-medium pr-20"
+            className="pt-2 pb-2 pl-3 w-full h-11 bg-slate-700 rounded-lg placeholder:text-slate-300 font-medium pr-20"
             type="text"
             placeholder="Write a comment"
           />

@@ -8,7 +8,7 @@ export const Search = ({handleSearch}: SearchProps) => {
         <input
           type="search"
           id="default-search"
-          className="block p-4 pl-6 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-slate-800 dark:border-slate-700 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+          className="block p-4 pl-6 w-full text-sm rounded-lg border bg-slate-800 border-slate-700 placeholder-gray-400 text-white focus:ring-blue-500 focus:border-blue-500"
           placeholder="Search friends . . ."
           onChange={(e) => handleSearch(e.target.value)}
         />

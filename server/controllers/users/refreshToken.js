@@ -7,28 +7,28 @@ const { formatUserData } = require('../../utils/formatUserData');
 module.exports = {
   // refresh access token
   refreshToken: async (parent, { id }, context) => {
-    const refresh_token = context.headers.cookie?.split('refresh_token=')[1];
-    
+    const refresh_token = await context.headers.cookie?.split(
+      'refresh_token='
+    )[1];
+
     if (!refresh_token) {
       throw new AuthenticationError('No refresh token found');
     }
-
     // check if refresh token is valid
     const isValidToken = validToken(refresh_token);
 
-    const user = await User.findOne({ refreshToken: refresh_token });
-  
+    // user that has refresh token in the refreshToken array
+    const user = await User.findOne({
+      _id: id,
+    });
+
     if (!user) {
-      console.log("something went wrong");
-      clearCookie(context.res, 'refresh_token');
+      console.log("user not found");
       throw new AuthenticationError('User not found');
     }
-
-    if (user._id.toString() !== id) {
-      console.log(user._id.toString(), id);
-      console.log("something's wrong");
-      clearCookie(context.res, 'refresh_token');
-      throw new AuthenticationError('r User not found');
+    
+    if (!user?.refreshToken.includes(refresh_token)) {
+      throw new AuthenticationError('Refresh token not found');
     }
 
     const newRefreshTokenArray = user.refreshToken.filter(
@@ -55,7 +55,7 @@ module.exports = {
 
     // generate new access token
     const accessToken = generateToken({ user: currentUser });
-
+    clearCookie(context.res, 'refresh_token');
     // set httpOnly cookie
     setCookie(context.res, 'refresh_token', newRefreshToken);
 

@@ -34,6 +34,12 @@ const Navbar = () => {
     if (subscribeToMore) {
       subscribeToFriendRequests(subscribeToMore);
     }
+    // add to notifications just one time
+    if (data.me.friendRequestCount > 0) {
+      const notification = localStorage.getItem("notification");
+      console.log(notification);
+    }
+
   }, [data, loading, error, subscribeToMore]);
 
   // get notifications from the local storage

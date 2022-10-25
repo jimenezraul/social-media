@@ -73,7 +73,7 @@ export const Notifications = ({ setNotificationsOpen }: Notifications) => {
                     removeNotificationHandler(notification.post._id)
                   }
                   to={`/profile/${notification.user._id}`}
-                  className="text-xs text-blue-500"
+                  className="text-xs text-blue-500 z-50"
                 >
                   View Profile
                 </Link>
