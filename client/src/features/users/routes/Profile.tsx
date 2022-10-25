@@ -1,10 +1,10 @@
 import { useState, useEffect } from 'react';
 import { useQuery, useMutation } from '@apollo/client';
-import { GET_ME } from './api/queries';
+import { GET_ME } from '../../../utils/queries';
 import { Post } from '../../../components/Posts';
 import { FriendsList } from '../../../components/FriendsList';
 import { MeCard } from '../../../components/MeCard';
-import { REMOVE_FRIEND } from './api/mutations';
+import { REMOVE_FRIEND } from '../../../utils/mutations';
 
 export const Profile = () => {
   const [removeFriend] = useMutation(REMOVE_FRIEND);
@@ -51,12 +51,12 @@ export const Profile = () => {
 
   return (
     <div className='flex flex-1 text-white'>
-      <div className='container mx-auto'>
-        <div className='flex flex-wrap justify-center h-full max-h-full'>
-          <div className='hidden md:block w-full md:w-4/12 xl:w-3/12 px-3 mb-4'>
-            <MeCard me={me} />
+      <div className='lg:container mx-auto w-full'>
+        <div className='flex flex-wrap justify-center h-full max-h-full overflow-y-scroll sm:overflow-y-hidden'>
+          <div className='w-full sm:max-w-xs px-2 mb-4'>
+            <MeCard me={me} isProfile />
           </div>
-          <div className='flex flex-col flex-1 w-full md:w-5/12 xl:w-4/12 px-3 h-full overflow-y-scroll no-scrollbar'>
+          <div className='flex flex-col flex-1 w-full sm:max-w-sm md:max-w-lg px-2 h-full sm:overflow-y-scroll no-scrollbar mb-32 sm:mb-0'>
             {me?.posts.length ? (
               me?.posts.map((post: Post, index) => {
                 const isLastEl = index === me?.posts.length - 1;

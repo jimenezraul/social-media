@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useMutation } from '@apollo/client';
-import { SEND_FRIEND_REQUEST } from '../../features/users/routes/api/mutations';
+import { SEND_FRIEND_REQUEST } from '../../utils/mutations';
 import { useAppSelector } from '../../app/hooks';
 import { selectUser } from '../../features/users/userSlice';
 import { Link } from 'react-router-dom';

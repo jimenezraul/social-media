@@ -1,16 +1,17 @@
 import { useMutation } from '@apollo/client';
-import { ACCEPT_FRIEND_REQUEST } from '../../features/users/routes/api/mutations';
+import { ACCEPT_FRIEND_REQUEST } from '../../utils/mutations';
 import { useNavigate } from 'react-router-dom';
 
 interface ME {
   me: User | undefined;
   inFriendRequest?: boolean;
+  isProfile?: boolean;
 }
 
-export const MeCard = ({ me, inFriendRequest }: ME) => {
+export const MeCard = ({ me, inFriendRequest, isProfile }: ME) => {
   const [acceptFriend] = useMutation(ACCEPT_FRIEND_REQUEST);
   const navigate = useNavigate();
-  
+
   if (me === undefined)
     return (
       <div className='overflow-hidden bg-slate-800 border border-slate-600 rounded-lg w-full hover:shadow-none relative flex flex-col mx-auto shadow-lg'>
@@ -70,13 +71,21 @@ export const MeCard = ({ me, inFriendRequest }: ME) => {
         src='/assets/img/banner-bg.jpg'
         alt=''
       />
+      {isProfile && (
+        <i className='absolute cursor-pointer top-4 right-4 border border-slate-500 bg-slate-600 hover:bg-slate-700 p-3 rounded-full fa-solid fa-pen-to-square'></i>
+      )}
       <div className='flex flex-col items-center mt-16 text-white z-10'>
-        <img
-          className='w-28 h-28 p-1 bg-default rounded-full'
-          src={`${profileUrl400}`}
-          alt=''
-          referrerPolicy='no-referrer'
-        ></img>
+        <div className='relative'>
+          <img
+            className='w-28 h-28 p-1 bg-default rounded-full'
+            src={`${profileUrl400}`}
+            alt=''
+            referrerPolicy='no-referrer'
+          ></img>
+          {isProfile && (
+            <i className='absolute bottom-0 right-0 border border-slate-500 bg-slate-600 cursor-pointer hover:bg-slate-700 p-3 rounded-full fa-solid fa-camera'></i>
+          )}
+        </div>
         <div className='mt-3 font-bold flex flex-col'>
           {given_name} {family_name}
         </div>

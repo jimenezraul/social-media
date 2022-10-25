@@ -4,7 +4,7 @@ import { GoogleLoginButton } from '../../../components/GoogleLogin';
 import { Button } from '../../../components/CustomButton';
 import { registerValidation } from '../../../utils/validation';
 import { useMutation } from '@apollo/client';
-import { REGISTER } from '../../../features/users/routes/api/mutations';
+import { REGISTER } from '../../../utils/mutations';
 
 const inputFields: Array<formInfo> = [
   {

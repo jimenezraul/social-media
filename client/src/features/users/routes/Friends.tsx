@@ -1,9 +1,9 @@
 import { useState, useEffect } from 'react';
 import { useQuery, useMutation } from '@apollo/client';
-import { GET_ME } from './api/queries';
+import { GET_ME } from '../../../utils/queries';
 import { FriendsList } from '../../../components/FriendsList';
 import { Search } from '../../../components/Search';
-import { REMOVE_FRIEND } from './api/mutations';
+import { REMOVE_FRIEND } from '../../../utils/mutations';
 
 export const Friends = () => {
   const [removeFriend] = useMutation(REMOVE_FRIEND);

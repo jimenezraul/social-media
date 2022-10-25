@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useLazyQuery, useQuery } from '@apollo/client';
-import { FEED, GET_ME } from './api/queries';
+import { FEED, GET_ME } from '../../../utils/queries';
 import { Post } from '../../../components/Posts';
 import { FriendsList } from '../../../components/FriendsList';
 import { MeCard } from '../../../components/MeCard';

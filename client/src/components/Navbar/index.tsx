@@ -12,8 +12,8 @@ import { LOGOUT } from '../../utils/mutations';
 import { Dropdown } from '../Dropdown';
 import { useOutside } from '../../utils/useOutside';
 import { Notifications } from '../Notifications';
-import { GET_ME } from '../../features/users/routes/api/queries';
-import { subscribeToFriendRequests } from '../../features/users/routes/api/subscriptions';
+import { GET_ME } from '../../utils/queries';
+import { subscribeToFriendRequests } from '../../utils/subscriptions';
 
 const Navbar = () => {
   const menuRef = useRef(null);

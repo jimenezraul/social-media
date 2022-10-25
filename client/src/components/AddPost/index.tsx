@@ -2,7 +2,7 @@ import { Button } from '../CustomButton';
 import { useRef } from 'react';
 import { useMutation } from '@apollo/client';
 import { ADD_POST } from '../../utils/mutations';
-import { GET_ME } from '../../features/users/routes/api/queries';
+import { GET_ME } from '../../utils/queries';
 
 interface AddPostProps {
   me: User;

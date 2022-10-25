@@ -1,7 +1,7 @@
 import { useParams } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import { useQuery, useLazyQuery } from '@apollo/client';
-import { GET_FRIEND, GET_ME } from './api/queries';
+import { GET_FRIEND, GET_ME } from '../../../utils/queries';
 import { MeCard } from '../../../components/MeCard';
 import { Post } from '../../../components/Posts';
 
@@ -47,12 +47,12 @@ export const FriendProfile = () => {
   );
   console.log(friend);
   return (
-    <div className='container mx-auto'>
-      <div className='flex flex-col items-center h-full overflow-y-scroll'>
-        <div className='w-full max-w-md mb-5'>
+    <div className='lg:container mx-auto w-full'>
+      <div className='flex flex-wrap justify-center h-full max-h-full overflow-y-scroll sm:overflow-y-hidden'>
+        <div className='w-full sm:max-w-xs  px-2 mb-4'>
           <MeCard me={friend} inFriendRequest={!!isFriendRequest} />
         </div>
-        <div className='w-full max-w-lg text-white mb-20 md:mb-5'>
+        <div className='flex flex-col flex-1 w-full sm:max-w-sm md:max-w-lg px-2 h-full sm:overflow-y-scroll no-scrollbar mb-32 sm:mb-0 text-white'>
           {!isFriendRequest &&
             (friend?.posts.length! > 0 ? (
               friend?.posts.map((post) => <Post key={post._id} {...post} />)

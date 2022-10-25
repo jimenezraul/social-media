@@ -1,6 +1,6 @@
 import { FriendRequest } from '../../../components/FriendRequest';
 import { useQuery } from '@apollo/client';
-import { GET_ALL_USER } from './api/queries';
+import { GET_ALL_USER } from '../../../utils/queries';
 import { useState } from 'react';
 
 import { Search } from '../../../components/Search';
