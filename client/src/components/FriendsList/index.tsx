@@ -2,10 +2,11 @@ import { Button } from '../CustomButton';
 
 interface isLastEl extends Friends {
   isLastEl: boolean;
-  onClick: () => void;
+  onClick: (friendId: string) => void;
 }
 
 export const FriendsList = ({
+  _id,
   profileUrl,
   given_name,
   family_name,
@@ -26,7 +27,7 @@ export const FriendsList = ({
         </h1>
       </div>
       <Button
-        onClick={onClick}
+        onClick={() => onClick(_id)}
         name='UNFRIEND'
         className='text-sm bg-red-700 hover:bg-red-900 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline'
       />

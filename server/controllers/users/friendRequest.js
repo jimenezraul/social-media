@@ -132,6 +132,13 @@ module.exports = {
     user.friends.pull(friendId);
     user.save();
 
+    // remove friend from friend's friends list
+    await User.findOneAndUpdate(
+      { _id: friendId },
+      { $pull: { friends: context.user._id } },
+      { new: true }
+    );
+
     return {
       success: true,
       message: 'Friend removed successfully',

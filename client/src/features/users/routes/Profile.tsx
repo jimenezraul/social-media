@@ -1,11 +1,13 @@
 import { useState, useEffect } from 'react';
-import { useQuery } from '@apollo/client';
+import { useQuery, useMutation } from '@apollo/client';
 import { GET_ME } from './api/queries';
 import { Post } from '../../../components/Posts';
 import { FriendsList } from '../../../components/FriendsList';
 import { MeCard } from '../../../components/MeCard';
+import { REMOVE_FRIEND } from './api/mutations';
 
 export const Profile = () => {
+  const [removeFriend] = useMutation(REMOVE_FRIEND);
   const [friends, setFriends] = useState<Friends[]>([]);
   const [me, setMe] = useState<User>();
   const { data, loading, error } = useQuery(GET_ME, {
@@ -21,6 +23,31 @@ export const Profile = () => {
   }, [data, loading, error]);
 
   if (me === undefined) return <div>Loading...</div>;
+
+  const removeFromFriendList = async (friendId: string) => {
+    try {
+      const { data, errors } = await removeFriend({
+        variables: { friendId },
+        update: (cache) => {
+          cache.modify({
+            fields: {
+              me: (existingMe = {}) => {
+                const newFriends = existingMe.friends.filter(
+                  (friend: Friends) => friend._id !== friendId
+                );
+                return { ...existingMe, friends: newFriends };
+              },
+            },
+          });
+        },
+      });
+      if (errors) throw new Error(errors[0].message);
+
+      setFriends((prev) => prev.filter((friend) => friend._id !== friendId));
+    } catch (err) {
+      console.log(err);
+    }
+  };
 
   return (
     <div className='flex flex-1 text-white'>
@@ -59,7 +86,7 @@ export const Profile = () => {
                     key={index}
                     {...friend}
                     isLastEl={isLastEl}
-                    onClick={() => console.log('remove friend')}
+                    onClick={removeFromFriendList}
                   />
                 );
               })}

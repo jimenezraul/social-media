@@ -1,10 +1,12 @@
 import { useState, useEffect } from 'react';
-import { useQuery } from '@apollo/client';
+import { useQuery, useMutation } from '@apollo/client';
 import { GET_ME } from './api/queries';
 import { FriendsList } from '../../../components/FriendsList';
 import { Search } from '../../../components/Search';
+import { REMOVE_FRIEND } from './api/mutations';
 
 export const Friends = () => {
+  const [removeFriend] = useMutation(REMOVE_FRIEND);
   const [friends, setFriends] = useState<Friends[]>([]);
   const { data, loading, error } = useQuery(GET_ME, {
     fetchPolicy: 'no-cache',
@@ -24,6 +26,37 @@ export const Friends = () => {
     setFriends(filteredFriends);
   };
 
+  const removeFromFriendList = async (friendId: string) => {
+    try {
+      const { errors } = await removeFriend({
+        variables: { friendId },
+        update(cache) {
+          const { me } = (cache.readQuery({
+            query: GET_ME,
+          }) as { me: User }) || { me: null };
+          if (me) {
+            cache.writeQuery({
+              query: GET_ME,
+              data: {
+                me: {
+                  ...me,
+                  friends: me.friends.filter(
+                    (friend) => friend._id !== friendId
+                  ),
+                },
+              },
+            });
+          }
+        },
+      });
+      if (errors) throw new Error(errors[0].message);
+
+      setFriends((prev) => prev.filter((friend) => friend._id !== friendId));
+    } catch (err: any) {
+      console.log(err.message);
+    }
+  };
+
   return (
     <div className='container mx-auto p-3 text-white'>
       <div className='flex justify-center'>
@@ -40,7 +73,7 @@ export const Friends = () => {
                   key={index}
                   {...friend}
                   isLastEl={isLastEl}
-                  onClick={() => console.log('remove friend')}
+                  onClick={removeFromFriendList}
                 />
               );
             })}

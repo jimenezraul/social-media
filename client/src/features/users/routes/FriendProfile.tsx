@@ -40,7 +40,7 @@ export const FriendProfile = () => {
   const isFriendRequest = me?.friendRequests.find(
     (friend) => friend._id === id
   );
-  console.log(me?.friendRequests);
+
   return (
     <div className='container mx-auto'>
       <div className='flex flex-wrap justify-center'>

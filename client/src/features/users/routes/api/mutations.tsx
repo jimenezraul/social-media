@@ -55,3 +55,12 @@ export const ACCEPT_FRIEND_REQUEST = gql`
     }
   }
 `;
+
+export const REMOVE_FRIEND = gql`
+  mutation RemoveFriend($friendId: ID!) {
+    removeFriend(friendId: $friendId) {
+      success
+      message
+    }
+  }
+`;

@@ -25,6 +25,14 @@ export const Dropdown = ({ logoutUser, setIsOpen, setCurrentPath }: logout) => {
           Profile
         </button>
       </Link>
+      <Link
+        to="/friends"
+        onClick={() => profileHandler(setCurrentPath, setIsOpen)}
+      >
+        <button className="text-start px-4 py-2 rounded-lg w-full text-white hover:bg-slate-600">
+          Friends
+        </button>
+      </Link>
 
       <button
         onClick={() => logoutUser()}

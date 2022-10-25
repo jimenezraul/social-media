@@ -21,6 +21,11 @@ export const policies = {
             return incoming;
           },
         },
+        friends: {
+          merge(existing = [], incoming: any) {
+            return incoming;
+          }
+        },
       },
     },
     Comment: {

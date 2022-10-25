@@ -22,12 +22,12 @@ export const subscribeToFriendRequests = (subscribeToMore: any) => {
   subscribeToMore({
     document: NEW_FRIEND_REQUEST,
     updateQuery: (prev: any, { subscriptionData }: any) => {
-      console.log(prev);
+     
       if (!subscriptionData.data) return prev;
       const newFriendRequest =
         subscriptionData.data.newFriendRequestSubscription;
       const user = store.getState().user;
-      console.log(newFriendRequest.user);
+   
       const data = {
         type: "friendRequest",
         postId: newFriendRequest.friendId,
@@ -37,7 +37,7 @@ export const subscribeToFriendRequests = (subscribeToMore: any) => {
           _id: newFriendRequest.friendId,
         },
       };
-      console.log(newFriendRequest);
+      
       if (
         newFriendRequest.friendId === user.user._id &&
         newFriendRequest.requestExists
