@@ -77,13 +77,14 @@ export const Feed = () => {
   const me = meData && meData.me;
 
   return (
-    <div className='flex flex-1 text-white'>
-      <div className='container mx-auto'>
-        <div className='flex flex-wrap justify-center h-full max-h-full'>
-          <div className='hidden md:block w-full md:w-4/12 xl:w-3/12 px-3 mb-4'>
+    <div className='flex w-full text-white'>
+      <div className='lg:container mx-auto w-full'>
+        <div className='flex flex-wrap justify-center h-full max-h-full overflow-y-scroll sm:overflow-y-hidden'>
+          <div className='w-full sm:max-w-xs px-2 mb-4'>
             <MeCard me={me} />
           </div>
-          <div className='relative flex flex-col w-full md:w-8/12 xl:w-5/12 px-3 h-full overflow-y-scroll no-scrollbar'>
+          <div className='flex flex-col flex-1 w-full sm:max-w-sm md:max-w-2xl px-2 h-full sm:overflow-y-scroll no-scrollbar mb-32 sm:mb-0'>
+          <div className='relative flex flex-col h-full overflow-y-scroll no-scrollbar'>
             <AddPost me={me} />
 
             <div className='flex justify-center'>
@@ -95,7 +96,7 @@ export const Feed = () => {
                 <button
                   type='button'
                   onClick={refreshHandler}
-                  className='rounded-full text-slate-800 bg-slate-300 px-3 py-1 text-sm'
+                  className='rounded-full text-slate-800 bg-slate-300 px-2 py-1 text-sm'
                   // if newPost is true, desable button
                   disabled={!newPostNotification}
                 >
@@ -108,8 +109,9 @@ export const Feed = () => {
               const isLastEl = index === feedData?.feed.length - 1;
               return <Post key={index} {...post} isLastEl={isLastEl} />;
             })}
-          </div>
-          <div className='hidden lg:block md:w-3/12 xl:w-4/12 px-3'>
+            </div>
+            </div>
+            <div className='hidden xl:block md:w-3/12 xl:w-4/12 px-3'>
             <div className='bg-slate-800 rounded-lg shadow-xl p-5 border border-slate-700'>
               {!friends?.length && (
                 <p className='text-center text-slate-300'>

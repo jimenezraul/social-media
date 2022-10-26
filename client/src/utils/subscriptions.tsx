@@ -220,6 +220,33 @@ export const subscribeToNewLike = (subscribeToMore: any) => {
       // update feed cache with new like
       if (!subscriptionData.data) return prev;
       const newLike = subscriptionData.data.newLikeSubscription;
+
+      if (prev.me) {
+        const user = prev.me;
+        const updatePost = {
+          ...user,
+          posts: user.posts.map((post: Post) => {
+            if (post._id === newLike.postId) {
+              return {
+                ...post,
+                likes: !newLike.likeExists
+                  ? [...post.likes, newLike.user]
+                  : post.likes.filter(
+                      (like: any) => like._id !== newLike.user._id
+                    ),
+                likeCount: !newLike.likeExists
+                  ? post.likeCount + 1
+                  : post.likeCount - 1,
+              };
+            }
+            return post;
+          }),
+        };
+
+        return Object.assign({}, prev, {
+          me: updatePost,
+        });
+      }
       const updatedFeed = prev.feed.map((post: any) => {
         const user = JSON.parse(localStorage.getItem('user')!) || {};
         const notifications =
@@ -299,7 +326,7 @@ export const subscribeToNewLikeComment = (subscribeToMore: any) => {
     document: NEW_LIKE_COMMENT_SUBSCRIPTION,
     updateQuery: (prev: any, { subscriptionData }: any) => {
       const newLike = subscriptionData.data.newLikeCommentSubscription;
-
+      console.log(subscriptionData);
       if (!subscriptionData.data) return prev;
 
       // update current post object that is not an array

@@ -1,4 +1,4 @@
-import { gql } from "@apollo/client";
+import { gql } from '@apollo/client';
 
 export const GOOGLE_LOGIN = gql`
   mutation googleLogin($tokenId: String!) {
@@ -60,11 +60,11 @@ export const LIKE_POST = gql`
 
 export const LIKE_COMMENT = gql`
   mutation LikeComment($commentId: ID!) {
-  likeComment(commentId: $commentId) {
-    success
-    message
+    likeComment(commentId: $commentId) {
+      success
+      message
+    }
   }
-}
 `;
 
 export const ADD_POST = gql`
@@ -75,6 +75,8 @@ export const ADD_POST = gql`
       postAuthor {
         _id
         fullName
+        given_name
+        family_name
         profileUrl
       }
       createdAtFormatted
@@ -87,12 +89,16 @@ export const ADD_POST = gql`
         commentAuthor {
           _id
           fullName
+          given_name
+          family_name
           profileUrl
         }
       }
       likes {
         _id
         fullName
+        given_name
+        family_name
         profileUrl
       }
     }

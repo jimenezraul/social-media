@@ -27,7 +27,7 @@ export const Post = ({
 
   useOutside(menuRef, setIsOpen);
 
-  const likePostHandler = async () => {
+  const postLikeHandler = async () => {
     try {
       await likePost({
         variables: {
@@ -107,7 +107,7 @@ export const Post = ({
         <div className="flex w-full border-b border-slate-500 pb-3">
           <Link className="inline-block mr-4" to={`/profile/${postAuthor._id}`}>
             <img
-              className="rounded-full max-w-none w-14 h-14 border-2 border-slate-500 bg-gradient-to-r from-blue-600 to to-red-500"
+              className="rounded-full max-w-none w-14 h-14 bg-default p-0.5"
               src={`${postAuthor?.profileUrl}`}
               alt=""
               referrerPolicy="no-referrer"
@@ -155,7 +155,7 @@ export const Post = ({
                   return (
                     <img
                       key={like._id}
-                      className={`absolute w-8 h-8 ${position} rounded-full border border-slate-500 bg-default`}
+                      className={`absolute w-8 h-8 ${position} rounded-full p-px bg-default`}
                       src={`${like.profileUrl}`}
                       alt=""
                       referrerPolicy="no-referrer"
@@ -178,7 +178,7 @@ export const Post = ({
         <div className="mt-6 mb-6 h-px bg-slate-500"></div>
         <div className="flex items-center justify-between mb-6">
           <button
-            onClick={likePostHandler}
+            onClick={postLikeHandler}
             className="py-2 px-4 font-medium hover:bg-slate-700 rounded-lg"
           >
             <i className="fa-solid fa-thumbs-up"></i> Like

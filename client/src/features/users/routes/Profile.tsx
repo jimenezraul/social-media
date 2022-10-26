@@ -5,28 +5,39 @@ import { Post } from '../../../components/Posts';
 import { FriendsList } from '../../../components/FriendsList';
 import { MeCard } from '../../../components/MeCard';
 import { REMOVE_FRIEND } from '../../../utils/mutations';
+import {
+  subscribeToNewLike,
+  subscribeToNewComment,
+} from '../../../utils/subscriptions';
 
 export const Profile = () => {
   const [removeFriend] = useMutation(REMOVE_FRIEND);
   const [friends, setFriends] = useState<Friends[]>([]);
   const [me, setMe] = useState<User>();
-  const { data, loading, error } = useQuery(GET_ME, {
-    fetchPolicy: 'no-cache',
-  });
+  const { data, loading, error, subscribeToMore, refetch } = useQuery(GET_ME);
 
   useEffect(() => {
     if (loading) return;
     if (error) return;
     if (!data) return;
+    refetch();
     setMe(data.me);
     setFriends(data.me.friends);
-  }, [data, loading, error]);
+  }, [data, loading, error, refetch]);
+
+  useEffect(() => {
+    if (!me) return;
+    if (subscribeToMore) {
+      subscribeToNewLike(subscribeToMore);
+      subscribeToNewComment(subscribeToMore);
+    }
+  }, [me, subscribeToMore]);
 
   if (me === undefined) return <div>Loading...</div>;
 
   const removeFromFriendList = async (friendId: string) => {
     try {
-      const { data, errors } = await removeFriend({
+      const { errors } = await removeFriend({
         variables: { friendId },
         update: (cache) => {
           cache.modify({
@@ -50,13 +61,13 @@ export const Profile = () => {
   };
 
   return (
-    <div className='flex flex-1 text-white'>
+    <div className='flex w-full text-white'>
       <div className='lg:container mx-auto w-full'>
         <div className='flex flex-wrap justify-center h-full max-h-full overflow-y-scroll sm:overflow-y-hidden'>
           <div className='w-full sm:max-w-xs px-2 mb-4'>
             <MeCard me={me} isProfile />
           </div>
-          <div className='flex flex-col flex-1 w-full sm:max-w-sm md:max-w-lg px-2 h-full sm:overflow-y-scroll no-scrollbar mb-32 sm:mb-0'>
+          <div className='flex flex-col flex-1 w-full sm:max-w-sm md:max-w-2xl px-2 h-full sm:overflow-y-scroll no-scrollbar mb-32 sm:mb-0'>
             {me?.posts.length ? (
               me?.posts.map((post: Post, index) => {
                 const isLastEl = index === me?.posts.length - 1;

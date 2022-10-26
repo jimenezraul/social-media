@@ -35,7 +35,7 @@ export const PostById = () => {
             <h1 className='text-xl mb-2 font-bold'>Comments</h1>
             {data?.post?.comments?.length === 0 && (
               <div className='my-2 text-center bg-slate-800 rounded-lg shadow-xl p-5 border border-slate-700'>
-                <div className='text-gray-400'>No replies yet</div>
+                <div className='text-gray-400'>No comments yet</div>
               </div>
             )}
             {data.post.comments.map((comment: any, index: number) => {

@@ -166,12 +166,16 @@ module.exports = {
     // delete all the comments associated with the post
     await Comment.deleteMany({ _id: { $in: post.comments } });
 
+    // delete the post
     await Post.findOneAndDelete({ _id: postId });
+
+    // remove the post from the user's posts array
     await User.findByIdAndUpdate(
       { _id: context.user._id },
       { $pull: { posts: postId } },
       { new: true }
     );
+    
     return {
       success: true,
       message: 'Post deleted!',
