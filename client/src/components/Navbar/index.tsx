@@ -13,7 +13,7 @@ import { Dropdown } from '../Dropdown';
 import { useOutside } from '../../utils/useOutside';
 import { Notifications } from '../Notifications';
 import { GET_ME } from '../../utils/queries';
-import { subscribeToFriendRequests } from '../../features/users/routes/api/subscriptions';
+import { subscribeToFriendRequests } from '../../utils/subscribe';
 
 const Navbar = () => {
   const menuRef = useRef(null);

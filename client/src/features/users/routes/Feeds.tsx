@@ -9,7 +9,7 @@ import {
   subscribeToNewPost,
   subscribeToNewComment,
   subscribeToNewLike,
-} from '../../../utils/subscriptions';
+} from '../../../utils/subscribe';
 import { useAppSelector, useAppDispatch } from '../../../app/hooks';
 import { newPost, setNewPost } from '../../posts/postSlice';
 
@@ -80,38 +80,38 @@ export const Feed = () => {
     <div className='flex w-full text-white'>
       <div className='lg:container mx-auto w-full'>
         <div className='flex flex-wrap justify-center h-full max-h-full overflow-y-scroll sm:overflow-y-hidden'>
-          <div className='w-full sm:max-w-xs px-2 mb-4'>
+          <div className='hidden sm:block w-full sm:max-w-xs px-2 mb-4'>
             <MeCard me={me} />
           </div>
           <div className='flex flex-col flex-1 w-full sm:max-w-sm md:max-w-2xl px-2 h-full sm:overflow-y-scroll no-scrollbar mb-32 sm:mb-0'>
-          <div className='relative flex flex-col h-full overflow-y-scroll no-scrollbar'>
-            <AddPost me={me} />
+            <div className='relative flex flex-col h-full overflow-y-scroll no-scrollbar'>
+              <AddPost me={me} />
 
-            <div className='flex justify-center'>
-              <div
-                className={`${
-                  newPostNotification ? 'opacity-100' : 'opacity-0'
-                } absolute transition-all ease-in-out delay-150 duration-500 z-40 top-0 md:top-12 flex my-2 justify-center w-1/2`}
-              >
-                <button
-                  type='button'
-                  onClick={refreshHandler}
-                  className='rounded-full text-slate-800 bg-slate-300 px-2 py-1 text-sm'
-                  // if newPost is true, desable button
-                  disabled={!newPostNotification}
+              <div className='flex justify-center'>
+                <div
+                  className={`${
+                    newPostNotification ? 'opacity-100' : 'opacity-0'
+                  } absolute transition-all ease-in-out delay-150 duration-500 z-40 top-0 md:top-12 flex my-2 justify-center w-1/2`}
                 >
-                  New Posts
-                </button>
+                  <button
+                    type='button'
+                    onClick={refreshHandler}
+                    className='rounded-full text-slate-800 bg-slate-300 px-2 py-1 text-sm'
+                    // if newPost is true, desable button
+                    disabled={!newPostNotification}
+                  >
+                    New Posts
+                  </button>
+                </div>
               </div>
-            </div>
 
-            {feed?.map((post: Post, index: number) => {
-              const isLastEl = index === feedData?.feed.length - 1;
-              return <Post key={index} {...post} isLastEl={isLastEl} />;
-            })}
+              {feed?.map((post: Post, index: number) => {
+                const isLastEl = index === feedData?.feed.length - 1;
+                return <Post key={index} {...post} isLastEl={isLastEl} />;
+              })}
             </div>
-            </div>
-            <div className='hidden xl:block md:w-3/12 xl:w-4/12 px-3'>
+          </div>
+          <div className='hidden xl:block md:w-3/12 xl:w-4/12 px-3'>
             <div className='bg-slate-800 rounded-lg shadow-xl p-5 border border-slate-700'>
               {!friends?.length && (
                 <p className='text-center text-slate-300'>

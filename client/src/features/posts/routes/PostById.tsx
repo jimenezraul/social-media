@@ -1,13 +1,13 @@
 import { useParams } from 'react-router-dom';
 import { useQuery } from '@apollo/client';
-import { POST_BY_ID } from './api/queries';
+import { POST_BY_ID } from '../../../utils/queries';
 import { Post } from '../../../components/Posts';
 import { CommentCard } from '../../../components/Comments';
 import { useEffect } from 'react';
 import {
   subscribeToNewLikeComment,
   subscribeToNewComment,
-} from '../../../utils/subscriptions';
+} from '../../../utils/subscribe';
 
 export const PostById = () => {
   const { id } = useParams<{ id: string }>();

@@ -6,9 +6,10 @@ import { FriendsList } from '../../../components/FriendsList';
 import { MeCard } from '../../../components/MeCard';
 import { REMOVE_FRIEND } from '../../../utils/mutations';
 import {
+  subscribeToNewPost,
   subscribeToNewLike,
   subscribeToNewComment,
-} from '../../../utils/subscriptions';
+} from '../../../utils/subscribe';
 
 export const Profile = () => {
   const [removeFriend] = useMutation(REMOVE_FRIEND);
@@ -30,6 +31,7 @@ export const Profile = () => {
     if (subscribeToMore) {
       subscribeToNewLike(subscribeToMore);
       subscribeToNewComment(subscribeToMore);
+      subscribeToNewPost(subscribeToMore);
     }
   }, [me, subscribeToMore]);
 
