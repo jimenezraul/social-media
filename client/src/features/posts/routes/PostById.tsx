@@ -7,6 +7,7 @@ import { useEffect } from 'react';
 import {
   subscribeToNewLikeComment,
   subscribeToNewComment,
+  subscribeToNewLike
 } from '../../../utils/subscribe';
 
 export const PostById = () => {
@@ -20,6 +21,7 @@ export const PostById = () => {
     if (subscribeToMore) {
       subscribeToNewLikeComment(subscribeToMore);
       subscribeToNewComment(subscribeToMore);
+      subscribeToNewLike(subscribeToMore);
     }
   }, [subscribeToMore]);
 

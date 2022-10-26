@@ -15,8 +15,8 @@ export const subscribeToNewPost = (subscribeToMore: any) => {
   subscribeToMore({
     document: NEW_POST_SUBSCRIPTION,
     variables: { userId: user._id },
-      updateQuery: (prev: any, { subscriptionData }: any) => {
-        console.log("Deleted post", subscriptionData.data.newPost);
+    updateQuery: (prev: any, { subscriptionData }: any) => {
+      console.log('Deleted post', subscriptionData.data.newPost);
       if (!subscriptionData.data) return prev;
       const newPost = subscriptionData.data.newPostSubscription;
 
@@ -77,10 +77,7 @@ export const subscribeToNewComment = (subscribeToMore: any) => {
 
       if (prev.post) {
         const post = prev.post;
-        if (
-          post.postAuthor._id === user._id &&
-          newComment.comment.commentAuthor._id !== user._id
-        ) {
+        if (post.postAuthor._id === user._id && newComment.comment.commentAuthor._id !== user._id) {
           setNewNotifications(state.notifications, data);
         }
 
@@ -122,6 +119,20 @@ export const subscribeToNewLike = (subscribeToMore: any) => {
     updateQuery: (prev: any, { subscriptionData }: any) => {
       if (!subscriptionData.data) return prev;
       const newLike = subscriptionData.data.newLikeSubscription;
+      
+      if (prev.post) {
+        const post = prev.post;
+        const updatedPost = {
+          ...post,
+          likes: !newLike.likeExists
+            ? [...post.likes, newLike.user]
+            : post.likes.filter((like: any) => like._id !== newLike.user._id),
+          likeCount: !newLike.likeExists ? post.likeCount + 1 : post.likeCount - 1,
+        };
+        return Object.assign({}, prev, {
+          post: updatedPost,
+        });
+      }
 
       // update Me cache with new like
       if (prev.me) {
@@ -134,12 +145,8 @@ export const subscribeToNewLike = (subscribeToMore: any) => {
                 ...post,
                 likes: !newLike.likeExists
                   ? [...post.likes, newLike.user]
-                  : post.likes.filter(
-                      (like: any) => like._id !== newLike.user._id
-                    ),
-                likeCount: !newLike.likeExists
-                  ? post.likeCount + 1
-                  : post.likeCount - 1,
+                  : post.likes.filter((like: any) => like._id !== newLike.user._id),
+                likeCount: !newLike.likeExists ? post.likeCount + 1 : post.likeCount - 1,
               };
             }
             return post;
@@ -150,17 +157,14 @@ export const subscribeToNewLike = (subscribeToMore: any) => {
           me: updatePost,
         });
       }
+      
       // update feed cache with new like
       const updatedFeed = prev.feed.map((post: any) => {
         const user = JSON.parse(localStorage.getItem('user')!) || {};
-        const notifications =
-          JSON.parse(localStorage.getItem('notifications')!) || [];
+        const notifications = JSON.parse(localStorage.getItem('notifications')!) || [];
         if (post._id === newLike.postId) {
           if (!newLike.likeExists) {
-            if (
-              user._id === post.postAuthor._id &&
-              post.postAuthor._id !== newLike.user._id
-            ) {
+            if (user._id === post.postAuthor._id && post.postAuthor._id !== newLike.user._id) {
               const data = {
                 type: 'like',
                 postId: post._id,
@@ -174,7 +178,7 @@ export const subscribeToNewLike = (subscribeToMore: any) => {
                   (notification: any) =>
                     notification.user._id === newLike.user._id &&
                     notification.type === 'like' &&
-                    notification.postId === post._id
+                    notification.postId === post._id,
                 );
                 if (!notificationExists) {
                   notifications.push(data);
@@ -185,14 +189,10 @@ export const subscribeToNewLike = (subscribeToMore: any) => {
               }
             }
           } else {
-            if (
-              user._id === post.postAuthor._id &&
-              post.postAuthor._id !== newLike.user._id
-            ) {
+            if (user._id === post.postAuthor._id && post.postAuthor._id !== newLike.user._id) {
               const data = notifications.filter(
                 (notification: any) =>
-                  notification.user._id !== user._id &&
-                  notification.type !== 'like'
+                  notification.user._id !== user._id && notification.type !== 'like',
               );
 
               setNewNotification(data);
@@ -204,9 +204,7 @@ export const subscribeToNewLike = (subscribeToMore: any) => {
             likes: !newLike.likeExists
               ? [...post.likes, newLike.user]
               : post.likes.filter((like: any) => like._id !== newLike.user._id),
-            likeCount: !newLike.likeExists
-              ? post.likeCount + 1
-              : post.likeCount - 1,
+            likeCount: !newLike.likeExists ? post.likeCount + 1 : post.likeCount - 1,
           };
         }
         return post;
@@ -234,12 +232,8 @@ export const subscribeToNewLikeComment = (subscribeToMore: any) => {
               ...comment,
               likes: !newLike.likeExists
                 ? [...comment.likes, newLike.user]
-                : comment.likes.filter(
-                    (like: any) => like._id !== newLike.user._id
-                  ),
-              likesCount: !newLike.likeExists
-                ? comment.likesCount + 1
-                : comment.likesCount - 1,
+                : comment.likes.filter((like: any) => like._id !== newLike.user._id),
+              likesCount: !newLike.likeExists ? comment.likesCount + 1 : comment.likesCount - 1,
             };
           }
           return comment;
@@ -261,8 +255,7 @@ export const subscribeToFriendRequests = (subscribeToMore: any) => {
     document: NEW_FRIEND_REQUEST,
     updateQuery: (prev: any, { subscriptionData }: any) => {
       if (!subscriptionData.data) return prev;
-      const newFriendRequest =
-        subscriptionData.data.newFriendRequestSubscription;
+      const newFriendRequest = subscriptionData.data.newFriendRequestSubscription;
       const user = store.getState().user;
 
       const data = {
@@ -275,15 +268,11 @@ export const subscribeToFriendRequests = (subscribeToMore: any) => {
         },
       };
 
-      if (
-        newFriendRequest.friendId === user.user._id &&
-        newFriendRequest.requestExists
-      ) {
+      if (newFriendRequest.friendId === user.user._id && newFriendRequest.requestExists) {
         setNewNotifications(user.notifications, data);
       } else {
         const filteredNotifications = user.notifications.filter(
-          (notification: any) =>
-            notification.post._id !== newFriendRequest.friendId
+          (notification: any) => notification.post._id !== newFriendRequest.friendId,
         );
         setNewNotification(filteredNotifications);
       }
