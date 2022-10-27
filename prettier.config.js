@@ -10,4 +10,5 @@ module.exports = {
   arrowParens: 'always',
   proseWrap: 'preserve',
   endOfLine: 'lf',
+  ignotePath: './client/src/utils/validation.ts',
 };

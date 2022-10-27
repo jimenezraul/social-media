@@ -119,6 +119,7 @@ export const GET_ALL_USER = gql`
       profileUrl
       fullName
       isVerified
+      email
       friendRequests {
         _id
       }

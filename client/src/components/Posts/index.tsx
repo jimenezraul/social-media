@@ -143,7 +143,7 @@ export const Post = ({
           <span className="text-lg font-bold ml-3">{likeCount}</span>
           {/* images of the friends that like the post */}
           {likes.length > 0 && (
-            <div className="flex justify-items-start ml-3 w-1/2 h-8 relative">
+            <div className="flex justify-items-start items-center ml-3 w-1/2 h-8 relative">
               {likes.map((like, index) => {
                 const position = index === 0 ? 'left-0' : index === 1 ? 'left-4' : 'left-8';
                 if (index < 3) {
@@ -160,7 +160,7 @@ export const Post = ({
                 return null;
               })}
               {likes.length > 3 && (
-                <span className="text-slate-500 dark:text-slate-300 ml-2">+{likes.length - 3}</span>
+                <span className="absolute text-sm left-16 font-bold text-slate-300 ml-2">+{likes.length - 3} more</span>
               )}
             </div>
           )}

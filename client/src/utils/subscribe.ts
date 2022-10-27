@@ -16,7 +16,6 @@ export const subscribeToNewPost = (subscribeToMore: any) => {
     document: NEW_POST_SUBSCRIPTION,
     variables: { userId: user._id },
     updateQuery: (prev: any, { subscriptionData }: any) => {
-      console.log('Deleted post', subscriptionData.data.newPost);
       if (!subscriptionData.data) return prev;
       const newPost = subscriptionData.data.newPostSubscription;
 
@@ -119,7 +118,7 @@ export const subscribeToNewLike = (subscribeToMore: any) => {
     updateQuery: (prev: any, { subscriptionData }: any) => {
       if (!subscriptionData.data) return prev;
       const newLike = subscriptionData.data.newLikeSubscription;
-      
+
       if (prev.post) {
         const post = prev.post;
         const updatedPost = {
@@ -157,7 +156,7 @@ export const subscribeToNewLike = (subscribeToMore: any) => {
           me: updatePost,
         });
       }
-      
+
       // update feed cache with new like
       const updatedFeed = prev.feed.map((post: any) => {
         const user = JSON.parse(localStorage.getItem('user')!) || {};
@@ -192,9 +191,8 @@ export const subscribeToNewLike = (subscribeToMore: any) => {
             if (user._id === post.postAuthor._id && post.postAuthor._id !== newLike.user._id) {
               const data = notifications.filter(
                 (notification: any) =>
-                  notification.user._id !== user._id && notification.type !== 'like',
+                  notification.user._id !== newLike.user._id && notification.type === 'like',
               );
-
               setNewNotification(data);
             }
           }

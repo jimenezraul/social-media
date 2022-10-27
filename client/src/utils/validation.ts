@@ -1,5 +1,6 @@
+// email regex
 export const validEmailRegex = RegExp(
-  /^(([^<>()\[\]\.,;:\s@\"]+(\.[^<>()\[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i
+  /^(([^<>()\[\]\.,;:\s@\"]+(\.[^<>()\[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i,
 );
 
 // name regex
@@ -7,13 +8,11 @@ export const validNameRegex = RegExp(/^[a-zA-Z]{2,}(?: [a-zA-Z]+){0,2}$/);
 
 //password regex
 export const validPasswordRegex = RegExp(
-  /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*])(?=.{8,})/
+  /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*])(?=.{8,})/,
 );
 
-export const validation = (
-  formState: FormState,
-  setFormState: SetFormState
-) => {
+// validation for login form
+export const validation = (formState: FormState, setFormState: SetFormState) => {
   let isValid = true;
   if (!formState.email || !formState.password) {
     setFormState({
@@ -39,9 +38,10 @@ export const validation = (
   return isValid;
 };
 
+// Validation for Registration form
 export const registerValidation = (
   formState: RegisterFormState,
-  setFormState: RegisterSetFormState
+  setFormState: RegisterSetFormState,
 ) => {
   let isValid = true;
   if (
@@ -58,8 +58,7 @@ export const registerValidation = (
         family_name: !formState.family_name && 'Last name is required',
         email: !formState.email && 'Email is required',
         password: !formState.password && 'Password is required',
-        confirm_password:
-          !formState.confirm_password && 'Confirm password is required',
+        confirm_password: !formState.confirm_password && 'Confirm password is required',
       },
     });
     isValid = false;

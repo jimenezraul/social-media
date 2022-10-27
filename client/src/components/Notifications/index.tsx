@@ -1,9 +1,6 @@
-import { useAppSelector, useAppDispatch } from "../../app/hooks";
-import {
-  notifications,
-  setNotifications,
-} from "../../features/users/userSlice";
-import { Link } from "react-router-dom";
+import { useAppSelector, useAppDispatch } from '../../app/hooks';
+import { notifications, setNotifications } from '../../features/users/userSlice';
+import { Link } from 'react-router-dom';
 
 export const Notifications = ({ setNotificationsOpen }: Notifications) => {
   const dispatch = useAppDispatch();
@@ -18,17 +15,16 @@ export const Notifications = ({ setNotificationsOpen }: Notifications) => {
   }
 
   const clearAllHandler = () => {
-    localStorage.setItem("notifications", JSON.stringify([]));
+    localStorage.setItem('notifications', JSON.stringify([]));
     dispatch(setNotifications([]));
     setNotificationsOpen(false);
   };
 
-  const removeNotificationHandler = (id: string) => {
+  const removeNotificationHandler = (id: string, nType: string, userId: string) => {
     const newNotifications = myNotification.filter(
-      (n: any) => n.post._id !== id
+      (n: any) => n.user._id !== userId || n.type !== nType || n.postId !== id,
     );
-
-    localStorage.setItem("notifications", JSON.stringify(newNotifications));
+    localStorage.setItem('notifications', JSON.stringify(newNotifications));
     dispatch(setNotifications(newNotifications));
     setNotificationsOpen(false);
   };
@@ -36,10 +32,7 @@ export const Notifications = ({ setNotificationsOpen }: Notifications) => {
   return (
     <div className="overflow-hidden w-80 z-50 absolute bg-slate-800 top-10 -right-16 md:-right-2 rounded-md border border-slate-700 text-white">
       <div className="w-full py-1 px-5 text-end bg-slate-700">
-        <span
-          onClick={() => clearAllHandler()}
-          className="cursor-pointer text-sm"
-        >
+        <span onClick={() => clearAllHandler()} className="cursor-pointer text-sm">
           Clear All
         </span>
       </div>
@@ -49,7 +42,7 @@ export const Notifications = ({ setNotificationsOpen }: Notifications) => {
           <div
             key={index}
             className={`${
-              !isLast && "border-b border-slate-700"
+              !isLast && 'border-b border-slate-700'
             } flex flex-wrap items-center space-x-2 py-3 px-4`}
           >
             <img
@@ -64,13 +57,17 @@ export const Notifications = ({ setNotificationsOpen }: Notifications) => {
               <p className="text-xs text-slate-400 w-10/12">
                 {/* check if postText is more than 20 words */}
                 {notification.post?.postText?.length > 20
-                  ? notification.post?.postText.slice(0, 20) + "..."
+                  ? notification.post?.postText.slice(0, 20) + '...'
                   : notification.post?.postText}
               </p>
-              {notification.type === "friendRequest" && (
+              {notification.type === 'friendRequest' && (
                 <Link
                   onClick={() =>
-                    removeNotificationHandler(notification.post._id)
+                    removeNotificationHandler(
+                      notification.post._id,
+                      notification.type,
+                      notification.user._id,
+                    )
                   }
                   to={`/profile/${notification.user._id}`}
                   className="text-xs text-blue-500 z-50"
@@ -78,10 +75,14 @@ export const Notifications = ({ setNotificationsOpen }: Notifications) => {
                   View Profile
                 </Link>
               )}
-              {notification.type === "comment" && (
+              {notification.type === 'comment' && (
                 <Link
                   onClick={() =>
-                    removeNotificationHandler(notification.post._id)
+                    removeNotificationHandler(
+                      notification.post._id,
+                      notification.type,
+                      notification.user._id,
+                    )
                   }
                   to={`/post/${notification.postId}/#${notification.post._id}`}
                 >
@@ -89,7 +90,13 @@ export const Notifications = ({ setNotificationsOpen }: Notifications) => {
                 </Link>
               )}
               <button
-                onClick={() => removeNotificationHandler(notification.post._id)}
+                onClick={() =>
+                  removeNotificationHandler(
+                    notification.post._id,
+                    notification.type,
+                    notification.user._id,
+                  )
+                }
                 type="button"
                 className="absolute right-0 bg-slate-700 rounded-md p-2 inline-flex items-center justify-center text-gray-400 hover:text-slate-300 hover:bg-slate-600 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-indigo-500"
               >
