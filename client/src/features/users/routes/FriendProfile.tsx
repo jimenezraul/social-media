@@ -45,7 +45,7 @@ export const FriendProfile = () => {
   const isFriendRequest = me?.friendRequests.find(
     (friend) => friend._id === id
   );
-  console.log(friend);
+
   return (
     <div className='lg:container mx-auto w-full'>
       <div className='flex flex-wrap justify-center h-full max-h-full overflow-y-scroll sm:overflow-y-hidden'>

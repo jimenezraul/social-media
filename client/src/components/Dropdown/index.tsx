@@ -16,7 +16,7 @@ const profileHandler = (
 
 export const Dropdown = ({ logoutUser, setIsOpen, setCurrentPath }: logout) => {
   return (
-    <div className="z-20 absolute top-12 bg-slate-800 p-2 w-32 right-1 rounded-lg border border-slate-600">
+    <div className="z-20 absolute top-12 bg-slate-800 p-2 w-32 right-1 rounded-lg border border-slate-700">
       <Link
         to="/profile"
         onClick={() => profileHandler(setCurrentPath, setIsOpen)}
