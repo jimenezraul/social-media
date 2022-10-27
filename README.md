@@ -15,6 +15,7 @@ You can create an account or login with google account.
 - [Description](#description)
 - [Table of Contents](#table-of-contents)
 - [Technologies and Tools](#technologies-and-tools)
+- [Demo account](#demo-account)
 - [Screenshots](#screenshots)
 - [Installation](#installation)
 - [Deploy on Heroku](#deploy-on-heroku)
@@ -33,6 +34,10 @@ You can create an account or login with google account.
 - [oAuth2](https://oauth.net/2/)
 - [Webpack](https://webpack.js.org/)
 - [Heroku](https://www.heroku.com/)
+
+## Demo account
+- Email: demo@example.com
+- Password: Demo1234$
 
 ## Screenshots
 Feed
