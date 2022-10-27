@@ -65,7 +65,7 @@ export const Profile = () => {
   return (
     <div className='flex w-full text-white'>
       <div className='lg:container mx-auto w-full'>
-        <div className='flex flex-wrap justify-center h-full max-h-full overflow-y-scroll sm:overflow-y-hidden'>
+        <div className='flex flex-wrap justify-center h-full max-h-full overflow-y-scroll sm:overflow-y-hidden no-scrollbar'>
           <div className='w-full sm:max-w-xs px-2 mb-4'>
             <MeCard me={me} isProfile />
           </div>

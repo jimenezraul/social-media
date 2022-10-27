@@ -69,7 +69,7 @@ export const CommentCard = ({
             </Link>
           </div>
           <div className="mb-3 pb-2 text-slate-300 border-b">
-            <span className="text-sm text-slate-300">
+            <span className="text-sm text-slate-400 italic">
               {createdAtFormatted}
             </span>
           </div>
@@ -142,7 +142,7 @@ export const CommentCard = ({
                 className="flex absolute right-3 top-2/4 -mt-3 items-center"
               >
                 <svg
-                  className="fill-blue-500 dark:fill-slate-50 h-6 cursor-pointer"
+                  className="fill-slate-50 h-6 cursor-pointer"
                   viewBox="0 0 24 24"
                 >
                   <path d="M2,21L23,12L2,3V10L17,12L2,14V21Z"></path>

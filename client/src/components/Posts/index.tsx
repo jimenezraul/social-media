@@ -1,8 +1,8 @@
-import { Link } from "react-router-dom";
-import { useMutation } from "@apollo/client";
-import { LIKE_POST, DELETE_POST, ADD_COMMENT } from "../../utils/mutations";
-import { useState, useRef } from "react";
-import { useOutside } from "../../utils/useOutside";
+import { Link } from 'react-router-dom';
+import { useMutation } from '@apollo/client';
+import { LIKE_POST, DELETE_POST, ADD_COMMENT } from '../../utils/mutations';
+import { useState, useRef } from 'react';
+import { useOutside } from '../../utils/useOutside';
 
 export const Post = ({
   _id,
@@ -16,11 +16,10 @@ export const Post = ({
   isProfile,
   likes,
 }: Post) => {
-
   const commentRef = useRef() as React.MutableRefObject<HTMLInputElement>;
   const menuRef = useRef() as React.MutableRefObject<HTMLInputElement>;
   const [isOpen, setIsOpen] = useState(false);
-  const comment = commentCount <= 1 ? "comment" : "comments";
+  const comment = commentCount <= 1 ? 'comment' : 'comments';
   const [likePost] = useMutation(LIKE_POST);
   const [deletePost] = useMutation(DELETE_POST);
   const [AddComment] = useMutation(ADD_COMMENT);
@@ -58,10 +57,10 @@ export const Post = ({
 
   const addCommentHandler = async () => {
     // check if comment is empty
-    if (commentRef.current.value.trim() === "") {
+    if (commentRef.current.value.trim() === '') {
       return;
     }
-    
+
     try {
       await AddComment({
         variables: {
@@ -73,14 +72,14 @@ export const Post = ({
       console.log(error);
     }
     // clear the comment form
-    commentRef.current.value = "";
+    commentRef.current.value = '';
   };
 
   return (
     <article
       data-aos="zoom-in"
       className={`${
-        isLastEl && "mb-24 md:mb-4"
+        isLastEl && 'mb-24 md:mb-4'
       }  border border-slate-700 mb-4 break-inside rounded-lg bg-slate-800 flex flex-col bg-clip-border`}
     >
       <div className="relative flex p-6 items-center justify-between">
@@ -92,12 +91,12 @@ export const Post = ({
                 className="p-3 absolute cursor-pointer text-xl top-6 right-6 text-slate-400 fa-solid fa-ellipsis-vertical"
               ></i>
               {isOpen && (
-                <div className="absolute top-16 right-7 flex bg-slate-800 border border-slate-600 rounded-lg p-5">
-                  <button
-                    onClick={handleDelete}
-                    className="text-red-400 hover:text-red-500"
-                  >
-                    <i className="text-xl fa-solid fa-trash"></i>
+                <div className="absolute top-16 right-7 flex flex-col bg-slate-800 border border-slate-600 rounded-lg p-2 space-y-2">
+                  <button className="w-full flex justify-between items-center hover:bg-blue-500 px-3 py-1 rounded">
+                    Edit <i className="text-xl fa-solid fa-pen-to-square"></i>
+                  </button>
+                  <button onClick={handleDelete} className="w-full flex justify-between items-center hover:bg-red-500 px-3 py-1 rounded">
+                    Delete <i className="ml-2 text-xl fa-solid fa-trash"></i>
                   </button>
                 </div>
               )}
@@ -122,16 +121,14 @@ export const Post = ({
                 {postAuthor.given_name} {postAuthor.family_name}
               </Link>
             </div>
-            <div className="text-slate-500 dark:text-slate-300">
-              <span className="italic text-sm text-slate-500 dark:text-slate-300">
-                {createdAtFormatted}
-              </span>
+            <div>
+              <span className="italic text-sm text-slate-400">{createdAtFormatted}</span>
             </div>
           </div>
         </div>
       </div>
       {postImage && (
-        <div className="p-2 mb-5 bg-gradient-to-r from-blue-600 to to-red-500">
+        <div className="p-2 mb-5 bg-default">
           <img className="w-full" src={`${postImage}`} alt="" />
         </div>
       )}
@@ -140,9 +137,7 @@ export const Post = ({
         <div className="flex justify-between items-center">
           <span className="-m-1 rounded-full border-2 border-slate-800">
             <i
-              className={`${
-                likeCount > 0 && "bg-blue-600 rounded-full"
-              } fa-solid fa-thumbs-up p-2`}
+              className={`${likeCount > 0 && 'bg-blue-600 rounded-full'} fa-solid fa-thumbs-up p-2`}
             ></i>
           </span>
           <span className="text-lg font-bold ml-3">{likeCount}</span>
@@ -150,7 +145,7 @@ export const Post = ({
           {likes.length > 0 && (
             <div className="flex justify-items-start ml-3 w-1/2 h-8 relative">
               {likes.map((like, index) => {
-                const position = index === 0 ? "left-0" : index === 1 ? "left-4" : "left-8";
+                const position = index === 0 ? 'left-0' : index === 1 ? 'left-4' : 'left-8';
                 if (index < 3) {
                   return (
                     <img
@@ -165,9 +160,7 @@ export const Post = ({
                 return null;
               })}
               {likes.length > 3 && (
-                <span className="text-slate-500 dark:text-slate-300 ml-2">
-                  +{likes.length - 3}
-                </span>
+                <span className="text-slate-500 dark:text-slate-300 ml-2">+{likes.length - 3}</span>
               )}
             </div>
           )}
@@ -204,10 +197,7 @@ export const Post = ({
             onClick={addCommentHandler}
             className="flex absolute right-3 top-2/4 -mt-3 items-center"
           >
-            <svg
-              className="fill-blue-500 dark:fill-slate-50 h-6 cursor-pointer"
-              viewBox="0 0 24 24"
-            >
+            <svg className="fill-slate-50 h-6 cursor-pointer" viewBox="0 0 24 24">
               <path d="M2,21L23,12L2,3V10L17,12L2,14V21Z"></path>
             </svg>
           </span>
