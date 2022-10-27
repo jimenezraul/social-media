@@ -21,8 +21,10 @@ You can create an account or login with google account.
 
 ## Technologies and Tools
 - [React](https://reactjs.org/)
+- [TypeScript](https://www.typescriptlang.org/)
 - [Tailwind CSS](https://tailwindcss.com/)
 - [Redux](https://redux.js.org/)
+- [Font Awesome](https://fontawesome.com/)
 - [Node.js](https://nodejs.org/en/)
 - [Express](https://expressjs.com/)
 - [MongoDB](https://www.mongodb.com/)
