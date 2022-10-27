@@ -17,6 +17,7 @@ You can create an account or login with google account.
 - [Technologies and Tools](#technologies-and-tools)
 - [Screenshots](#screenshots)
 - [Installation](#installation)
+- [Deploy on Heroku](#deploy-on-heroku)
 - [Questions](#questions)
 
 ## Technologies and Tools
@@ -52,7 +53,8 @@ Mobile
 4. Run the application
     ```npm run develop```
 
-
+## Deploy on Heroku
+[LIVE DEMO](https://morning-tundra-02449.herokuapp.com/)
 
 ## Questions
 
