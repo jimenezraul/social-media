@@ -66,9 +66,9 @@ module.exports = {
         { _id: { $nin: user.friends } },
         { _id: { $nin: user.friendRequests } },
       ],
-    })
-      .select('-__v -password')
-      .$where('this.isVerified === true');
+    }).select('-__v -password');
+
+    userData.filter((user) => user.isVerified === true);
 
     return userData;
   },
