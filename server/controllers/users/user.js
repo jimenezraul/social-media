@@ -68,9 +68,10 @@ module.exports = {
       ],
     }).select('-__v -password');
 
-    userData.filter((user) => user.isVerified === true);
+    // filter out verified users
+    const verifiedUsers = userData.filter((user) => user.isVerified);
 
-    return userData;
+    return verifiedUsers;
   },
 
   // Query for a single user by id
