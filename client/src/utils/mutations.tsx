@@ -136,12 +136,7 @@ export const REGISTER = gql`
     $email: String!
     $password: String!
   ) {
-    register(
-      given_name: $givenName
-      family_name: $familyName
-      email: $email
-      password: $password
-    ) {
+    register(given_name: $givenName, family_name: $familyName, email: $email, password: $password) {
       success
       message
       subMessage
@@ -188,6 +183,15 @@ export const ACCEPT_FRIEND_REQUEST = gql`
 export const REMOVE_FRIEND = gql`
   mutation RemoveFriend($friendId: ID!) {
     removeFriend(friendId: $friendId) {
+      success
+      message
+    }
+  }
+`;
+
+export const VERIFY_EMAIL = gql`
+  mutation VerifyEmail($token: String!) {
+    verifyUser(token: $token) {
       success
       message
     }

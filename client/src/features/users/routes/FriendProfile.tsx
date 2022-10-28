@@ -48,11 +48,11 @@ export const FriendProfile = () => {
 
   return (
     <div className='lg:container mx-auto w-full'>
-      <div className='flex flex-wrap justify-center h-full max-h-full overflow-y-scroll sm:overflow-y-hidden'>
+      <div className='flex flex-wrap justify-center h-full max-h-full overflow-y-scroll sm:overflow-y-hidden no-scrollbar'>
         <div className='w-full sm:max-w-xs  px-2 mb-4'>
           <MeCard me={friend} inFriendRequest={!!isFriendRequest} />
         </div>
-        <div className='flex flex-col flex-1 w-full sm:max-w-sm md:max-w-lg px-2 h-full sm:overflow-y-scroll no-scrollbar mb-32 sm:mb-0 text-white'>
+        <div className='flex flex-col flex-1 w-full sm:max-w-sm md:max-w-lg px-2 h-full sm:overflow-y-scroll no-scrollbar text-white'>
           {!isFriendRequest &&
             (friend?.posts.length! > 0 ? (
               friend?.posts.map((post) => <Post key={post._id} {...post} />)

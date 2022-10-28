@@ -3,7 +3,6 @@ import { setAccessToken } from '../features/users/userSlice';
 
 export const getNewToken = async () => {
   const { user } = store.getState();
-  const { access_token } = user;
 
   try {
     var graphql: any = JSON.stringify({
@@ -17,7 +16,6 @@ export const getNewToken = async () => {
       headers: {
         'Content-Type': 'application/json',
         'Access-Control-Allow-Credentials': 'true',
-        Authorization: `Bearer ${access_token}`,
       },
       body: graphql,
     })!;
@@ -43,7 +41,8 @@ export const getNewToken = async () => {
       }
       return access_token;
     }
-    return new Error('Something went wrong');
+
+    throw new Error('No Refresh Token');
   } catch (err: any) {
     if (
       err.message === 'Refresh token expired, please login again' ||

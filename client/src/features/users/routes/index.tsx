@@ -4,3 +4,4 @@ export * from "./Profile";
 export * from "./Friends";
 export * from "./Feeds";
 export * from "./FriendProfile";
+export * from "./VerifyEmail";

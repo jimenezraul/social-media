@@ -125,7 +125,7 @@ export const Register: FC = () => {
   };
 
   return (
-    <div className='flex flex-1 items-center justify-center my-3'>
+    <div className='px-2 flex flex-1 items-center justify-center my-3'>
       <div className='w-full max-w-md'>
         <form
           onSubmit={handleSubmit}

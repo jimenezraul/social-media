@@ -7,7 +7,10 @@ module.exports = {
     const user = await User.findOne({ accessToken: args.token });
 
     if (!user) {
-      throw new AuthenticationError('Invalid token');
+      return {
+        success: false,
+        message: 'Invalid Token',
+      };
     }
 
     user.isVerified = true;
@@ -16,7 +19,7 @@ module.exports = {
 
     return {
       success: true,
-      message: 'Account verified successfully',
+      message: 'Account Verified',
     };
   },
 };

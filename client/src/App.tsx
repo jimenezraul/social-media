@@ -1,4 +1,4 @@
-import { BrowserRouter as Router } from "react-router-dom";
+import { BrowserRouter as Router } from 'react-router-dom';
 import {
   ApolloClient,
   InMemoryCache,
@@ -7,30 +7,30 @@ import {
   fromPromise,
   split,
   HttpLink,
-} from "@apollo/client";
-import { setContext } from "@apollo/client/link/context";
-import { getNewToken } from "./utils/getNewToken";
-import { onError } from "@apollo/client/link/error";
+} from '@apollo/client';
+import { setContext } from '@apollo/client/link/context';
+import { getNewToken } from './utils/getNewToken';
+import { onError } from '@apollo/client/link/error';
 
-import { getMainDefinition } from "@apollo/client/utilities";
-import { GraphQLWsLink } from "@apollo/client/link/subscriptions";
-import { createClient } from "graphql-ws";
-import { policies } from "./utils/typePolices";
-import { store } from "./app/store";
+import { getMainDefinition } from '@apollo/client/utilities';
+import { GraphQLWsLink } from '@apollo/client/link/subscriptions';
+import { createClient } from 'graphql-ws';
+import { policies } from './utils/typePolices';
+import { store } from './app/store';
 
-import AppRoutes from "./routes";
+import AppRoutes from './routes';
 
-const wsUrl = "wss://morning-tundra-02449.herokuapp.com/graphql" || "ws://localhost:3001/graphql";
+const wsUrl = 'ws://localhost:3001/graphql';
 
 const wsLink = new GraphQLWsLink(
   createClient({
     url: wsUrl,
-  })
+  }),
 );
 
 const httpLink = new HttpLink({
-  uri: "/graphql",
-  credentials: "include",
+  uri: '/graphql',
+  credentials: 'include',
 });
 
 const authLink = setContext((_, { headers }) => {
@@ -40,7 +40,7 @@ const authLink = setContext((_, { headers }) => {
   return {
     headers: {
       ...headers,
-      authorization: accessToken ? `Bearer ${accessToken}` : "",
+      authorization: accessToken && `Bearer ${accessToken}`,
     },
   };
 });
@@ -48,43 +48,38 @@ const authLink = setContext((_, { headers }) => {
 const splitLink = split(
   ({ query }) => {
     const definition = getMainDefinition(query);
-    return (
-      definition.kind === "OperationDefinition" &&
-      definition.operation === "subscription"
-    );
+    return definition.kind === 'OperationDefinition' && definition.operation === 'subscription';
   },
   wsLink,
-  authLink.concat(httpLink)
+  authLink.concat(httpLink),
 );
 
-const errorLink = onError(
-  ({ graphQLErrors, networkError, operation, forward }) => {
-    if (graphQLErrors) {
-      for (let err of graphQLErrors) {
-        switch (err.extensions?.code) {
-          case "UNAUTHENTICATED":
-            return fromPromise(
-              getNewToken().catch((error) => {
-                return;
-              })
-            ).flatMap((accessToken) => {
-              const oldHeaders = operation.getContext().headers;
-              operation.setContext({
-                headers: {
-                  ...oldHeaders,
-                  authorization: `Bearer ${accessToken}`,
-                },
-              });
-              return forward(operation);
+const errorLink = onError(({ graphQLErrors, networkError, operation, forward }) => {
+  if (graphQLErrors) {
+    for (let err of graphQLErrors) {
+      switch (err.extensions?.code) {
+        case 'UNAUTHENTICATED':
+          return fromPromise(
+            getNewToken().catch((error) => {
+              return;
+            }),
+          ).flatMap((accessToken) => {
+            const oldHeaders = operation.getContext().headers;
+            operation.setContext({
+              headers: {
+                ...oldHeaders,
+                authorization: `Bearer ${accessToken}`,
+              },
             });
-        }
+            return forward(operation);
+          });
       }
     }
   }
-);
+});
 
 const client = new ApolloClient({
-  uri: "/graphql",
+  uri: '/graphql',
   cache: new InMemoryCache(policies),
   link: from([errorLink, splitLink]),
 });

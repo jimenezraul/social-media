@@ -2,6 +2,7 @@ import { Suspense } from "react";
 import { lazyImport } from "../utils/lazyImports";
 import { Outlet, Navigate } from "react-router-dom";
 import { Landing } from "../features/landingPage";
+import { VerifyEmail } from "../features/users";
 
 const { Login } = lazyImport(() => import("../features/users"), "Login");
 const { Register } = lazyImport(() => import("../features/users"), "Register");
@@ -35,6 +36,10 @@ export const publicRoutes = [
       {
         path: "/register/*",
         element: <Register />,
+      },
+      {
+        path: "/verify",
+        element: <VerifyEmail />
       },
         { path: "*", element: <Navigate to="/login" /> },
     ],
