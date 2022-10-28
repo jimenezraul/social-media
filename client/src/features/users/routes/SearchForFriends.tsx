@@ -8,7 +8,7 @@ import { Search } from '../../../components/Search';
 export const SearchForFriends = () => {
   const { data, loading, error } = useQuery(GET_ALL_USER)
   const [search, setSearch] = useState('');
-  console.log(data)
+
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error</p>;
   if (!data) return <p>No data</p>;
