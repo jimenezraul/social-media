@@ -56,7 +56,7 @@ module.exports = {
       '-__v -password'
     );
 
-    if(!user) {
+    if (!user) {
       throw new AuthenticationError('No user found!');
     }
 
@@ -66,7 +66,9 @@ module.exports = {
         { _id: { $nin: user.friends } },
         { _id: { $nin: user.friendRequests } },
       ],
-    }).select('-__v -password');
+    })
+      .select('-__v -password')
+      .$where('this.isVerified === true');
 
     return userData;
   },
