@@ -19,9 +19,10 @@ import { policies } from './utils/typePolices';
 import { store } from './app/store';
 
 import AppRoutes from './routes';
+require('dotenv').config()
 
-const wsUrl = 'ws://localhost:3001/graphql';
-
+const wsUrl = 'wss://morning-tundra-02449.herokuapp.com/graphql';
+console.log(process.env.REACT_APP_WS_URL);
 const wsLink = new GraphQLWsLink(
   createClient({
     url: wsUrl,
