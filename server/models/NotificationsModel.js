@@ -1,6 +1,4 @@
 const { Schema, model } = require('mongoose');
-const bcrypt = require('bcrypt');
-const date = require('date-and-time');
 
 const notificationSchema = new Schema(
   {

@@ -22,7 +22,10 @@ const userSchema = new Schema(
       type: String,
       required: true,
       // unique: true,
-      match: [/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/, 'Please enter a valid email address'],
+      match: [
+        /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/,
+        'Please enter a valid email address',
+      ],
     },
     password: {
       type: String,
@@ -73,6 +76,12 @@ const userSchema = new Schema(
       {
         type: Schema.Types.ObjectId,
         ref: 'Notification',
+      },
+    ],
+    Messages: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: 'Message',
       },
     ],
     accessToken: {
