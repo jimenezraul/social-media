@@ -86,6 +86,29 @@ const typeDefs = gql`
     requestExists: Boolean
   }
 
+  type ChatMessage {
+    sender: User
+    text: String
+    media: String
+    createdAt: Date
+    status: String
+  }
+
+  type Messages {
+    _id: ID
+    members: [User]
+    messages: [ChatMessage]
+  }
+
+  type Notifications {
+    sender: User
+    recipient: User
+    type: String
+    is_read: Boolean
+    message: String
+    postId: ID
+  }
+
   type Query {
     me: User
     users: [User]
@@ -93,6 +116,11 @@ const typeDefs = gql`
     posts: [Post]
     post(postId: ID!): Post
     feed: [Post]
+    messages: [Messages]
+    message(id: ID!): Messages
+    messagesByUser(userId: ID!): Messages
+    notifications: [Notifications]
+    notificationsByUser(userId: ID!): [Notifications]
   }
 
   type Mutation {

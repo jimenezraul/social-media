@@ -8,11 +8,23 @@ const {
   postMutation,
   postSubscription,
 } = require('../controllers/posts');
+const {
+  messageQuery,
+  messageMutation,
+  messageSubscription,
+} = require('../controllers/messages');
+const {
+  notificationQuery,
+  notificationMutation,
+  notificationSubscription,
+} = require('../controllers/notifications');
 
 const resolvers = {
   Query: {
     ...userQuery,
     ...postQuery,
+    ...messageQuery,
+    ...notificationQuery,
   },
   Mutation: {
     ...userMutation,

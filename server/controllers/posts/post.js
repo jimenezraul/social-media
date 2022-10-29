@@ -175,7 +175,7 @@ module.exports = {
       { $pull: { posts: postId } },
       { new: true }
     );
-    
+
     return {
       success: true,
       message: 'Post deleted!',

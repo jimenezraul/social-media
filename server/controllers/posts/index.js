@@ -12,7 +12,12 @@ const {
   updateComment,
   newCommentSubscription,
 } = require('./comment');
-const { likes, likeComment, newLikeSubscription, newLikeCommentSubscription } = require('./likes');
+const {
+  likes,
+  likeComment,
+  newLikeSubscription,
+  newLikeCommentSubscription,
+} = require('./likes');
 const { feed } = require('./feed');
 
 const postResolvers = {
