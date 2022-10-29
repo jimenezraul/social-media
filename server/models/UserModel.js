@@ -69,6 +69,12 @@ const userSchema = new Schema(
         ref: 'User',
       },
     ],
+    Notifications: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: 'Notification',
+      },
+    ],
     accessToken: {
       type: String,
     },

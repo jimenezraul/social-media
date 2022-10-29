@@ -20,7 +20,7 @@ import { store } from './app/store';
 
 import AppRoutes from './routes';
 
-const wsUrl = 'wss://morning-tundra-02449.herokuapp.com/graphql';
+const wsUrl = 'wss://localhost:3001/graphql';
 
 const wsLink = new GraphQLWsLink(
   createClient({
