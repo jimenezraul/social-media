@@ -10,21 +10,15 @@ const { Profile } = lazyImport(() => import('../features/users'), 'Profile');
 const { Friends } = lazyImport(() => import('../features/users'), 'Friends');
 const { Feed } = lazyImport(() => import('../features/users'), 'Feed');
 const { PostById } = lazyImport(() => import('../features/posts'), 'PostById');
-const { FriendProfile } = lazyImport(
-  () => import('../features/users'),
-  'FriendProfile'
-);
+const { FriendProfile } = lazyImport(() => import('../features/users'), 'FriendProfile');
+const { Messages } = lazyImport(() => import('../features/messages'), 'Messages');
 
 const Protected = () => {
   return (
-    <div className='bg-slate-900 h-screen flex flex-col'>
+    <div className="bg-slate-900 h-screen flex flex-col">
       <Navbar />
-      <Suspense
-        fallback={
-          <div className='h-full w-full flex items-center justify-center'></div>
-        }
-      >
-        <div className='flex max-h-full overflow-hidden'>
+      <Suspense fallback={<div className="h-full w-full flex items-center justify-center"></div>}>
+        <div className="flex max-h-full overflow-hidden">
           <Outlet />
         </div>
       </Suspense>
@@ -66,7 +60,11 @@ export const protectedRoutes = [
         path: 'search',
         element: <SearchForFriends />,
       },
-      { path: '*', element: <Navigate to='.' /> },
+      {
+        path: '/messages/inbox',
+        element: <Messages />,
+      },
+      { path: '*', element: <Navigate to="." /> },
     ],
   },
 ];

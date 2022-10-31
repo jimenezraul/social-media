@@ -149,6 +149,7 @@ const typeDefs = gql`
     resetPassword(token: String!, password: String!): Message
     forgotPassword(email: String!): Message
     resendVerificationEmail(email: String!): Message
+    postMessage(recipientId: ID!, text: String, media: String): Message
   }
 
   type Subscription {
@@ -157,6 +158,7 @@ const typeDefs = gql`
     newLikeSubscription: LikeSub
     newLikeCommentSubscription: likeCommentSub
     newFriendRequestSubscription: friendRequestSub
+    newMessageSubscription: Messages
   }
 `;
 

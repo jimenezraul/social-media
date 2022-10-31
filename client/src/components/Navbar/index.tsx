@@ -103,7 +103,7 @@ const Navbar = () => {
           </div>
         </div>
         <div className='flex items-center space-x-5'>
-          <Link to='/messages'>
+          <Link to='/messages/inbox'>
             <i className='text-xl fa-solid fa-comment text-slate-300'></i>
           </Link>
           <div className='relative' ref={notificationsRef}>

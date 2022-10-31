@@ -29,10 +29,12 @@ const resolvers = {
   Mutation: {
     ...userMutation,
     ...postMutation,
+    ...messageMutation,
   },
   Subscription: {
     ...postSubscription,
     ...userSubscription,
+    ...messageSubscription,
   },
 };
 

@@ -1,10 +1,22 @@
-const { messages, message, messagesByUser } = require('./messages');
+const {
+  messages,
+  message,
+  messagesByUser,
+  postMessage,
+  newMessageSubscription,
+} = require('./messages');
 
 const messagesResolvers = {
   messageQuery: {
     messages,
     message,
     messagesByUser,
+  },
+  messageMutation: {
+    postMessage,
+  },
+  messageSubscription: {
+    newMessageSubscription,
   },
 };
 

@@ -72,4 +72,23 @@ module.exports = {
         ],
       });
   },
+  // post a message
+  postMessage: async (parent, { message }, context) => {
+    const loggedUser = context.user;
+    if (!loggedUser) {
+      throw new AuthenticationError('You need to be logged in!');
+    }
+    const newMessage = await Message.create({
+      ...message,
+      sender: loggedUser._id,
+    });
+    pubsub.publish('messagePosted', { messagePosted: newMessage });
+    return newMessage;
+  },
+  
+
+  newMessageSubscription: {
+    subscribe: () => pubsub.asyncIterator('message'),
+  },
+
 };
