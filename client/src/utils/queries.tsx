@@ -249,3 +249,29 @@ export const POST_BY_ID = gql`
     }
   }
 `;
+
+export const GET_MESSAGES_BY_USER = gql`
+  query Messages{
+    chatByUser{
+      _id
+      members {
+        family_name
+        given_name
+        _id
+        profileUrl
+      }
+      messages {
+        sender {
+          _id
+          given_name
+          family_name
+          profileUrl
+        }
+        text
+        media
+        createdAt
+        status
+      }
+    }
+  }
+`;

@@ -1,16 +1,16 @@
 const {
-  messages,
-  message,
-  messagesByUser,
+  chats,
+  chatById,
+  chatByUser,
   postMessage,
   newMessageSubscription,
 } = require('./messages');
 
 const messagesResolvers = {
   messageQuery: {
-    messages,
-    message,
-    messagesByUser,
+    chats,
+    chatById,
+    chatByUser,
   },
   messageMutation: {
     postMessage,

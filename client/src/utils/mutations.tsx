@@ -197,3 +197,29 @@ export const VERIFY_EMAIL = gql`
     }
   }
 `;
+
+export const POST_MESSAGE = gql`
+  mutation Post_Message($recipientId: ID!, $text: String, $media: String) {
+    postMessage(recipientId: $recipientId, text: $text, media: $media) {
+      _id
+      members {
+        _id
+        given_name
+        family_name
+        profileUrl
+      }
+      messages {
+        sender {
+          _id
+          given_name
+          family_name
+          profileUrl
+        }
+        text
+        media
+        createdAt
+        status
+      }
+    }
+  }
+`;

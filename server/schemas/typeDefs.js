@@ -116,9 +116,9 @@ const typeDefs = gql`
     posts: [Post]
     post(postId: ID!): Post
     feed: [Post]
-    messages: [Messages]
-    message(id: ID!): Messages
-    messagesByUser(userId: ID!): Messages
+    chats: [Messages]
+    chatById(id: ID!): [Messages]
+    chatByUser: [Messages]
     notifications: [Notifications]
     notificationsByUser(userId: ID!): [Notifications]
   }
@@ -149,7 +149,7 @@ const typeDefs = gql`
     resetPassword(token: String!, password: String!): Message
     forgotPassword(email: String!): Message
     resendVerificationEmail(email: String!): Message
-    postMessage(recipientId: ID!, text: String, media: String): Message
+    postMessage(recipientId: ID!, text: String, media: String): Messages
   }
 
   type Subscription {

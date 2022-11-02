@@ -1,127 +1,56 @@
+import { useEffect, useState } from 'react';
 import { useAppSelector } from '../../../app/hooks';
-import { selectUser } from '../../../features/users/userSlice';
-const { MessageList } = require('../../../components/MessageList');
+import { selectUser } from '../../users/userSlice';
+import { ChatUsers } from '../../../components/ChatUsers';
+import { useQuery } from '@apollo/client';
+import { GET_MESSAGES_BY_USER } from '../../../utils/queries';
 
 export const Messages = () => {
+  const [members, setMembers] = useState([]);
+  const { data, loading, error } = useQuery(GET_MESSAGES_BY_USER);
   const user = useAppSelector(selectUser).user;
-  const data = {
-    getMembers: [
-      {
-        _id: '60f1c1b0b9b1a8a0b0b0b0b0',
-        members: [
-          {
-            _id: '635b528058eeff1e09394969',
-            given_name: 'Raul',
-            family_name: 'Jimenez',
-            profileUrl: '',
-          },
-          {
-            _id: '635b528058eeff1e09394968',
-            given_name: 'John',
-            family_name: 'Doe',
-            profileUrl: '',
-          },
-        ],
-        messages: [
-          {
-            _id: '60f1c1b0b9b1a8a0b0b0b0b1',
-            sender: {
-              _id: '635b528058eeff1e09394969',
-              given_name: 'Raul',
-              family_name: 'Jimenez',
-              profileUrl: '',
-            },
-            text: 'Hello',
-            media: [],
-            createdAt: '2021-07-19T21:00:00.000Z',
-            status: 'delivered',
-          },
-          {
-            _id: '60f1c1b0b9b1a8a0b0b0b0b2',
-            sender: {
-              _id: '635b528058eeff1e09394968',
-              given_name: 'John',
-              family_name: 'Doe',
-              profileUrl: '',
-            },
-            text: 'Hello',
-            media: [],
-            createdAt: '2021-07-19T21:00:00.000Z',
-            status: 'delivered',
-          },
-        ],
-      },
-      {
-        _id: '60f1c1b0b9b1a8a0b0b0b0b3',
-        members: [
-          {
-            _id: '635b528058eeff1e09394969',
-            given_name: 'Raul',
-            family_name: 'Jimenez',
-            profileUrl: '',
-          },
-          {
-            _id: '635b528058eeff1e09394964',
-            given_name: 'Tom',
-            family_name: 'Smith',
-            profileUrl: '',
-          },
-        ],
-        messages: [
-          {
-            _id: '60f1c1b0b9b1a8a0b0b0b0b4',
-            sender: {
-              _id: '635b528058eeff1e09394969',
-              given_name: 'Raul',
-              family_name: 'Jimenez',
-              profileUrl: '',
-            },
-            text: 'Hello',
-            media: [],
-            createdAt: '2021-07-19T21:00:00.000Z',
-            status: 'delivered',
-          },
-          {
-            _id: '60f1c1b0b9b1a8a0b0b0b0b5',
-            sender: {
-              _id: '635b528058eeff1e09394964',
-              given_name: 'Tom',
-              family_name: 'Smith',
-              profileUrl: '',
-            },
-            text: 'Hello',
-            media: [],
-            createdAt: '2021-07-19T21:00:00.000Z',
-            status: 'delivered',
-          },
-        ],
-      },
-    ],
-  };
 
-  const members = data.getMembers.map((member) => {
-    const otherMember = member.members.find((m) => m._id !== user._id);
-    return otherMember;
-  });
+  useEffect(() => {
+    if (loading) return;
+    if (error) return console.log(error);
+    setMembers(
+      data?.chatByUser.map((member) => {
+        const otherMember = member.members.find((m) => m._id !== user._id);
+        return otherMember;
+      }),
+    );
+  }, [data, loading, error, user]);
 
-  console.log(members);
-  // const { data, loading, error } = useQuery(GET_MESSAGES, {
-  //   fetchPolicy: 'network-only',
-  // });
+  if (loading) return <div className="loader"></div>;
+  if (error) return <div className="error">{error.message}</div>;
 
-  // if (loading) return <Loading />;
-  // if (error) return <Error error={error} />;
-  console.log(data.getMembers);
   return (
     <div className="container mx-auto">
       <div className="flex flex-row justify-center">
-        <div className="p-1 flex flex-col space-y-2 w-full md:w-4/12 text-white">
-          {members.map((member) => (
-            <MessageList key={member._id} {...member} />
-          ))}
+        <div className="p-1 flex flex-col space-y-2 w-full md:w-4/12">
+          <div className="text-white bg-slate-800 rounded-lg px-5 py-3">
+            <div className="flex flex-row justify-between items-center">
+              <h1 className="text-2xl font-bold">Messages</h1>
+              <i className="cursor-pointer text-2xl fa-solid fa-pen-to-square"></i>
+            </div>
+            {!members.length ? (
+              <div></div>
+            ) : (
+              members.map((member) => <ChatUsers key={member._id} {...member} />)
+            )}
+          </div>
         </div>
-        <div className="p-1 w-full md:w-8/12 bg-blue-300">
-          <h1 className="title">Messages</h1>
+        <div className="p-1 hidden md:flex md:w-8/12 lg:w-6/12 text-white">
+          <div className="w-full bg-slate-800 rounded-lg p-5">
+            {!members.length && (
+              <div className="w-full flex flex-col justify-center items-center">
+                <h1 className="text-2xl font-bold">No Messages</h1>
+                <p className="text-center">
+                  You have no messages yet. Click the <span><i className="text-xl fa-solid fa-pen-to-square"></i></span> icon to start a new conversation.
+                </p>
+              </div>
+            )}
+          </div>
         </div>
       </div>
     </div>

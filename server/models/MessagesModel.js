@@ -18,11 +18,11 @@ const messageSchema = new Schema(
           type: String,
           trim: true,
         },
-        media: [
-          {
-            type: String,
-          },
-        ],
+        media: {
+          type: String,
+          trim: true,
+        },
+
         createdAt: {
           type: Date,
           default: Date.now,
@@ -38,3 +38,7 @@ const messageSchema = new Schema(
     timestamps: true,
   }
 );
+
+const Message = model('Message', messageSchema);
+
+module.exports = Message;
