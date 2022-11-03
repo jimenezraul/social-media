@@ -61,7 +61,11 @@ export const protectedRoutes = [
         element: <SearchForFriends />,
       },
       {
-        path: '/messages/inbox',
+        path: '/messages',
+        element: <Messages />,
+      },
+      {
+        path: '/messages/new',
         element: <Messages />,
       },
       { path: '*', element: <Navigate to="." /> },
