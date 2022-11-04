@@ -53,16 +53,9 @@ interface PromptMomentNotification {
     | 'unregistered_origin'
     | 'unknown_reason';
   isSkippedMoment: () => boolean;
-  getSkippedReason: () =>
-    | 'auto_cancel'
-    | 'user_cancel'
-    | 'tap_outside'
-    | 'issuing_failed';
+  getSkippedReason: () => 'auto_cancel' | 'user_cancel' | 'tap_outside' | 'issuing_failed';
   isDismissedMoment: () => boolean;
-  getDismissedReason: () =>
-    | 'credential_returned'
-    | 'cancel_called'
-    | 'flow_restarted';
+  getDismissedReason: () => 'credential_returned' | 'cancel_called' | 'flow_restarted';
   getMomentType: () => 'display' | 'skipped' | 'dismissed';
 }
 
@@ -80,21 +73,13 @@ interface Google {
   accounts: {
     id: {
       initialize: (input: IdConfiguration) => void;
-      prompt: (
-        momentListener?: (res: PromptMomentNotification) => void
-      ) => void;
-      renderButton: (
-        parent: HTMLElement,
-        options: GsiButtonConfiguration
-      ) => void;
+      prompt: (momentListener?: (res: PromptMomentNotification) => void) => void;
+      renderButton: (parent: HTMLElement, options: GsiButtonConfiguration) => void;
       disableAutoSelect: () => void;
       storeCredential: (credentials: Credential, callback: () => void) => void;
       cancel: () => void;
       onGoogleLibraryLoad: () => void;
-      revoke: (
-        hint: string,
-        callback: (done: RevocationResponse) => void
-      ) => void;
+      revoke: (hint: string, callback: (done: RevocationResponse) => void) => void;
     };
   };
 }
@@ -142,7 +127,7 @@ interface RegisterSetFormState {
         password: string;
         confirm_password: string;
       };
-    }>
+    }>,
   ): void;
 }
 
@@ -155,7 +140,7 @@ interface SetFormState {
         email: string;
         password: string;
       };
-    }>
+    }>,
   ): void;
 }
 
@@ -189,6 +174,7 @@ interface User {
   fullName: String;
   friendCount: Int;
   createdAtFormatted: String;
+  isLast?: Boolean;
 }
 
 interface Comments {
@@ -236,4 +222,16 @@ interface RegisterInfo {
   success: boolean;
   message: string;
   subMessage: string;
+}
+
+interface Messages {
+  _id?: string;
+  sender?: User;
+  status?: string;
+  text?: string;
+  createdAt?: Date;
+}
+
+interface ById {
+  id?: string;
 }

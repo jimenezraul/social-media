@@ -124,9 +124,9 @@ const Navbar = () => {
               <Notifications setNotificationsOpen={setNotificationsOpen} />
             )}
           </div>
-          <div className='flex relative' ref={menuRef}>
+          <div className='flex relative justify-center items-center' ref={menuRef}>
             <img
-              className='mr-2 h-10 bg-gradient-to-r from-blue-600 to to-red-500 rounded-full p-0.5'
+              className='mr-2 h-10 bg-default rounded-full p-0.5'
               src={`${profileUrl}`}
               alt=''
               referrerPolicy='no-referrer'

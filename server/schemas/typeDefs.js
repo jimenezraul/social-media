@@ -38,6 +38,7 @@ const typeDefs = gql`
     postCount: Int
     posts: [Post]
     friends: [User]
+    messages: [Messages]
     blockedUsers: [User]
     friendRequests: [User]
     friendRequestCount: Int

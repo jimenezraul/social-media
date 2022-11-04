@@ -1,13 +1,14 @@
 import { useEffect, useState } from 'react';
 import { useAppSelector } from '../../../app/hooks';
 import { selectUser } from '../../users/userSlice';
-import { ChatUsers } from '../../../components/ChatUsers';
+import { ChatUsers } from '../../../components/ChatUsersList';
 import { useQuery } from '@apollo/client';
 import { GET_MESSAGES_BY_USER } from '../../../utils/queries';
 import ChatBox from '../../../components/ChatBox';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 
 export const Messages = () => {
+  const id = useParams();
   const navigate = useNavigate();
   const [members, setMembers] = useState([]);
   const { data, loading, error } = useQuery(GET_MESSAGES_BY_USER);
@@ -18,9 +19,10 @@ export const Messages = () => {
   useEffect(() => {
     if (loading) return;
     if (error) return console.log(error);
+
     setMembers(
-      data?.chatByUser.map((member) => {
-        const otherMember = member.members.find((m) => m._id !== user._id);
+      data?.chatByUser?.map((member: any) => {
+        const otherMember = member?.members?.find((m: User) => m._id !== user._id);
         return otherMember;
       }),
     );
@@ -33,16 +35,19 @@ export const Messages = () => {
     <div className="container mx-auto h-full">
       <div className="flex flex-row justify-center">
         <div className="p-1 flex flex-col space-y-2 w-full md:w-4/12">
-          <div className="text-white bg-slate-800 rounded-lg px-5 py-3">
-            <div className="flex flex-row justify-between items-center">
+          <div className="text-slate-300 rounded-lg overflow-hidden border border-slate-700 shadow-lg">
+            <div className="flex flex-row justify-between items-center bg-slate-700 px-5 py-3 border-b border-slate-800">
               <h1 className="text-2xl font-bold">Messages</h1>
-              <i onClick={()=> navigate("/messages/new")} className="cursor-pointer text-2xl fa-solid fa-pen-to-square"></i>
+              <i
+                onClick={() => navigate('/messages/new')}
+                className="hover:text-blue-400 cursor-pointer text-2xl fa-solid fa-pen-to-square"
+              ></i>
             </div>
-            {!members.length ? (
-              <div></div>
-            ) : (
-              members.map((member) => <ChatUsers key={member._id} {...member} />)
-            )}
+            {members.length &&
+              members.map((member: User, index: number) => {
+                const isLast = index === members.length - 1;
+                return <ChatUsers key={index} {...member} isLast={isLast} />;
+              })}
           </div>
         </div>
         <div className="h-full p-1 hidden md:flex md:w-8/12 lg:w-6/12 text-white">
@@ -59,7 +64,7 @@ export const Messages = () => {
                 </p>
               </div>
             ) : (
-              <ChatBox />
+              <ChatBox {...id} />
             )}
           </div>
         </div>

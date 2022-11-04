@@ -1,34 +1,78 @@
-import { useState, createRef } from 'react';
-import { useQuery } from '@apollo/client';
+import { useState, useRef, useEffect } from 'react';
+import { useQuery, useMutation } from '@apollo/client';
 import { GET_ME } from '../../utils/queries';
+import { SEND_MESSAGE } from '../../utils/mutations';
 
-const ChatBox = () => {
+const ChatBox = ({ id }: ById) => {
+  const [message, setMessage] = useState<any>([]);
   const { data } = useQuery(GET_ME);
+  const [sendMessage] = useMutation(SEND_MESSAGE);
+
   const [friend, setFriend] = useState<User>();
   const [inputValue, setInputValue] = useState('');
-  const messageRef = createRef<HTMLInputElement>();
+  const messageRef = useRef<HTMLInputElement>(null);
 
+  useEffect(() => {
+    if (!id) {
+      setFriend(undefined);
+      setMessage([]);
+      setInputValue('');
+      return;
+    }
+  }, [id]);
+
+  useEffect(() => {
+    if (id && data) {
+      const m = data?.me?.messages?.map((m: any) => {
+        const isMember = m.members?.map((m: any) => m._id).includes(id);
+        if (isMember) {
+          return m;
+        }
+        return null;
+      });
+
+      if (message.length === 0) {
+        setMessage(m);
+        const friend = data?.me?.friends?.filter((f: any) => f._id === id);
+        setFriend(friend[0]);
+      }
+      return;
+    }
+  }, [data, id, message.length]);
+
+  // filtered friend
   const filteredFriends = data?.me?.friends.filter((f: User) => {
     if (inputValue === '') {
       return null;
     }
-    return f.given_name.toLowerCase().includes(inputValue.toLowerCase());
+    return f.fullName.toLowerCase().includes(inputValue.toLowerCase());
   });
 
+  // 
   const handleFriendClick = (f: User) => {
     setFriend(f);
   };
 
-  const sendMessage = () => {
+  const sendMessageHandler = async () => {
     if (friend === undefined || messageRef.current?.value === '') return;
-    console.log(friend, messageRef.current?.value);
+
+    try {
+      const res = await sendMessage({
+        variables: {
+          recipientId: friend._id,
+          message: messageRef.current?.value,
+        },
+      });
+    } catch (err) {
+      console.log(err);
+    }
     messageRef.current!.value = '';
   };
 
   return (
-    <div className="min-w-full border border-slate-700 rounded-lg">
+    <div className="min-w-full border border-slate-700 rounded-lg overflow-hidden">
       <div className="w-full">
-        <div className="relative flex items-center p-2 border-b border-slate-700">
+        <div className="relative flex items-center p-2 border-b border-slate-700 bg-slate-700">
           {friend ? (
             <div className="flex items-center">
               <img
@@ -47,7 +91,7 @@ const ChatBox = () => {
                 onChange={(e) => setInputValue(e.target.value)}
                 type="text"
                 placeholder="Search for friends"
-                className="outline-none relative w-full bg-slate-700 text-gray-300 rounded-lg border border-slate-600 p-2"
+                className="outline-none relative w-full bg-slate-800 text-gray-300 rounded-full border border-slate-600 p-2 indent-3"
               />
               <span className="absolute right-6">
                 <svg
@@ -97,32 +141,30 @@ const ChatBox = () => {
         </div>
         <div className="relative w-full p-6 overflow-y-auto min-h-[30rem] max-h-[40rem]">
           <ul className="space-y-2">
-            <li className="flex justify-start">
-              <div className="relative max-w-xl px-5 py-1 text-white rounded-full bg-green-500 shadow">
-                <span className="block">Hi</span>
-              </div>
-            </li>
-            <li className="flex justify-end">
-              <div className="relative max-w-xl px-5 py-1 text-white bg-blue-500 rounded-full shadow">
-                <span className="block">Hiiii</span>
-              </div>
-            </li>
-            <li className="flex justify-end">
-              <div className="relative max-w-xl px-5 py-1 text-white bg-blue-500 rounded-full shadow">
-                <span className="block">how are you?</span>
-              </div>
-            </li>
-            <li className="flex justify-start">
-              <div className="relative max-w-xl px-5 py-1 text-white rounded-full bg-green-500 shadow">
-                <span className="block">
-                  Lorem ipsum dolor sit, amet consectetur adipisicing elit.
-                </span>
-              </div>
-            </li>
+            {message?.map((m: any) => {
+              return m.messages.map((m: any, index: number) => {
+                if (m.sender._id === data?.me?._id) {
+                  return (
+                    <li key={index} className="flex justify-end">
+                      <div className="relative max-w-xl px-5 py-1 text-white bg-blue-500 rounded-full shadow">
+                        <span className="block">{m.text}</span>
+                      </div>
+                    </li>
+                  );
+                }
+                return (
+                  <li key={index} className="flex justify-start">
+                    <div className="relative max-w-xl px-5 py-1 text-white rounded-full bg-green-500 shadow">
+                      <span className="block">{m.text}</span>
+                    </div>
+                  </li>
+                );
+              });
+            })}
           </ul>
         </div>
 
-        <div className="flex items-center justify-between w-full p-3 border-t border-slate-700">
+        <div className="flex items-center justify-between w-full p-3 border-t border-slate-700 bg-slate-700">
           {/* <button>
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -159,7 +201,7 @@ const ChatBox = () => {
           <input
             type="text"
             placeholder="Message"
-            className="block w-full py-2 pl-4 mx-3 bg-slate-700 rounded-full outline-none focus:text-white"
+            className="block w-full py-2 pl-4 mx-3 bg-slate-800 rounded-full outline-none focus:text-white"
             name="message"
             ref={messageRef}
             required
@@ -180,9 +222,9 @@ const ChatBox = () => {
               />
             </svg>
           </button> */}
-          <button onClick={sendMessage}>
+          <button onClick={sendMessageHandler}>
             <svg
-              className="w-8 h-8 text-slate-500 origin-center transform rotate-90"
+              className="w-8 h-8 text-slate-400 origin-center transform rotate-90 hover:text-slate-300 hover:scale-110 transition-all duration-200"
               xmlns="http://www.w3.org/2000/svg"
               viewBox="0 0 20 20"
               fill="currentColor"

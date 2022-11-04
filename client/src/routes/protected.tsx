@@ -68,6 +68,10 @@ export const protectedRoutes = [
         path: '/messages/new',
         element: <Messages />,
       },
+      {
+        path: '/messages/:id',
+        element: <Messages />,
+      },
       { path: '*', element: <Navigate to="." /> },
     ],
   },

@@ -69,6 +69,26 @@ export const GET_ME = gql`
         profileUrl
       }
       createdAtFormatted
+      messages {
+      _id
+      members {
+        _id
+        given_name
+        family_name
+        profileUrl
+      }
+      messages {
+        sender {
+          _id
+          given_name
+          family_name
+          profileUrl
+        }
+        text
+        status
+        createdAt
+      }
+    }
     }
   }
 `;

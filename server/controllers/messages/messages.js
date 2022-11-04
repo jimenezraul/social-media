@@ -3,7 +3,9 @@ const {
   ForbiddenError,
 } = require('apollo-server-express');
 const { PubSub } = require('graphql-subscriptions');
-const { Message } = require('../../models');
+const { Message, User } = require('../../models');
+
+const pubsub = new PubSub();
 
 module.exports = {
   // get all chats
@@ -97,6 +99,7 @@ module.exports = {
         members: { $all: [loggedUser._id, recipientId] },
       },
       {
+        members: [loggedUser._id, recipientId],
         $push: {
           messages: {
             sender: loggedUser._id,
@@ -129,7 +132,7 @@ module.exports = {
       pubsub.publish('NEW_MESSAGE', { newMessageSubscription: message });
       return message;
     }
-
+  
     const newMessage = await Message.create({
       members: [loggedUser._id, recipientId],
       messages: {
@@ -153,7 +156,27 @@ module.exports = {
         ],
       });
 
+    // update loggedUser and recipient's messages
+    await User.findOneAndUpdate(
+      { _id: loggedUser._id },
+      {
+        $push: {
+          messages: message._id,
+        },
+      }
+    );
+
+    await User.findOneAndUpdate(
+      { _id: recipientId },
+      {
+        $push: {
+          messages: message._id,
+        },
+      }
+    );
+
     pubsub.publish('NEW_MESSAGE', { newMessageSubscription: newMessage });
+
     return newMessage;
   },
 

@@ -72,13 +72,13 @@ const userSchema = new Schema(
         ref: 'User',
       },
     ],
-    Notifications: [
+    notifications: [
       {
         type: Schema.Types.ObjectId,
         ref: 'Notification',
       },
     ],
-    Messages: [
+    messages: [
       {
         type: Schema.Types.ObjectId,
         ref: 'Message',
