@@ -93,53 +93,64 @@ module.exports = {
       throw new AuthenticationError('You need to be logged in!');
     }
 
-    // gets messages that have loggedUser and recipient if they exist else creates a new message
-    const message = await Message.findOneAndUpdate(
-      {
-        members: { $all: [loggedUser._id, recipientId] },
-      },
-      {
-        members: [loggedUser._id, recipientId],
-        $push: {
-          messages: {
-            sender: loggedUser._id,
-            text,
-            media,
+    // check if logged user is a member of the chat
+    const chat = await Message.findOne({
+      members: { $all: [loggedUser._id, recipientId] },
+    });
+
+    if (chat) {
+      // gets messages that have loggedUser and recipient if they exist else creates a new message
+      const message = await Message.findOneAndUpdate(
+        {
+          members: { $all: [loggedUser._id, recipientId] },
+        },
+        {
+          members: [loggedUser._id, recipientId],
+          $push: {
+            messages: {
+              sender: loggedUser._id,
+              text,
+              media,
+            },
           },
         },
-      },
-      {
-        new: true,
-        upsert: true,
-      }
-    )
-      .select('-__v')
-      .populate({
-        path: 'members',
-        select: '-__v -password',
-      })
-      .populate({
-        path: 'messages',
-        populate: [
-          {
-            path: 'sender',
-            model: 'User',
-          },
-        ],
-      });
+        {
+          new: true,
+          upsert: true,
+        }
+      )
+        .select('-__v')
+        .populate({
+          path: 'members',
+          select: '-__v -password',
+        })
+        .populate({
+          path: 'messages',
+          populate: [
+            {
+              path: 'sender',
+              model: 'User',
+            },
+          ],
+        });
 
-    if (message) {
-      pubsub.publish('NEW_MESSAGE', { newMessageSubscription: message });
-      return message;
+      if (message) {
+        pubsub.publish('NEW_MESSAGE', { newMessageSubscription: message });
+        return message;
+      }
     }
-  
-    const newMessage = await Message.create({
+
+    const createMessage = await Message.create({
       members: [loggedUser._id, recipientId],
       messages: {
         sender: loggedUser._id,
         text,
         media,
       },
+    });
+
+    const newMessage = await Message.findOne({
+      _id: createMessage._id,
     })
       .select('-__v')
       .populate({
@@ -161,7 +172,7 @@ module.exports = {
       { _id: loggedUser._id },
       {
         $push: {
-          messages: message._id,
+          messages: createMessage._id,
         },
       }
     );
@@ -170,7 +181,7 @@ module.exports = {
       { _id: recipientId },
       {
         $push: {
-          messages: message._id,
+          messages: createMessage._id,
         },
       }
     );

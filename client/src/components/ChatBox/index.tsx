@@ -48,7 +48,7 @@ const ChatBox = ({ id }: ById) => {
     return f.fullName.toLowerCase().includes(inputValue.toLowerCase());
   });
 
-  // 
+  //
   const handleFriendClick = (f: User) => {
     setFriend(f);
   };
@@ -142,19 +142,33 @@ const ChatBox = ({ id }: ById) => {
         <div className="relative w-full p-6 overflow-y-auto min-h-[30rem] max-h-[40rem]">
           <ul className="space-y-2">
             {message?.map((m: any) => {
-              return m.messages.map((m: any, index: number) => {
+              return m?.messages?.map((m: any, index: number) => {
                 if (m.sender._id === data?.me?._id) {
                   return (
                     <li key={index} className="flex justify-end">
-                      <div className="relative max-w-xl px-5 py-1 text-white bg-blue-500 rounded-full shadow">
+                      <div className="relative max-w-xl px-5 py-1 text-white bg-blue-500 rounded-lg shadow">
                         <span className="block">{m.text}</span>
+                      </div>
+                      <div className="relative ml-2">
+                        <img
+                          src={`${data?.me?.profileUrl}`}
+                          alt="avatar"
+                          className="bg-default p-0.5 w-8 h-8 rounded-full"
+                        />
                       </div>
                     </li>
                   );
                 }
                 return (
                   <li key={index} className="flex justify-start">
-                    <div className="relative max-w-xl px-5 py-1 text-white rounded-full bg-green-500 shadow">
+                    <div className="relative mr-2">
+                      <img
+                        src={`${friend?.profileUrl}`}
+                        alt="avatar"
+                        className="bg-default p-0.5 w-8 h-8 rounded-full"
+                      />
+                    </div>
+                    <div className="relative max-w-xl px-5 py-1 text-white rounded-lg bg-green-500 shadow">
                       <span className="block">{m.text}</span>
                     </div>
                   </li>

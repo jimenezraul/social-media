@@ -43,7 +43,7 @@ export const Messages = () => {
                 className="hover:text-blue-400 cursor-pointer text-2xl fa-solid fa-pen-to-square"
               ></i>
             </div>
-            {members.length &&
+            {members.length > 0 &&
               members.map((member: User, index: number) => {
                 const isLast = index === members.length - 1;
                 return <ChatUsers key={index} {...member} isLast={isLast} />;
