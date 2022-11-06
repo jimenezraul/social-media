@@ -4,6 +4,7 @@ import {
   NEW_FRIEND_REQUEST,
   NEW_LIKE_COMMENT_SUBSCRIPTION,
   NEW_LIKE_SUBSCRIPTION,
+  NEW_MESSAGE_SUBSCRIPTION,
 } from './subscriptions';
 import { store } from '../app/store';
 import { setNewPost } from '../features/posts/postSlice';
@@ -276,6 +277,43 @@ export const subscribeToFriendRequests = (subscribeToMore: any) => {
       }
 
       return prev;
+    },
+  });
+};
+
+export const subscribeToNewMessage = (subscribeToMore: any, chatId: string) => {
+  const user = store.getState().user;
+  subscribeToMore({
+    document: NEW_MESSAGE_SUBSCRIPTION,
+    variables: {
+      userId: user.user._id,
+      chatId,
+    },
+    updateQuery: (prev: any, { subscriptionData }: any) => {
+      if (!subscriptionData.data) return prev;
+      const newMessage = subscriptionData.data.newMessageSubscription;
+      let prevMessages;
+
+      if (prev.chatByUser) {
+        prevMessages = prev.chatByUser;
+      } else {
+        prevMessages = prev.me.messages;
+      }
+
+      const updatedMessages = prevMessages.filter((message: any) => message._id !== newMessage._id);
+
+      if (prev.chatByUser) {
+        return Object.assign({}, prev, {
+          chatByUser: [newMessage, ...updatedMessages],
+        });
+      }
+
+      return Object.assign({}, prev, {
+        me: {
+          ...prev.me,
+          messages: [newMessage, ...updatedMessages],
+        },
+      });
     },
   });
 };

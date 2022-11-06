@@ -2,10 +2,11 @@ import { useState, useRef, useEffect } from 'react';
 import { useQuery, useMutation } from '@apollo/client';
 import { GET_ME } from '../../utils/queries';
 import { SEND_MESSAGE } from '../../utils/mutations';
+import { subscribeToNewMessage } from '../../utils/subscribe';
 
 const ChatBox = ({ id }: ById) => {
   const [message, setMessage] = useState<any>([]);
-  const { data } = useQuery(GET_ME);
+  const { loading, data, error, subscribeToMore } = useQuery(GET_ME);
   const [sendMessage] = useMutation(SEND_MESSAGE);
 
   const [friend, setFriend] = useState<User>();
@@ -22,24 +23,36 @@ const ChatBox = ({ id }: ById) => {
   }, [id]);
 
   useEffect(() => {
-    if (id && data) {
-      const m = data?.me?.messages?.map((m: any) => {
-        const isMember = m.members?.map((m: any) => m._id).includes(id);
-        if (isMember) {
-          return m;
-        }
-        return null;
-      });
+    if (loading) return;
+    if (error) return console.log(error);
 
-      if (message.length === 0) {
-        setMessage(m);
-        const friend = data?.me?.friends?.filter((f: any) => f._id === id);
-        setFriend(friend[0]);
-      }
+    if (id && data) {
+      const m = data?.me?.messages
+        ?.map((m: any) => {
+          const isMember = m.members?.find((m: User) => m._id === id);
+          if (isMember) {
+            return m;
+          }
+          return null;
+        })
+        .flat()
+        .filter((m: any) => m !== null);
+
+      setMessage(m);
+      const friend = data?.me?.friends?.filter((f: any) => f._id === id);
+      setFriend(friend[0]);
+
       return;
     }
-  }, [data, id, message.length]);
+  }, [data, id, message.length, loading, error]);
 
+  useEffect(() => {
+    if (subscribeToMore && message) {
+      message.forEach((m: any) => {
+        subscribeToNewMessage(subscribeToMore, m._id);
+      });
+    }
+  }, [subscribeToMore, message]);
   // filtered friend
   const filteredFriends = data?.me?.friends.filter((f: User) => {
     if (inputValue === '') {
@@ -57,7 +70,7 @@ const ChatBox = ({ id }: ById) => {
     if (friend === undefined || messageRef.current?.value === '') return;
 
     try {
-      const res = await sendMessage({
+      await sendMessage({
         variables: {
           recipientId: friend._id,
           message: messageRef.current?.value,
@@ -79,6 +92,7 @@ const ChatBox = ({ id }: ById) => {
                 className="object-cover w-10 h-10 rounded-full bg-default p-0.5"
                 src={`${friend.profileUrl}`}
                 alt={`${friend.given_name} ${friend.family_name}`}
+                referrerPolicy="no-referrer"
               />
               <span className="block ml-2 font-bold text-slate-300">
                 {friend.given_name} {friend.family_name}
@@ -128,6 +142,7 @@ const ChatBox = ({ id }: ById) => {
                         src={`${f.profileUrl}`}
                         alt="avatar"
                         className="bg-default p-0.5 w-10 h-10 rounded-full"
+                        referrerPolicy="no-referrer"
                       />
                       <h1 className="ml-2">
                         {f.given_name} {f.family_name}
@@ -154,6 +169,7 @@ const ChatBox = ({ id }: ById) => {
                           src={`${data?.me?.profileUrl}`}
                           alt="avatar"
                           className="bg-default p-0.5 w-8 h-8 rounded-full"
+                          referrerPolicy="no-referrer"
                         />
                       </div>
                     </li>
@@ -166,6 +182,7 @@ const ChatBox = ({ id }: ById) => {
                         src={`${friend?.profileUrl}`}
                         alt="avatar"
                         className="bg-default p-0.5 w-8 h-8 rounded-full"
+                        referrerPolicy="no-referrer"
                       />
                     </div>
                     <div className="relative max-w-xl px-5 py-1 text-white rounded-lg bg-green-500 shadow">

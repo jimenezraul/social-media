@@ -2,7 +2,7 @@ const {
   AuthenticationError,
   ForbiddenError,
 } = require('apollo-server-express');
-const { PubSub } = require('graphql-subscriptions');
+const { PubSub, withFilter } = require('graphql-subscriptions');
 const { Message, User } = require('../../models');
 
 const pubsub = new PubSub();
@@ -192,6 +192,18 @@ module.exports = {
   },
 
   newMessageSubscription: {
-    subscribe: () => pubsub.asyncIterator('message'),
+    subscribe: withFilter(
+      () => pubsub.asyncIterator('NEW_MESSAGE'),
+      (payload, variables) => {
+        const userExists = payload.newMessageSubscription.members.find(
+          (member) => member._id.toString() === variables.userId
+        );
+        
+        return (
+          !!userExists &&
+          payload.newMessageSubscription._id.toString() === variables.chatId
+        );
+      }
+    ),
   },
 };

@@ -159,7 +159,7 @@ const typeDefs = gql`
     newLikeSubscription: LikeSub
     newLikeCommentSubscription: likeCommentSub
     newFriendRequestSubscription: friendRequestSub
-    newMessageSubscription: Messages
+    newMessageSubscription(userId: ID!, chatId: ID!): Messages
   }
 `;
 

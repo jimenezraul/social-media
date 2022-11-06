@@ -3,8 +3,7 @@ const {
   ForbiddenError,
 } = require('apollo-server-express');
 const { User, Post, Comment } = require('../../models');
-const { PubSub } = require('graphql-subscriptions');
-const { withFilter } = require('graphql-subscriptions');
+const { PubSub, withFilter } = require('graphql-subscriptions');
 
 const pubsub = new PubSub();
 

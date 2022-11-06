@@ -6,12 +6,13 @@ import { useQuery } from '@apollo/client';
 import { GET_MESSAGES_BY_USER } from '../../../utils/queries';
 import ChatBox from '../../../components/ChatBox';
 import { useNavigate, useParams } from 'react-router-dom';
+import { subscribeToNewMessage } from '../../../utils/subscribe';
 
 export const Messages = () => {
   const id = useParams();
   const navigate = useNavigate();
   const [members, setMembers] = useState([]);
-  const { data, loading, error } = useQuery(GET_MESSAGES_BY_USER);
+  const { data, loading, error, subscribeToMore } = useQuery(GET_MESSAGES_BY_USER);
   const user = useAppSelector(selectUser).user;
 
   const newMessage = window.location.pathname.split('/').includes('new');
@@ -27,6 +28,14 @@ export const Messages = () => {
       }),
     );
   }, [data, loading, error, user]);
+
+  useEffect(() => {
+    if (subscribeToMore && data?.chatByUser) {
+      data?.chatByUser?.forEach((m: any) => {
+        subscribeToNewMessage(subscribeToMore, m._id);
+      });
+    }
+  }, [subscribeToMore, data]);
 
   if (loading) return <div className="loader"></div>;
   if (error) return <div className="error">{error.message}</div>;
