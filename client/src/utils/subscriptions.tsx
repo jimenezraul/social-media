@@ -117,8 +117,8 @@ export const NEW_FRIEND_REQUEST = gql`
 `;
 
 export const NEW_MESSAGE_SUBSCRIPTION = gql`
-  subscription New_message_subscription($userId: ID!, $chatId: ID!) {
-    newMessageSubscription(userId: $userId, chatId: $chatId) {
+  subscription New_message_subscription($userId: ID!) {
+    newMessageSubscription(userId: $userId) {
       _id
       members {
         _id

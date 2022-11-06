@@ -3,16 +3,17 @@ import { useAppSelector } from '../../../app/hooks';
 import { selectUser } from '../../users/userSlice';
 import { ChatUsers } from '../../../components/ChatUsersList';
 import { useQuery } from '@apollo/client';
-import { GET_MESSAGES_BY_USER } from '../../../utils/queries';
+import { GET_MESSAGES_BY_USER, GET_ME } from '../../../utils/queries';
 import ChatBox from '../../../components/ChatBox';
 import { useNavigate, useParams } from 'react-router-dom';
 import { subscribeToNewMessage } from '../../../utils/subscribe';
 
 export const Messages = () => {
-  const id = useParams();
+  const { id } = useParams();
   const navigate = useNavigate();
-  const [members, setMembers] = useState([]);
+  const [members, setMembers] = useState<User[]>([]);
   const { data, loading, error, subscribeToMore } = useQuery(GET_MESSAGES_BY_USER);
+  const { subscribeToMore: meSubscribeToMore } = useQuery(GET_ME);
   const user = useAppSelector(selectUser).user;
 
   const newMessage = window.location.pathname.split('/').includes('new');
@@ -30,12 +31,17 @@ export const Messages = () => {
   }, [data, loading, error, user]);
 
   useEffect(() => {
-    if (subscribeToMore && data?.chatByUser) {
-      data?.chatByUser?.forEach((m: any) => {
-        subscribeToNewMessage(subscribeToMore, m._id);
-      });
+    if (!id && members.length > 0 && !newMessage) {
+      navigate(`/messages/${members[0]._id}`);
     }
-  }, [subscribeToMore, data]);
+  }, [id, members, navigate, newMessage]);
+
+  useEffect(() => {
+    if (subscribeToMore && meSubscribeToMore) {
+      subscribeToNewMessage(subscribeToMore);
+      subscribeToNewMessage(meSubscribeToMore);
+    }
+  }, [subscribeToMore, meSubscribeToMore]);
 
   if (loading) return <div className="loader"></div>;
   if (error) return <div className="error">{error.message}</div>;
@@ -73,7 +79,7 @@ export const Messages = () => {
                 </p>
               </div>
             ) : (
-              <ChatBox {...id} />
+              <ChatBox id={id} />
             )}
           </div>
         </div>

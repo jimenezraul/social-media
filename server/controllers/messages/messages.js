@@ -200,8 +200,7 @@ module.exports = {
         );
         
         return (
-          !!userExists &&
-          payload.newMessageSubscription._id.toString() === variables.chatId
+          !!userExists
         );
       }
     ),

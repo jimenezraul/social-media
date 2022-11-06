@@ -3,8 +3,10 @@ import { useQuery, useMutation } from '@apollo/client';
 import { GET_ME } from '../../utils/queries';
 import { SEND_MESSAGE } from '../../utils/mutations';
 import { subscribeToNewMessage } from '../../utils/subscribe';
+import { useNavigate } from 'react-router-dom';
 
 const ChatBox = ({ id }: ById) => {
+  const navigate = useNavigate();
   const [message, setMessage] = useState<any>([]);
   const { loading, data, error, subscribeToMore } = useQuery(GET_ME);
   const [sendMessage] = useMutation(SEND_MESSAGE);
@@ -48,9 +50,7 @@ const ChatBox = ({ id }: ById) => {
 
   useEffect(() => {
     if (subscribeToMore && message) {
-      message.forEach((m: any) => {
-        subscribeToNewMessage(subscribeToMore, m._id);
-      });
+      subscribeToNewMessage(subscribeToMore);
     }
   }, [subscribeToMore, message]);
   // filtered friend
@@ -76,6 +76,7 @@ const ChatBox = ({ id }: ById) => {
           message: messageRef.current?.value,
         },
       });
+      navigate(`/messages/${friend._id}`);
     } catch (err) {
       console.log(err);
     }

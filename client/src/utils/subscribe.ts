@@ -281,13 +281,12 @@ export const subscribeToFriendRequests = (subscribeToMore: any) => {
   });
 };
 
-export const subscribeToNewMessage = (subscribeToMore: any, chatId: string) => {
+export const subscribeToNewMessage = (subscribeToMore: any) => {
   const user = store.getState().user;
   subscribeToMore({
     document: NEW_MESSAGE_SUBSCRIPTION,
     variables: {
       userId: user.user._id,
-      chatId,
     },
     updateQuery: (prev: any, { subscriptionData }: any) => {
       if (!subscriptionData.data) return prev;
@@ -307,7 +306,7 @@ export const subscribeToNewMessage = (subscribeToMore: any, chatId: string) => {
           chatByUser: [newMessage, ...updatedMessages],
         });
       }
-
+      
       return Object.assign({}, prev, {
         me: {
           ...prev.me,
