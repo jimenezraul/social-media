@@ -291,26 +291,15 @@ export const subscribeToNewMessage = (subscribeToMore: any) => {
     updateQuery: (prev: any, { subscriptionData }: any) => {
       if (!subscriptionData.data) return prev;
       const newMessage = subscriptionData.data.newMessageSubscription;
-      let prevMessages;
-
-      if (prev.chatByUser) {
-        prevMessages = prev.chatByUser;
-      } else {
-        prevMessages = prev.me.messages;
-      }
-
+      const prevMessages = prev.me.messages;
+  
       const updatedMessages = prevMessages.filter((message: any) => message._id !== newMessage._id);
+      const newArray = [newMessage, ...updatedMessages];
 
-      if (prev.chatByUser) {
-        return Object.assign({}, prev, {
-          chatByUser: [newMessage, ...updatedMessages],
-        });
-      }
-      
       return Object.assign({}, prev, {
         me: {
           ...prev.me,
-          messages: [newMessage, ...updatedMessages],
+          messages: newArray,
         },
       });
     },

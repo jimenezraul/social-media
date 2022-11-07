@@ -40,6 +40,26 @@ module.exports = {
         path: 'friendRequests',
         model: 'User',
         select: '-__v -password',
+      })
+      .populate({
+        path: 'messages',
+        populate: [
+          {
+            path: 'members',
+            model: 'User',
+            select: '-__v -password',
+          },
+          {
+            path: 'messages',
+            populate: [
+              {
+                path: 'sender',
+                model: 'User',
+                select: '-__v -password',
+              },
+            ],
+          },
+        ],
       });
 
     userData.posts.sort((a, b) => b.createdAt - a.createdAt);

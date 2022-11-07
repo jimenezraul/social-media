@@ -48,11 +48,12 @@ const ChatBox = ({ id }: ById) => {
     }
   }, [data, id, message.length, loading, error]);
 
-  useEffect(() => {
-    if (subscribeToMore && message) {
-      subscribeToNewMessage(subscribeToMore);
-    }
-  }, [subscribeToMore, message]);
+//   useEffect(() => {
+//     if (subscribeToMore && message) {
+//       subscribeToNewMessage(subscribeToMore);
+//     }
+//   }, [subscribeToMore, message]);
+
   // filtered friend
   const filteredFriends = data?.me?.friends.filter((f: User) => {
     if (inputValue === '') {

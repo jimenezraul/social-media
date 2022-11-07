@@ -3,7 +3,7 @@ import { useAppSelector } from '../../../app/hooks';
 import { selectUser } from '../../users/userSlice';
 import { ChatUsers } from '../../../components/ChatUsersList';
 import { useQuery } from '@apollo/client';
-import { GET_MESSAGES_BY_USER, GET_ME } from '../../../utils/queries';
+import { GET_ME } from '../../../utils/queries';
 import ChatBox from '../../../components/ChatBox';
 import { useNavigate, useParams } from 'react-router-dom';
 import { subscribeToNewMessage } from '../../../utils/subscribe';
@@ -12,8 +12,7 @@ export const Messages = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const [members, setMembers] = useState<User[]>([]);
-  const { data, loading, error, subscribeToMore } = useQuery(GET_MESSAGES_BY_USER);
-  const { subscribeToMore: meSubscribeToMore } = useQuery(GET_ME);
+  const { data, loading, error, subscribeToMore } = useQuery(GET_ME);
   const user = useAppSelector(selectUser).user;
 
   const newMessage = window.location.pathname.split('/').includes('new');
@@ -23,7 +22,7 @@ export const Messages = () => {
     if (error) return console.log(error);
 
     setMembers(
-      data?.chatByUser?.map((member: any) => {
+      data?.me?.messages?.map((member: any) => {
         const otherMember = member?.members?.find((m: User) => m._id !== user._id);
         return otherMember;
       }),
@@ -37,11 +36,10 @@ export const Messages = () => {
   }, [id, members, navigate, newMessage]);
 
   useEffect(() => {
-    if (subscribeToMore && meSubscribeToMore) {
+    if (subscribeToMore) {
       subscribeToNewMessage(subscribeToMore);
-      subscribeToNewMessage(meSubscribeToMore);
     }
-  }, [subscribeToMore, meSubscribeToMore]);
+  }, [subscribeToMore]);
 
   if (loading) return <div className="loader"></div>;
   if (error) return <div className="error">{error.message}</div>;
