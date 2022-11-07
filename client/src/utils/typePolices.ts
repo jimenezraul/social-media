@@ -37,6 +37,15 @@ export const policies = {
         },
       },
     },
+    Messages: {
+      fields: {
+        messages: {
+          merge(existing = [], incoming: any) {
+            return incoming;
+          },
+        },
+      },
+    },
     Query: {
       fields: {
         feed: {

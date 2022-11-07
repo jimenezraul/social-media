@@ -70,25 +70,25 @@ export const GET_ME = gql`
       }
       createdAtFormatted
       messages {
-      _id
-      members {
         _id
-        given_name
-        family_name
-        profileUrl
-      }
-      messages {
-        sender {
+        members {
           _id
           given_name
           family_name
           profileUrl
         }
-        text
-        status
-        createdAt
+        messages {
+          sender {
+            _id
+            given_name
+            family_name
+            profileUrl
+          }
+          text
+          status
+          createdAt
+        }
       }
-    }
     }
   }
 `;
@@ -271,8 +271,8 @@ export const POST_BY_ID = gql`
 `;
 
 export const GET_MESSAGES_BY_USER = gql`
-  query Messages{
-    chatByUser{
+  query Messages {
+    chatByUser {
       _id
       members {
         family_name

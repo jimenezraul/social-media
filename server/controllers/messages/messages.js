@@ -201,7 +201,7 @@ module.exports = {
     if (!loggedUser) {
       throw new AuthenticationError('You need to be logged in!');
     }
-    
+
     // change status from delivered to read
     const message = await Message.findOneAndUpdate(
       {
@@ -235,6 +235,40 @@ module.exports = {
     if (message) {
       pubsub.publish('NEW_MESSAGE', { newMessageSubscription: message });
       return message;
+    }
+  },
+
+  getMessagesById: async (parent, { id, limit }, context) => {
+    const loggedUser = context.user;
+    if (!loggedUser) {
+      throw new AuthenticationError('You need to be logged in!');
+    }
+    console.log(limit);
+    const message = await Message.findOne({
+      _id: id,
+    })
+      .select('-__v')
+      .populate({
+        path: 'members',
+        select: '-__v -password',
+      })
+      .populate({
+        path: 'messages',
+        populate: [
+          {
+            path: 'sender',
+            model: 'User',
+          },
+        ],
+      });
+
+    if (limit) {
+      const messages = message.messages.slice(-limit);
+      message.messages = messages;
+    }
+
+    if (message) {
+      return [message];
     }
   },
 

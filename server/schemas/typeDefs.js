@@ -152,6 +152,7 @@ const typeDefs = gql`
     resendVerificationEmail(email: String!): Message
     postMessage(recipientId: ID!, text: String, media: String): Messages
     markMessageAsRead(messageId: ID!): Messages
+    getMessagesById(id: ID!, limit:Int!): [Messages]
   }
 
   type Subscription {

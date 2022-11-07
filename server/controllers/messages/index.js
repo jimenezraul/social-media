@@ -4,6 +4,7 @@ const {
   chatByUser,
   postMessage,
   markMessageAsRead,
+  getMessagesById,
   newMessageSubscription,
 } = require('./messages');
 
@@ -16,6 +17,7 @@ const messagesResolvers = {
   messageMutation: {
     postMessage,
     markMessageAsRead,
+    getMessagesById,
   },
   messageSubscription: {
     newMessageSubscription,

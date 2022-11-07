@@ -249,3 +249,29 @@ export const MARK_MESSAGE_READ = gql`
     }
   }
 `;
+
+export const GET_MESSAGES_BY_ID = gql`
+  mutation Get_Message_By_Id($id: ID!, $limit: Int!) {
+  getMessagesById(id: $id, limit: $limit) {
+    _id
+    members {
+      _id
+      given_name
+      family_name
+      profileUrl
+    }
+    messages {
+      sender {
+        _id
+        given_name
+        family_name
+        profileUrl
+      }
+      text
+      media
+      createdAt
+      status
+    }
+  }
+}
+`;

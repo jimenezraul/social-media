@@ -31,14 +31,9 @@ const ChatBox = ({ id }: ById) => {
     if (id && data) {
       const m = data?.me?.messages
         ?.map((m: any) => {
-          const isMember = m.members?.find((m: User) => m._id === id);
-          if (isMember) {
-            return m;
-          }
-          return null;
+          return m.members?.map((m: any) => m._id).includes(id) ? m : null;
         })
-        .flat()
-        .filter((m: any) => m !== null);
+        .flat();
 
       setMessage(m);
       const friend = data?.me?.friends?.filter((f: any) => f._id === id);
