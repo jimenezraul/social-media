@@ -27,7 +27,7 @@ export const Messages = () => {
         const isRead =
           member?.messages[member?.messages.length - 1]?.status === 'delivered' &&
           member?.messages[member?.messages.length - 1]?.sender._id !== user._id;
-    
+
         return {
           ...otherMember,
           isRead,
@@ -70,8 +70,8 @@ export const Messages = () => {
               })}
           </div>
         </div>
-        <div className="h-full p-1 hidden md:flex md:w-8/12 lg:w-6/12 text-white">
-          <div className="min-h-full w-full bg-slate-800 rounded-lg">
+        <div className="p-1 hidden md:flex md:w-8/12 lg:w-6/12 text-white">
+          <div className="flex flex-grow max-h-full bg-slate-800 rounded-lg">
             {!members.length && !newMessage ? (
               <div className="w-full flex flex-col justify-center items-center p-5">
                 <h1 className="text-2xl font-bold">No Messages</h1>
@@ -84,7 +84,9 @@ export const Messages = () => {
                 </p>
               </div>
             ) : (
-              <ChatBox id={id} />
+              <div className="flex w-full h-full">
+                <ChatBox id={id} />
+              </div>
             )}
           </div>
         </div>

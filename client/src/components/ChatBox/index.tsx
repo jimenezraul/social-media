@@ -98,7 +98,7 @@ const ChatBox = ({ id }: ById) => {
 
   return (
     <div className="min-w-full border border-slate-700 rounded-lg overflow-hidden">
-      <div className="w-full">
+      <div className="w-full flex flex-col max-h-full overflow-hidden">
         <div className="relative flex items-center p-2 border-b border-slate-700 bg-slate-700">
           {friend ? (
             <div className="flex items-center">
@@ -168,15 +168,24 @@ const ChatBox = ({ id }: ById) => {
             </div>
           )}
         </div>
-        <div className="relative w-full p-6 overflow-y-auto min-h-[30rem] max-h-[40rem]">
+        <div className="relative w-full p-6 overflow-y-auto max-h-65">
           <ul className="space-y-2">
             {message?.map((m: any) => {
-              return m?.messages?.map((m: any, index: number) => {
-                if (m.sender._id === data?.me?._id) {
+              return m?.messages?.map((message: any, index: number) => {
+                const isLast = index === m.messages?.length - 1;
+
+                if (isLast) {
+                  setTimeout(() => {
+                    const el = document.getElementById(`${index}`);
+                    el?.scrollIntoView({ behavior: 'smooth' });
+                  }, 100);
+                }
+
+                if (message.sender._id === data?.me?._id) {
                   return (
-                    <li key={index} className="flex justify-end">
+                    <li id={`${index}`} key={index} className="flex justify-end">
                       <div className="relative max-w-xl px-5 py-1 text-white bg-blue-500 rounded-lg shadow">
-                        <span className="block">{m.text}</span>
+                        <span className="block">{message.text}</span>
                       </div>
                       <div className="relative ml-2">
                         <img
@@ -190,7 +199,7 @@ const ChatBox = ({ id }: ById) => {
                   );
                 }
                 return (
-                  <li key={index} className="flex justify-start">
+                  <li id={`${index}`} key={index} className="flex justify-start">
                     <div className="relative mr-2">
                       <img
                         src={`${friend?.profileUrl}`}
@@ -200,7 +209,7 @@ const ChatBox = ({ id }: ById) => {
                       />
                     </div>
                     <div className="relative max-w-xl px-5 py-1 text-white rounded-lg bg-green-500 shadow">
-                      <span className="block">{m.text}</span>
+                      <span className="block">{message.text}</span>
                     </div>
                   </li>
                 );

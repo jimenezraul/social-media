@@ -31,3 +31,9 @@ code {
   /* gradiant color */
   background: linear-gradient(90deg, rgb(54, 54, 255) 20%, rgb(201, 61, 61) 100%);
 }
+
+/* max height to vh */
+.max-h-65 {
+  min-height: 60vh;
+  max-height: 65vh;
+}
