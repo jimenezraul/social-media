@@ -1,11 +1,14 @@
 import { Link } from 'react-router-dom';
 
-export const ChatUsers = ({ _id, given_name, family_name, profileUrl, isLast }: User) => {
+export const ChatUsers = ({ _id, given_name, family_name, profileUrl, isLast, isRead }: User) => {
   return (
     <Link to={`/messages/${_id}`}>
       <div
         className={`hover:bg-slate-700 p-3 flex items-center bg-slate-800  ${!isLast && 'border-b border-slate-700'} `}
       >
+        {isRead && (
+          <div className="bg-green-500 h-2 w-2 rounded-full mr-2"></div>
+          )}
         <img
           src={`${profileUrl}`}
           alt="avatar"

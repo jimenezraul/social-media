@@ -1,15 +1,15 @@
 import { useState, useRef, useEffect } from 'react';
 import { useQuery, useMutation } from '@apollo/client';
 import { GET_ME } from '../../utils/queries';
-import { SEND_MESSAGE } from '../../utils/mutations';
-import { subscribeToNewMessage } from '../../utils/subscribe';
+import { SEND_MESSAGE, MARK_MESSAGE_READ } from '../../utils/mutations';
 import { useNavigate } from 'react-router-dom';
 
 const ChatBox = ({ id }: ById) => {
   const navigate = useNavigate();
   const [message, setMessage] = useState<any>([]);
-  const { loading, data, error, subscribeToMore } = useQuery(GET_ME);
+  const { loading, data, error } = useQuery(GET_ME);
   const [sendMessage] = useMutation(SEND_MESSAGE);
+  const [markMessageRead] = useMutation(MARK_MESSAGE_READ);
 
   const [friend, setFriend] = useState<User>();
   const [inputValue, setInputValue] = useState('');
@@ -48,11 +48,23 @@ const ChatBox = ({ id }: ById) => {
     }
   }, [data, id, message.length, loading, error]);
 
-//   useEffect(() => {
-//     if (subscribeToMore && message) {
-//       subscribeToNewMessage(subscribeToMore);
-//     }
-//   }, [subscribeToMore, message]);
+  useEffect(() => {
+    async function markAsRead() {
+      await markMessageRead({
+        variables: {
+          messageId: message[0]?._id,
+        },
+      });
+    }
+
+    if (
+      message.length > 0 &&
+      message[0]?.messages[message[0]?.messages.length - 1]?.status === 'delivered' &&
+      message[0]?.messages[message[0]?.messages.length - 1]?.sender._id !== data?.me?._id
+    ) {
+      markAsRead();
+    }
+  }, [message, markMessageRead, data]);
 
   // filtered friend
   const filteredFriends = data?.me?.friends.filter((f: User) => {

@@ -151,6 +151,7 @@ const typeDefs = gql`
     forgotPassword(email: String!): Message
     resendVerificationEmail(email: String!): Message
     postMessage(recipientId: ID!, text: String, media: String): Messages
+    markMessageAsRead(messageId: ID!): Messages
   }
 
   type Subscription {

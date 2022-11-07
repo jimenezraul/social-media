@@ -223,3 +223,29 @@ export const SEND_MESSAGE = gql`
     }
   }
 `;
+
+export const MARK_MESSAGE_READ = gql`
+  mutation Mark_Message_Read($messageId: ID!) {
+    markMessageAsRead(messageId: $messageId) {
+      _id
+      members {
+        _id
+        given_name
+        family_name
+        profileUrl
+      }
+      messages {
+        sender {
+          _id
+          given_name
+          family_name
+          profileUrl
+        }
+        text
+        media
+        createdAt
+        status
+      }
+    }
+  }
+`;

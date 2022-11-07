@@ -24,7 +24,14 @@ export const Messages = () => {
     setMembers(
       data?.me?.messages?.map((member: any) => {
         const otherMember = member?.members?.find((m: User) => m._id !== user._id);
-        return otherMember;
+        const isRead =
+          member?.messages[member?.messages.length - 1]?.status === 'delivered' &&
+          member?.messages[member?.messages.length - 1]?.sender._id !== user._id;
+    
+        return {
+          ...otherMember,
+          isRead,
+        };
       }),
     );
   }, [data, loading, error, user]);

@@ -175,6 +175,7 @@ interface User {
   friendCount: Int;
   createdAtFormatted: String;
   isLast?: Boolean;
+  isRead?: Boolean;
 }
 
 interface Comments {
