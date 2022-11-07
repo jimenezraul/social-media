@@ -44,6 +44,8 @@ Feed
 ![Feed](server/public/screenshots/Feed.png)
 Profile 
 ![Profile](server/public/screenshots/Profile.png)
+Chat
+![Chat](server/public/screenshots/Chat.png)
 Notifications
 ![Notifications](server/public/screenshots/Notifications.png)
 Mobile
