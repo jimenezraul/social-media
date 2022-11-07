@@ -134,6 +134,20 @@ module.exports = {
           ],
         });
 
+        const sender = await User.findOne({ _id: loggedUser._id })
+        const filteredMessages = sender.messages.filter((message) => {
+          return message._id.toString() !== chat._id.toString()
+        })
+        sender.messages = [message, ...filteredMessages]
+        await sender.save()
+
+        const recipient = await User.findOne({ _id: recipientId })
+        const filteredRecipientMessages = recipient.messages.filter((message) => {
+          return message._id.toString() !== chat._id.toString()
+        })
+        recipient.messages = [message, ...filteredRecipientMessages]
+        await recipient.save()
+
       if (message) {
         pubsub.publish('NEW_MESSAGE', { newMessageSubscription: message });
         return message;
@@ -168,23 +182,17 @@ module.exports = {
       });
 
     // update loggedUser and recipient's messages
-    await User.findOneAndUpdate(
-      { _id: loggedUser._id },
-      {
-        $push: {
-          messages: createMessage._id,
-        },
-      }
+    const sender = await User.findOne(
+      { _id: loggedUser._id }
     );
-
-    await User.findOneAndUpdate(
-      { _id: recipientId },
-      {
-        $push: {
-          messages: createMessage._id,
-        },
-      }
+    sender.messages.unshift(createMessage._id);
+    await sender.save();
+    
+    const recipient = await User.findOne(
+      { _id: recipientId }
     );
+    recipient.messages.unshift(createMessage._id);
+    await recipient.save();
 
     pubsub.publish('NEW_MESSAGE', { newMessageSubscription: newMessage });
 
