@@ -5,6 +5,7 @@ import { lazyImport } from '../utils/lazyImports';
 import Navbar from '../components/Navbar';
 import { Dock } from '../components/Dock';
 import { SearchForFriends } from '../features/users/routes/SearchForFriends';
+import MobileAddPost from '../features/users/routes/MobileAddPost';
 
 const { Profile } = lazyImport(() => import('../features/users'), 'Profile');
 const { Friends } = lazyImport(() => import('../features/users'), 'Friends');
@@ -71,6 +72,10 @@ export const protectedRoutes = [
       {
         path: '/messages/:id',
         element: <Messages />,
+      },
+      {
+        path: '/add-post',
+        element: <MobileAddPost />,
       },
       { path: '*', element: <Navigate to="." /> },
     ],
