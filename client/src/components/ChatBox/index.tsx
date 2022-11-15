@@ -101,7 +101,10 @@ const ChatBox = ({ id, setSelectedMessage }: Props) => {
         <div className="relative flex items-center p-2 border-b border-slate-700 bg-slate-700">
           {friend ? (
             <div className="flex items-center">
-             <i onClick={setSelectedMessage} className="flex md:hidden text-slate-400 mr-2 text-3xl fa-solid fa-circle-left"></i>
+              <i
+                onClick={setSelectedMessage}
+                className="flex justify-center items-center md:hidden text-blue-500 bg-white rounded-full h-7 w-7 mr-2 text-3xl fa-solid fa-circle-left"
+              ></i>
               <img
                 className="object-cover w-10 h-10 rounded-full bg-default p-0.5"
                 src={`${friend.profileUrl}`}
