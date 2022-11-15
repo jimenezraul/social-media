@@ -4,7 +4,11 @@ import { GET_ME } from '../../utils/queries';
 import { SEND_MESSAGE, MARK_MESSAGE_READ } from '../../utils/mutations';
 import { useNavigate } from 'react-router-dom';
 
-const ChatBox = ({ id }: ById) => {
+interface Props extends ById {
+  setSelectedMessage: () => void;
+}
+
+const ChatBox = ({ id, setSelectedMessage }: Props) => {
   const navigate = useNavigate();
   const [message, setMessage] = useState<any>([]);
   const { loading, data, error } = useQuery(GET_ME);
@@ -97,6 +101,7 @@ const ChatBox = ({ id }: ById) => {
         <div className="relative flex items-center p-2 border-b border-slate-700 bg-slate-700">
           {friend ? (
             <div className="flex items-center">
+             <i onClick={setSelectedMessage} className="flex md:hidden text-slate-400 mr-2 text-3xl fa-solid fa-circle-left"></i>
               <img
                 className="object-cover w-10 h-10 rounded-full bg-default p-0.5"
                 src={`${friend.profileUrl}`}

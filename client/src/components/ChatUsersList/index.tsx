@@ -1,8 +1,12 @@
 import { Link } from 'react-router-dom';
 
-export const ChatUsers = ({ _id, given_name, family_name, profileUrl, isLast, isRead }: User) => {
+interface Props extends User {
+  setSelectedMessage: () => void;
+}
+
+export const ChatUsers = ({ _id, given_name, family_name, profileUrl, isLast, isRead, setSelectedMessage }: Props) => {
   return (
-    <Link to={`/messages/${_id}`}>
+    <Link onClick={setSelectedMessage} to={`/messages/${_id}`}>
       <div
         className={`hover:bg-slate-700 p-3 flex items-center bg-slate-800  ${!isLast && 'border-b border-slate-700'} `}
       >
