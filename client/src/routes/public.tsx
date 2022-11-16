@@ -3,6 +3,7 @@ import { lazyImport } from "../utils/lazyImports";
 import { Outlet, Navigate } from "react-router-dom";
 import { Landing } from "../features/landingPage";
 import { VerifyEmail } from "../features/users";
+import ForgotPassword from "../features/users/routes/ForgotPassword";
 
 const { Login } = lazyImport(() => import("../features/users"), "Login");
 const { Register } = lazyImport(() => import("../features/users"), "Register");
@@ -40,6 +41,10 @@ export const publicRoutes = [
       {
         path: "/verify",
         element: <VerifyEmail />
+      },
+      {
+        path: "/forgot-password",
+        element: <ForgotPassword />,
       },
         { path: "*", element: <Navigate to="/login" /> },
     ],

@@ -134,6 +134,14 @@ export const Login = () => {
               Register
             </Link>
           </div>
+          <div className='flex items-center justify-end mt-5'>
+            <Link
+              to='/forgot-password'
+              className='inline-block align-baseline font-bold text-sm text-blue-500 hover:text-blue-800'
+            >
+              Forgot Password?
+            </Link>
+          </div>
           <div className='relative flex py-5 items-center'>
             <div className='flex-grow border-t border-gray-400'></div>
             <span className='flex-shrink mx-4 text-gray-400'>or</span>
