@@ -70,7 +70,7 @@ const ForgotPassword = () => {
                                       name='Send Reset Email'
                 />
               </div>
-              {error && <p className="error">{error}</p>}
+              {error && <p className="text-red-400">{error}</p>}
             </form>
           )}
         </div>
