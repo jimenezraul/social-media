@@ -70,7 +70,8 @@ const ChatBox = ({ id, setSelectedMessage }: Props) => {
     if (inputValue === '') {
       return null;
     }
-    return f.fullName.toLowerCase().includes(inputValue.toLowerCase());
+    console.log(f)
+    return f?.fullName.toLowerCase().includes(inputValue.toLowerCase());
   });
 
   //
