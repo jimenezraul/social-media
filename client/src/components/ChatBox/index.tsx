@@ -95,6 +95,12 @@ const ChatBox = ({ id, setSelectedMessage }: Props) => {
     messageRef.current!.value = '';
   };
 
+  const resetSelectedFriend = () => {
+    setFriend(undefined);
+    setMessage([]);
+    setInputValue('');
+  };
+
   return (
     <div className="min-w-full border border-slate-700 rounded-lg overflow-hidden">
       <div className="w-full flex flex-col max-h-full overflow-hidden">
@@ -114,10 +120,36 @@ const ChatBox = ({ id, setSelectedMessage }: Props) => {
               <span className="block ml-2 font-bold text-slate-300">
                 {friend.given_name} {friend.family_name}
               </span>
-              {/* <span className="absolute w-3 h-3 bg-green-600 rounded-full left-10 top-3"></span> */}
+
+              <button
+                onClick={resetSelectedFriend}
+                type="button"
+                className="absolute right-3 bg-slate-700 rounded-md p-2 inline-flex items-center justify-center text-gray-400 hover:text-slate-300 hover:bg-slate-600 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-indigo-500"
+              >
+                <span className="sr-only">Close menu</span>
+                <svg
+                  className="h-4 w-4"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                  aria-hidden="true"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="M6 18L18 6M6 6l12 12"
+                  />
+                </svg>
+              </button>
             </div>
           ) : (
             <div className="relative flex items-center w-full">
+              <i
+                onClick={setSelectedMessage}
+                className="flex justify-center items-center md:hidden text-blue-500 bg-white rounded-full h-7 w-7 mr-2 text-3xl fa-solid fa-circle-left"
+              ></i>
               <input
                 onChange={(e) => setInputValue(e.target.value)}
                 type="text"

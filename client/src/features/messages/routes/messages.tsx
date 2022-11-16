@@ -53,6 +53,11 @@ export const Messages = () => {
     setSelectedMessage(!selectedMessage);
   };
 
+  const newMessageHandler = () => {
+    setSelectedMessage(!selectedMessage);
+    navigate('/messages/new');
+  };
+
   if (loading) return <div className="loader"></div>;
   if (error) return <div className="error">{error.message}</div>;
 
@@ -68,7 +73,7 @@ export const Messages = () => {
             <div className="flex flex-row justify-between items-center bg-slate-700 px-5 py-3 border-b border-slate-800">
               <h1 className="text-2xl font-bold">Messages</h1>
               <i
-                onClick={() => navigate('/messages/new')}
+                onClick={newMessageHandler}
                 className="hover:text-blue-400 cursor-pointer text-2xl fa-solid fa-pen-to-square"
               ></i>
             </div>
