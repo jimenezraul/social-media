@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useAppDispatch } from '../../../app/hooks';
 import { useNavigate } from 'react-router-dom';
+import { Button } from '../../../components/CustomButton';
 
 const ForgotPassword = () => {
   const navigate = useNavigate();
@@ -12,9 +13,18 @@ const ForgotPassword = () => {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+
+    setLoading(true);
+    if (email.trim() === '') {
+      setError('Email is required');
+      setLoading(false);
+      return;
+    }
+
     // try {
     //   await dispatch(forgotPassword(email));
     setIsSent(true);
+    setLoading(false);
     // } catch (err) {
     //   setError(err.message);
     // }
@@ -52,13 +62,13 @@ const ForgotPassword = () => {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
               />
-              <div className="flex justify-end mt-4">
-                <button
+              <div className="flex justify-end">
+                <Button
+                  disabled={loading}
                   type="submit"
-                  className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-                >
-                  Send Reset Email
-                </button>
+                  className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 mt-5 rounded"
+                                      name='Send Reset Email'
+                />
               </div>
               {error && <p className="error">{error}</p>}
             </form>
