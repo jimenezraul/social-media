@@ -19,7 +19,7 @@ export const FriendsList = ({
       <Link to={`/profile/${_id}`} className="w-7/12 flex md:w-1/2 xl:w-7/12 xl:mr-3">
         <div className='w-full flex'>
           <img
-            className='w-12 h-12 rounded-full object-cover mr-3 border-2 border-slate-500 bg-gradient-to-r from-blue-600 to to-red-500'
+            className='w-12 h-12 rounded-full object-cover mr-3 bg-default p-0.5'
             src={`${profileUrl}`}
             alt=''
             referrerPolicy='no-referrer'
