@@ -136,10 +136,10 @@ export const subscribeToNewLike = (subscribeToMore: any) => {
 
       // update Me cache with new like
       if (prev.me) {
-        const user = prev.me;
+        const me = prev.me;
         const updatePost = {
-          ...user,
-          posts: user.posts.map((post: Post) => {
+          ...me,
+          posts: me.posts.map((post: Post) => {
             if (post._id === newLike.postId) {
               return {
                 ...post,
@@ -152,12 +152,13 @@ export const subscribeToNewLike = (subscribeToMore: any) => {
             return post;
           }),
         };
-
+        
         return Object.assign({}, prev, {
           me: updatePost,
         });
       }
 
+      
       // update feed cache with new like
       const updatedFeed = prev.feed.map((post: any) => {
         const user = JSON.parse(localStorage.getItem('user')!) || {};
@@ -292,7 +293,7 @@ export const subscribeToNewMessage = (subscribeToMore: any) => {
       if (!subscriptionData.data) return prev;
       const newMessage = subscriptionData.data.newMessageSubscription;
       const prevMessages = prev.me.messages;
-  
+
       const updatedMessages = prevMessages.filter((message: any) => message._id !== newMessage._id);
       const newArray = [newMessage, ...updatedMessages];
 

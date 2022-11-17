@@ -17,8 +17,7 @@ export const Feed = () => {
   const dispatch = useAppDispatch();
   const newPostNotification = useAppSelector(newPost).newPost;
 
-  const [Me, { data: meData, loading: meLoading, error: meError }] =
-    useLazyQuery(GET_ME);
+  const [Me, { data: meData, loading: meLoading, error: meError }] = useLazyQuery(GET_ME);
   const [feed, setFeed] = useState<Post[]>([]);
   const [friends, setFriends] = useState<Friends[]>([]);
 
@@ -49,17 +48,7 @@ export const Feed = () => {
     if (!meData) return;
 
     setFriends(meData.me.friends);
-  }, [
-    feedData,
-    feedLoading,
-    feedError,
-    Me,
-    meData,
-    meLoading,
-    meError,
-    feed,
-    refetch,
-  ]);
+  }, [feedData, feedLoading, feedError, Me, meData, meLoading, meError, feed, refetch]);
 
   useEffect(() => {
     if (subscribeToMore) {
@@ -77,28 +66,28 @@ export const Feed = () => {
   const me = meData && meData.me;
 
   return (
-    <div className='flex w-full text-white'>
-      <div className='lg:container mx-auto w-full'>
-        <div className='flex flex-wrap justify-center h-full max-h-full overflow-y-scroll sm:overflow-y-hidden no-scrollbar'>
-          <div className='hidden sm:block w-full sm:max-w-xs px-2 mb-4'>
+    <div className="flex w-full text-white">
+      <div className="lg:container mx-auto w-full">
+        <div className="flex flex-wrap justify-center h-full max-h-full overflow-y-scroll sm:overflow-y-hidden no-scrollbar">
+          <div className="hidden sm:block w-full sm:max-w-xs px-2 mb-4">
             <MeCard me={me} />
           </div>
-          <div className='flex flex-col flex-1 w-full sm:max-w-sm md:max-w-2xl px-2 sm:overflow-y-scroll no-scrollbar mb-32 sm:mb-0'>
-            <div className='relative flex flex-col h-full overflow-y-scroll no-scrollbar'>
-              <div className='hidden md:flex flex-col flex-1'>
-              <AddPost me={me} />
+          <div className="flex flex-col flex-1 w-full sm:max-w-sm md:max-w-2xl px-2 sm:overflow-y-scroll no-scrollbar mb-32 sm:mb-0">
+            <div className="relative flex flex-col h-full overflow-y-scroll no-scrollbar">
+              <div className="hidden md:flex flex-col flex-1">
+                <AddPost me={me} />
               </div>
 
-              <div className='flex justify-center'>
+              <div className="flex justify-center">
                 <div
                   className={`${
                     newPostNotification ? 'opacity-100' : 'opacity-0'
                   } absolute transition-all ease-in-out delay-150 duration-500 z-40 top-0 md:top-12 flex my-2 justify-center w-1/2`}
                 >
                   <button
-                    type='button'
+                    type="button"
                     onClick={refreshHandler}
-                    className='rounded-full text-slate-800 bg-slate-300 px-2 py-1 text-sm'
+                    className="rounded-full text-slate-800 bg-slate-300 px-2 py-1 text-sm"
                     // if newPost is true, desable button
                     disabled={!newPostNotification}
                   >
@@ -113,12 +102,10 @@ export const Feed = () => {
               })}
             </div>
           </div>
-          <div className='hidden xl:block md:w-3/12 xl:w-4/12 px-3'>
-            <div className='bg-slate-800 rounded-lg shadow-xl p-5 border border-slate-700'>
+          <div className="hidden xl:block md:w-3/12 xl:w-4/12 px-3">
+            <div className="bg-slate-800 rounded-lg shadow-xl p-5 border border-slate-700">
               {!friends?.length && (
-                <p className='text-center text-slate-300'>
-                  You have no friends yet!
-                </p>
+                <p className="text-center text-slate-300">You have no friends yet!</p>
               )}
               {friends?.map((friend: Friends, index: number) => {
                 const isLastEl = index === me.friends.length - 1;
