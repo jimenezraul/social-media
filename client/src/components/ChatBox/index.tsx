@@ -70,7 +70,7 @@ const ChatBox = ({ id, setSelectedMessage }: Props) => {
     if (inputValue === '') {
       return null;
     }
-    const fullName = `${f.given_name}  ${f.family_name}`
+    const fullName = `${f.given_name}  ${f.family_name}`;
     return fullName.toLowerCase().includes(inputValue.toLowerCase());
   });
 
@@ -122,28 +122,30 @@ const ChatBox = ({ id, setSelectedMessage }: Props) => {
                 {friend.given_name} {friend.family_name}
               </span>
 
-              <button
-                onClick={resetSelectedFriend}
-                type="button"
-                className="absolute right-3 bg-slate-700 rounded-md p-2 inline-flex items-center justify-center text-gray-400 hover:text-slate-300 hover:bg-slate-600 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-indigo-500"
-              >
-                <span className="sr-only">Close menu</span>
-                <svg
-                  className="h-4 w-4"
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                  aria-hidden="true"
+              {!id && (
+                <button
+                  onClick={resetSelectedFriend}
+                  type="button"
+                  className="absolute right-3 bg-slate-700 rounded-md p-2 inline-flex items-center justify-center text-gray-400 hover:text-slate-300 hover:bg-slate-600 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-indigo-500"
                 >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2"
-                    d="M6 18L18 6M6 6l12 12"
-                  />
-                </svg>
-              </button>
+                  <span className="sr-only">Close menu</span>
+                  <svg
+                    className="h-4 w-4"
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                    aria-hidden="true"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="2"
+                      d="M6 18L18 6M6 6l12 12"
+                    />
+                  </svg>
+                </button>
+              )}
             </div>
           ) : (
             <div className="relative flex items-center w-full">
