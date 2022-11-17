@@ -77,7 +77,6 @@ export const Post = ({
 
   return (
     <article
-      data-aos="zoom-in"
       className={`${
         isLastEl && 'mb-24 md:mb-4'
       }  border border-slate-700 mb-4 break-inside rounded-lg bg-slate-800 flex flex-col bg-clip-border`}
