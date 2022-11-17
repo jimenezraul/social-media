@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useEffect } from 'react';
 import { useQuery, useMutation } from '@apollo/client';
 import { GET_ME } from '../../../utils/queries';
 import { Post } from '../../../components/Posts';
@@ -13,16 +13,7 @@ import {
 
 export const Profile = () => {
   const [removeFriend] = useMutation(REMOVE_FRIEND);
-  const [friends, setFriends] = useState<Friends[]>([]);
   const { data, loading, error, subscribeToMore } = useQuery(GET_ME);
-
-  useEffect(() => {
-    if (loading) return;
-    if (error) return;
-    if (!data) return;
-
-    setFriends(data.me.friends);
-  }, [data, loading, error]);
 
   useEffect(() => {
     if (subscribeToMore) {
@@ -33,8 +24,10 @@ export const Profile = () => {
   }, [subscribeToMore]);
 
   const me = data?.me;
+  const friends = me?.friends;
 
-  if (me === undefined) return <div>Loading...</div>;
+  if (me === undefined || loading) return <div>Loading...</div>;
+  if (error) return <div>Error: {error.message}</div>;
 
   const removeFromFriendList = async (friendId: string) => {
     try {
@@ -54,8 +47,6 @@ export const Profile = () => {
         },
       });
       if (errors) throw new Error(errors[0].message);
-
-      setFriends((prev) => prev.filter((friend) => friend._id !== friendId));
     } catch (err) {
       console.log(err);
     }
