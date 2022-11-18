@@ -35,6 +35,10 @@ module.exports = {
       (token) => token !== refresh_token
     );
 
+    const filteredExpiredTokenArray = newRefreshTokenArray.filter(
+      (token) => validToken(token)
+    );
+
     // Refresh token expired
     if (!isValidToken) {
       clearCookie(context.res, 'refresh_token');
@@ -50,7 +54,7 @@ module.exports = {
     // generate new refresh token and save to user
     const newRefreshToken = generateToken({ user: currentUser }, 'refresh');
 
-    user.refreshToken = [...newRefreshTokenArray, newRefreshToken];
+    user.refreshToken = [...filteredExpiredTokenArray, newRefreshToken];
     await user.save();
 
     // generate new access token
