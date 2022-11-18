@@ -20,7 +20,7 @@ import { store } from './app/store';
 
 import AppRoutes from './routes';
 
-const isProduction = false;
+const isProduction = true;
 
 const wsUrl = !isProduction
   ? 'ws://localhost:3001/graphql'
