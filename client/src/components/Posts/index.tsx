@@ -81,15 +81,15 @@ export const Post = ({
     <article
       className={`${
         isLastEl && 'mb-24 md:mb-4'
-      }  border border-slate-700 mb-4 break-inside rounded-lg bg-slate-800 flex flex-col bg-clip-border`}
+      } border border-slate-700 mb-4 break-inside rounded-lg bg-slate-800 flex flex-col bg-clip-border`}
     >
       <div
         className={`${
           openModal ? 'flex justify-center items-center' : 'hidden'
-        } overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 bottom-0 z-50 p-4 w-full md:inset-0 h-modal md:h-full`}
+        } backdrop overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 bottom-0 z-50 p-4 w-full md:inset-0 h-modal md:h-full`}
       >
         <div className="relative w-full max-w-2xl h-auto">
-          <div className="relative rounded-lg shadow bg-slate-700 border border-slate-500">
+          <div className="relative rounded-lg shadow bg-slate-800 border border-slate-500">
             <div className="flex justify-between items-start p-4 rounded-t border-b border-slate-600">
               <h3 className="text-xl font-semibold text-slate-100">
                 Are you sure you want to delete this post?
@@ -115,7 +115,7 @@ export const Post = ({
                 <span className="sr-only">Close modal</span>
               </button>
             </div>
-            <div className="flex justify-end items-center p-6 space-x-2 rounded-b border-t border-gray-200 dark:border-gray-600">
+            <div className="flex justify-end items-center p-6 space-x-2 rounded-b ">
               <button
                 onClick={handleDelete}
                 type="button"
@@ -126,7 +126,7 @@ export const Post = ({
               <button
                 onClick={() => setOpenModal(false)}
                 type="button"
-                className="text-gray-500 bg-white hover:bg-gray-100 focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-lg border border-gray-200 text-sm font-medium px-5 py-2.5 hover:text-gray-900 focus:z-10 dark:bg-gray-700 dark:text-gray-300 dark:border-gray-500 dark:hover:text-white dark:hover:bg-gray-600 dark:focus:ring-gray-600"
+                className="rounded-lg border text-sm font-medium px-5 py-2.5 focus:z-10 bg-slate-500 text-gray-100 border-slate-400 hover:text-white hover:bg-slate-600"
               >
                 Cancel
               </button>

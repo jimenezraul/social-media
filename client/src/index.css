@@ -37,3 +37,7 @@ code {
   min-height: 60vh;
   max-height: 65vh;
 }
+
+.backdrop {
+  background-color: rgba(0,0,0,0.5);
+}
