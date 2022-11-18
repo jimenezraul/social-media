@@ -13,7 +13,7 @@ const Modal = ({ title, openModal, setOpenModal, handleDelete }: IProps) => {
       } backdrop overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 bottom-0 z-50 p-4 w-full md:inset-0 h-modal md:h-full`}
     >
       <div className="relative w-full max-w-2xl h-auto">
-        <div className="relative rounded-lg shadow bg-slate-800 border border-slate-500">
+        <div className="relative rounded-lg shadow bg-slate-800 border border-slate-600">
           <div className="flex justify-between items-start p-4 rounded-t border-b border-slate-600">
             <h3 className="text-xl font-semibold text-slate-100">{title}</h3>
             <button
@@ -48,7 +48,7 @@ const Modal = ({ title, openModal, setOpenModal, handleDelete }: IProps) => {
             <button
               onClick={() => setOpenModal(false)}
               type="button"
-              className="rounded-lg border text-sm font-medium px-5 py-2.5 focus:z-10 bg-slate-500 text-gray-100 border-slate-400 hover:text-white hover:bg-slate-600"
+              className="rounded-lg border text-sm font-medium px-5 py-2.5 focus:z-10 bg-slate-500 text-gray-100 border-slate-500 hover:text-white hover:bg-slate-600"
             >
               Cancel
             </button>
