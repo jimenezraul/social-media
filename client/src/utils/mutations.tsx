@@ -252,26 +252,43 @@ export const MARK_MESSAGE_READ = gql`
 
 export const GET_MESSAGES_BY_ID = gql`
   mutation Get_Message_By_Id($id: ID!, $limit: Int!) {
-  getMessagesById(id: $id, limit: $limit) {
-    _id
-    members {
+    getMessagesById(id: $id, limit: $limit) {
       _id
-      given_name
-      family_name
-      profileUrl
-    }
-    messages {
-      sender {
+      members {
         _id
         given_name
         family_name
         profileUrl
       }
-      text
-      media
-      createdAt
-      status
+      messages {
+        sender {
+          _id
+          given_name
+          family_name
+          profileUrl
+        }
+        text
+        media
+        createdAt
+        status
+      }
     }
   }
-}
+`;
+
+export const UPDATE_POST = gql`
+  mutation Update_Post($postId: ID!, $postText: String!) {
+    updatePost(postId: $postId, postText: $postText) {
+      _id
+      postImage
+      postText
+      postAuthor {
+        _id
+        given_name
+        family_name
+        profileUrl
+      }
+      createdAt
+    }
+  }
 `;

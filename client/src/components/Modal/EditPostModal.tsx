@@ -1,25 +1,53 @@
-interface IProps {
-  title: string;
-  openModal: boolean;
-  setOpenModal: React.Dispatch<React.SetStateAction<boolean>>;
-  handleDelete: () => void;
+import { useState } from 'react';
+import { useMutation } from '@apollo/client';
+import { UPDATE_POST } from '../../utils/mutations';
+
+interface Iprops {
+  _id: string;
+  modal: boolean;
+  setModal: (value: boolean) => void;
+  postText: string;
 }
 
-const Modal = ({ title, openModal, setOpenModal, handleDelete }: IProps) => {
+const EditModal = ({ _id, modal, setModal, postText }: Iprops) => {
+  const [text, setText] = useState(postText);
+  const [updatePost] = useMutation(UPDATE_POST);
+
+  const updatePostHandler = async () => {
+    if (text.trim() === '') return;
+
+    try {
+      await updatePost({
+        variables: {
+          postId: _id,
+          postText: text,
+        },
+      });
+      setModal(false);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const handleClose = () => {
+    setText(postText);
+    setModal(false);
+  };
+
   return (
     <div
       className={`${
-        openModal ? 'flex justify-center items-center' : 'hidden'
+        modal ? 'flex justify-center items-center' : 'hidden'
       } backdrop overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 bottom-0 z-50 p-4 w-full md:inset-0 h-modal md:h-full`}
     >
       <div className="relative w-full max-w-2xl h-auto">
         <div className="relative rounded-lg shadow bg-slate-800 border border-slate-600">
           <div className="flex justify-between items-start p-4 rounded-t border-b border-slate-600">
-            <h3 className="text-xl font-semibold text-slate-100">{title}</h3>
+            <h3 className="text-xl font-semibold text-slate-100">Update Post</h3>
             <button
               type="button"
               className="text-slate-400 bg-transparent hover:bg-slate-400 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center"
-              onClick={() => setOpenModal(false)}
+              onClick={handleClose}
             >
               <svg
                 aria-hidden="true"
@@ -37,16 +65,23 @@ const Modal = ({ title, openModal, setOpenModal, handleDelete }: IProps) => {
               <span className="sr-only">Close modal</span>
             </button>
           </div>
-          <div className="flex justify-end items-center p-6 space-x-2 rounded-b ">
+          <div>
+            <textarea
+              onChange={(e) => setText(e.target.value)}
+              value={text}
+              className="w-full p-4 text-slate-100 bg-slate-800"
+            ></textarea>
+          </div>
+          <div className="flex justify-end items-center p-6 space-x-2 rounded-b border-t border-slate-600">
             <button
-              onClick={handleDelete}
+              onClick={updatePostHandler}
               type="button"
-              className="text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center"
+              className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center"
             >
-              Delete
+              Update
             </button>
             <button
-              onClick={() => setOpenModal(false)}
+              onClick={handleClose}
               type="button"
               className="rounded-lg border text-sm font-medium px-5 py-2.5 focus:z-10 bg-slate-500 text-gray-100 border-slate-500 hover:text-white hover:bg-slate-600"
             >
@@ -59,4 +94,4 @@ const Modal = ({ title, openModal, setOpenModal, handleDelete }: IProps) => {
   );
 };
 
-export default Modal;
+export default EditModal;

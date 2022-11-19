@@ -4,6 +4,7 @@ import { LIKE_POST, DELETE_POST, ADD_COMMENT } from '../../utils/mutations';
 import { useState, useRef } from 'react';
 import { useOutside } from '../../utils/useOutside';
 import Modal from '../Modal';
+import EditPostModal from '../Modal/EditPostModal';
 
 export const Post = ({
   _id,
@@ -21,6 +22,7 @@ export const Post = ({
   const menuRef = useRef() as React.MutableRefObject<HTMLInputElement>;
   const [isOpen, setIsOpen] = useState(false);
   const [openModal, setOpenModal] = useState(false);
+  const [openPostModal, setOpenPostModal] = useState(false);
   const comment = commentCount <= 1 ? 'comment' : 'comments';
   const [likePost] = useMutation(LIKE_POST);
   const [deletePost] = useMutation(DELETE_POST);
@@ -90,6 +92,12 @@ export const Post = ({
         setOpenModal={setOpenModal}
         handleDelete={handleDelete}
       />
+      <EditPostModal
+        _id={_id}
+        modal={openPostModal}
+        setModal={setOpenPostModal}
+        postText={postText.toString()}
+      />
       <div className="relative flex p-6 items-center justify-between">
         <div ref={menuRef}>
           {isProfile && (
@@ -100,7 +108,10 @@ export const Post = ({
               ></i>
               {isOpen && (
                 <div className="absolute top-16 right-7 flex flex-col bg-slate-800 border border-slate-600 rounded-lg p-2 space-y-2">
-                  <button className="w-full flex justify-between items-center hover:bg-blue-500 px-3 py-1 rounded">
+                  <button
+                    onClick={() => setOpenPostModal(true)}
+                    className="w-full flex justify-between items-center hover:bg-blue-500 px-3 py-1 rounded"
+                  >
                     Edit <i className="text-xl fa-solid fa-pen-to-square"></i>
                   </button>
                   <button
