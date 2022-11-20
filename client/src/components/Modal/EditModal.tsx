@@ -6,10 +6,11 @@ interface Iprops {
   _id: string;
   modal: boolean;
   setModal: (value: boolean) => void;
+  title: string;
   postText: string;
 }
 
-const EditModal = ({ _id, modal, setModal, postText }: Iprops) => {
+const EditModal = ({ _id, modal, setModal, postText, title }: Iprops) => {
   const [text, setText] = useState(postText);
   const [updatePost] = useMutation(UPDATE_POST);
 
@@ -43,7 +44,7 @@ const EditModal = ({ _id, modal, setModal, postText }: Iprops) => {
       <div className="relative w-full max-w-2xl h-auto">
         <div className="relative rounded-lg shadow bg-slate-800 border border-slate-600">
           <div className="flex justify-between items-start p-4 rounded-t border-b border-slate-600">
-            <h3 className="text-xl font-semibold text-slate-100">Update Post</h3>
+            <h3 className="text-xl font-semibold text-slate-100">{title}</h3>
             <button
               type="button"
               className="text-slate-400 bg-transparent hover:bg-slate-400 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center"

@@ -3,8 +3,8 @@ import { useMutation } from '@apollo/client';
 import { LIKE_POST, DELETE_POST, ADD_COMMENT } from '../../utils/mutations';
 import { useState, useRef } from 'react';
 import { useOutside } from '../../utils/useOutside';
-import Modal from '../Modal';
-import EditPostModal from '../Modal/EditPostModal';
+import Modal from '../Modal/DeleteModal';
+import EditPostModal from '../Modal/EditModal';
 
 export const Post = ({
   _id,
@@ -97,6 +97,7 @@ export const Post = ({
         modal={openPostModal}
         setModal={setOpenPostModal}
         postText={postText.toString()}
+        title="Update Post"
       />
       <div className="relative flex p-6 items-center justify-between">
         <div ref={menuRef}>
