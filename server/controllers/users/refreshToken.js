@@ -1,4 +1,4 @@
-const { AuthenticationError } = require('apollo-server-express');
+const { AuthenticationError } = require('@apollo/server');
 const { User } = require('../../models');
 const { generateToken, validToken } = require('../../utils/auth');
 const { setCookie, clearCookie } = require('../../utils/cookies');

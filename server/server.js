@@ -1,11 +1,13 @@
 const express = require('express');
-const { ApolloServer } = require('apollo-server-express');
-const { ApolloServerPluginInlineTrace } = require('apollo-server-core');
+const { ApolloServer } = require('@apollo/server');
+const { expressMiddleware } = require('@apollo/server/express4');
+const {
+  ApolloServerPluginInlineTrace,
+} = require('@apollo/server/plugin/inlineTrace');
 const { createServer } = require('http');
 const {
   ApolloServerPluginDrainHttpServer,
-  ApolloServerPluginLandingPageLocalDefault,
-} = require('apollo-server-core');
+} = require('@apollo/server/plugin/drainHttpServer');
 const { makeExecutableSchema } = require('@graphql-tools/schema');
 const { WebSocketServer } = require('ws');
 const { useServer } = require('graphql-ws/lib/use/ws');
@@ -39,7 +41,6 @@ const serverCleanup = useServer({ schema }, wsServer);
 const server = new ApolloServer({
   schema,
   csrfPrevention: true,
-  context: authMiddleware,
   cache: 'bounded',
   plugins: [
     ApolloServerPluginInlineTrace(),
@@ -55,12 +56,11 @@ const server = new ApolloServer({
           },
         };
       },
-    },
-    ApolloServerPluginLandingPageLocalDefault({ embed: true }),
+    }
   ],
 });
 
-app.use(cors());
+app.use(cors({ credentials: true, origin: 'http://localhost:3000' }));
 app.use(credentials);
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
@@ -76,13 +76,17 @@ if (process.env.NODE_ENV === 'production') {
 
 const startApolloServer = async () => {
   await server.start();
-  server.applyMiddleware({ app });
-
+  app.use(
+    "/graphql",
+    expressMiddleware(server, {
+      context: authMiddleware
+    }),
+  );
   db.once('open', () => {
     httpServer.listen(PORT, () => {
       console.log(`API server running on port ${PORT}!`);
       console.log(
-        `Use GraphQL at http://localhost:${PORT}${server.graphqlPath}`
+        `Use GraphQL at http://localhost:${PORT}`
       );
     });
   });

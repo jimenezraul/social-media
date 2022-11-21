@@ -1,5 +1,4 @@
-const nodemailer = require('nodemailer');
-const { AuthenticationError } = require('apollo-server-express');
+const { AuthenticationError } = require('@apollo/server');
 const { User } = require('../../models');
 const { generateToken } = require('../../utils/auth');
 const { sendResetPassEmail } = require('../../utils/sendResetPassEmail');

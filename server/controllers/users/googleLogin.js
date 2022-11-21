@@ -1,7 +1,7 @@
 const { OAuth2Client } = require('google-auth-library');
 const { User } = require('../../models');
 const { generateToken } = require('../../utils/auth');
-const { AuthenticationError } = require('apollo-server-express');
+const { AuthenticationError } = require('@apollo/server');
 const { formatUserData } = require('../../utils/formatUserData');
 const { setCookie, clearCookie } = require('../../utils/cookies');
 require('dotenv').config();

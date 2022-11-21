@@ -1,7 +1,7 @@
 const {
   AuthenticationError,
   ForbiddenError,
-} = require('apollo-server-express');
+} = require('@apollo/server');
 const { PubSub, withFilter } = require('graphql-subscriptions');
 const { Message, User } = require('../../models');
 

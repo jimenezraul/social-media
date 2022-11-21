@@ -1,4 +1,4 @@
-const { AuthenticationError } = require('apollo-server-express');
+const { AuthenticationError } = require('@apollo/server');
 const { Post, User, Comment } = require('../../models');
 const { PubSub } = require('graphql-subscriptions');
 

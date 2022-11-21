@@ -101,6 +101,7 @@ export const Login = () => {
       dispatch(user_login(user));
       dispatch(setAccessToken(access_token));
     } catch (err: any) {
+      console.log(err.message);
       setErrors('Google login failed');
     }
   };
