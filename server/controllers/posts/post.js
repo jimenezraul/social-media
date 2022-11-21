@@ -1,7 +1,4 @@
-const {
-  AuthenticationError,
-  ForbiddenError,
-} = require('@apollo/server');
+const { GraphQLError } = require('graphql')
 const { User, Post, Comment } = require('../../models');
 const { PubSub, withFilter } = require('graphql-subscriptions');
 
@@ -11,7 +8,11 @@ module.exports = {
   // get all posts
   posts: async (parent, args, context) => {
     if (!context.user) {
-      throw new AuthenticationError('You need to be logged in!');
+      throw new GraphQLError('You need to be logged in!', {
+        extensions: {
+          code: 'UNAUTHENTICATED',
+        },
+      });
     }
 
     if (!context.user.isAdmin) {
@@ -45,7 +46,11 @@ module.exports = {
     const loggedUser = context.user;
 
     if (!loggedUser) {
-      throw new AuthenticationError('You need to be logged in!');
+      throw new GraphQLError('You need to be logged in!', {
+        extensions: {
+          code: 'UNAUTHENTICATED',
+        },
+      });
     }
 
     return Post.findOne({ _id: postId })
@@ -73,7 +78,11 @@ module.exports = {
   // add a post
   addPost: async (parent, args, context) => {
     if (!context.user) {
-      throw new AuthenticationError('You need to be logged in!');
+      throw new GraphQLError('You need to be logged in!', {
+        extensions: {
+          code: 'UNAUTHENTICATED',
+        },
+      });
     }
 
     const user = context.user;
@@ -107,7 +116,11 @@ module.exports = {
   // update a post
   updatePost: async (parent, { postId, postText }, context) => {
     if (!context.user) {
-      throw new AuthenticationError('You need to be logged in!');
+      throw new GraphQLError('You need to be logged in!', {
+        extensions: {
+          code: 'UNAUTHENTICATED',
+        },
+      });
     }
 
     const post = await Post.findOne({ _id: postId });
@@ -144,14 +157,18 @@ module.exports = {
   // delete a post
   deletePost: async (parent, { postId }, context) => {
     if (!context.user) {
-      throw new AuthenticationError('You need to be logged in!');
+      throw new GraphQLError('You need to be logged in!', {
+        extensions: {
+          code: 'UNAUTHENTICATED',
+        },
+      });
     }
 
     // check if the post exists
     const post = await Post.findOne({ _id: postId });
 
     if (!post) {
-      throw new AuthenticationError('Post does not exist!');
+      throw new ForbiddenError('Post does not exist!');
     }
 
     // check if the logged in user is the post author or is an admin

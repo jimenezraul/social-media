@@ -1,4 +1,4 @@
-const { AuthenticationError } = require('@apollo/server');
+const { GraphQLError } = require('graphql')
 const { Post, Comment } = require('../../models');
 const { PubSub } = require('graphql-subscriptions');
 
@@ -9,7 +9,11 @@ module.exports = {
     const loggedUser = context.user;
 
     if (!loggedUser) {
-      throw new AuthenticationError('You need to be logged in!');
+      throw new GraphQLError('You need to be logged in!', {
+        extensions: {
+          code: 'UNAUTHENTICATED',
+        },
+      });
     }
 
     // create a new comment
@@ -52,7 +56,7 @@ module.exports = {
     const loggedUser = context.user;
 
     if (!loggedUser) {
-      throw new AuthenticationError('You need to be logged in!');
+      throw new GraphQLError('You need to be logged in!');
     }
 
     // update the comment
@@ -68,7 +72,7 @@ module.exports = {
   // delete a comment
   deleteComment: async (parent, { postId, commentId }, context) => {
     if (!context.user) {
-      throw new AuthenticationError('You need to be logged in!');
+      throw new GraphQLError('You need to be logged in!');
     }
 
     // delete the comment

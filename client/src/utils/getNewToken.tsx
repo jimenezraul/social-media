@@ -2,6 +2,7 @@ import { store } from '../app/store';
 import { setAccessToken } from '../features/users/userSlice';
 
 export const getNewToken = async () => {
+  console.log("called getNewToken");
   const { user } = store.getState();
 
   try {

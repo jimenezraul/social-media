@@ -1,4 +1,4 @@
-const { AuthenticationError } = require('@apollo/server');
+const { GraphQLError } = require('graphql')
 const { User } = require('../../models');
 const { generateToken } = require('../../utils/auth');
 const { sendVerificationEmail } = require('../../utils/accountVerification');
@@ -10,7 +10,7 @@ module.exports = {
     const userExists = await User.findOne({ email: args.email });
 
     if (userExists) {
-      throw new AuthenticationError('Email already exists');
+      throw new ForbiddenError('Email already exists');
     }
 
     const token = generateToken(args);

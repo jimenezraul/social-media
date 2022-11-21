@@ -1,5 +1,5 @@
 const User = require('../../models');
-const { AuthenticationError } = require('@apollo/server');
+const { GraphQLError } = require('graphql')
 
 module.exports = {
   // resend verification email
@@ -9,11 +9,11 @@ module.exports = {
     const user = await User.findOne({ email });
 
     if (!user) {
-      throw new AuthenticationError('User not found');
+      throw new ForbiddenError('User not found');
     }
 
     if (user.isVerified) {
-      throw new AuthenticationError('User already verified');
+      throw new ForbiddenError('User already verified');
     }
 
     const accessToken = generateToken({ user: user._id });

@@ -1,4 +1,4 @@
-const { AuthenticationError } = require('@apollo/server');
+const { GraphQLError } = require('graphql')
 const { User } = require('../../models');
 const { generateToken } = require('../../utils/auth');
 const { sendResetPassEmail } = require('../../utils/sendResetPassEmail');
@@ -12,7 +12,7 @@ module.exports = {
     const user = await User.findOne({ email });
 
     if (!user) {
-      throw new AuthenticationError('User not found');
+      throw new ForbiddenError('User not found');
     }
 
     const accessToken = generateToken({ user: user._id });

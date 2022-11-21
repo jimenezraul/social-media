@@ -1,4 +1,4 @@
-const { AuthenticationError } = require('@apollo/server');
+const { GraphQLError } = require('graphql')
 const { User } = require('../../models');
 const { PubSub } = require('graphql-subscriptions');
 
@@ -10,7 +10,11 @@ module.exports = {
     const { friendId } = args;
 
     if (!context.user) {
-      throw new AuthenticationError('You need to be logged in!');
+      throw new GraphQLError('You need to be logged in!', {
+        extensions: {
+          code: 'UNAUTHENTICATED',
+        },
+      });
     }
 
     const user = await User.findOne({ _id: friendId }).select('-__v -password');
@@ -19,7 +23,7 @@ module.exports = {
     );
      
     if (!user) {
-      throw new AuthenticationError('User not found');
+      throw new ForbiddenError('User not found');
     }
 
     if (user.friendRequests.includes(context.user._id)) {
@@ -64,21 +68,25 @@ module.exports = {
     const { friendId } = args;
 
     if (!context.user) {
-      throw new AuthenticationError('You need to be logged in!');
+      throw new GraphQLError('You need to be logged in!', {
+        extensions: {
+          code: 'UNAUTHENTICATED',
+        },
+      });
     }
 
     const user = await User.findOne({ _id: context.user._id });
 
     if (!user) {
-      throw new AuthenticationError('User not found');
+      throw new ForbiddenError('User not found');
     }
 
     if (!user.friendRequests.includes(friendId)) {
-      throw new AuthenticationError('You have not received a friend request');
+      throw new ForbiddenError('You have not received a friend request');
     }
 
     if (user.friends.includes(friendId)) {
-      throw new AuthenticationError('You are already friends');
+      throw new ForbiddenError('You are already friends');
     }
 
     user.friendRequestCount -= 1;
@@ -116,17 +124,21 @@ module.exports = {
     const { friendId } = args;
 
     if (!context.user) {
-      throw new AuthenticationError('You need to be logged in!');
+      throw new GraphQLError('You need to be logged in!', {
+        extensions: {
+          code: 'UNAUTHENTICATED',
+        },
+      });
     }
 
     const user = await User.findOne({ _id: context.user._id });
 
     if (!user) {
-      throw new AuthenticationError('User not found');
+      throw new ForbiddenError('User not found');
     }
 
     if (!user.friends.includes(friendId)) {
-      throw new AuthenticationError('You are not friends');
+      throw new ForbiddenError('You are not friends');
     }
 
     user.friends.pull(friendId);

@@ -1,4 +1,4 @@
-const { AuthenticationError } = require('@apollo/server');
+const { GraphQLError } = require('graphql')
 const { User } = require('../../models');
 const { generateToken } = require('../../utils/auth');
 const { formatUserData } = require('../../utils/formatUserData');
@@ -11,17 +11,17 @@ module.exports = {
     const user = await User.findOne({ email: email.toLowerCase() });
 
     if (!user) {
-      throw new AuthenticationError('Incorrect email or password');
+      throw new ForbiddenError('Incorrect email or password');
     }
 
     const correctPw = await user.isCorrectPassword(password);
 
     if (!correctPw) {
-      throw new AuthenticationError('Incorrect email or password');
+      throw new ForbiddenError('Incorrect email or password');
     }
 
     if (!user.isVerified) {
-      throw new AuthenticationError('Please verify your email');
+      throw new ForbiddenError('Please verify your email');
     }
 
     // user data to be sent to client

@@ -1,4 +1,4 @@
-const { AuthenticationError } = require('@apollo/server');
+const { GraphQLError } = require('graphql')
 const { User } = require('../../models');
 
 module.exports = {
@@ -9,7 +9,7 @@ module.exports = {
     const user = await User.findOne({ accessToken: token });
 
     if (!user) {
-      throw new AuthenticationError('Invalid token');
+      throw new ForbiddenError('Invalid token');
     }
 
     user.password = password;

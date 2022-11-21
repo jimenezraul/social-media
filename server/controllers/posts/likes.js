@@ -1,4 +1,4 @@
-const { AuthenticationError } = require('@apollo/server');
+const { GraphQLError } = require('graphql')
 const { Post, User, Comment } = require('../../models');
 const { PubSub } = require('graphql-subscriptions');
 
@@ -9,7 +9,11 @@ module.exports = {
     const loggedUser = context.user;
 
     if (!loggedUser) {
-      throw new AuthenticationError('You need to be logged in!');
+      throw new GraphQLError('You need to be logged in!', {
+        extensions: {
+          code: 'UNAUTHENTICATED',
+        },
+      });
     }
 
     const post = await Post.findOne({ _id: postId });
@@ -48,7 +52,11 @@ module.exports = {
     const loggedUser = context.user;
 
     if (!loggedUser) {
-      throw new AuthenticationError('You need to be logged in!');
+      throw new GraphQLError('You need to be logged in!', {
+        extensions: {
+          code: 'UNAUTHENTICATED',
+        },
+      });
     }
 
     const comment = await Comment.findOne({ _id: commentId });

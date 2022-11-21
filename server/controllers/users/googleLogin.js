@@ -1,7 +1,7 @@
 const { OAuth2Client } = require('google-auth-library');
 const { User } = require('../../models');
 const { generateToken } = require('../../utils/auth');
-const { AuthenticationError } = require('@apollo/server');
+const { GraphQLError } = require('graphql')
 const { formatUserData } = require('../../utils/formatUserData');
 const { setCookie, clearCookie } = require('../../utils/cookies');
 require('dotenv').config();
@@ -13,7 +13,7 @@ module.exports = {
     clearCookie(context.res, 'refresh_token');
 
     if (!tokenId) {
-      throw new AuthenticationError('You need to be logged in with Google!');
+      throw new ForbiddenError('You need to be logged in with Google!');
     }
 
     if (refresh_token) {
@@ -36,7 +36,7 @@ module.exports = {
         !ticket.getPayload() ||
         ticket.getPayload().aud !== process.env.GOOGLE_CLIENT_ID
       ) {
-        throw new AuthenticationError('Invalid token!');
+        throw new ForbiddenError('Invalid token!');
       }
 
       const payload = ticket.getPayload();

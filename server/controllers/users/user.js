@@ -1,11 +1,15 @@
-const { AuthenticationError } = require('@apollo/server');
+const { GraphQLError } = require('graphql')
 const { User } = require('../../models');
 
 module.exports = {
   // Query for current user
   me: async (parent, args, context) => {
     if (!context.user) {
-      throw new AuthenticationError('You need to be logged in!');
+      throw new GraphQLError('You need to be logged in!', {
+        extensions: {
+          code: 'UNAUTHENTICATED',
+        },
+      });
     }
 
     const userData = await User.findOne({ _id: context.user._id })
@@ -69,7 +73,11 @@ module.exports = {
   // Query for all users not including current user and users already friends with
   users: async (parent, args, context) => {
     if (!context.user) {
-      throw new AuthenticationError('You need to be logged in!');
+      throw new GraphQLError('You need to be logged in!', {
+        extensions: {
+          code: 'UNAUTHENTICATED',
+        },
+      });
     }
 
     const user = await User.findOne({ _id: context.user._id }).select(
@@ -77,7 +85,7 @@ module.exports = {
     );
 
     if (!user) {
-      throw new AuthenticationError('No user found!');
+      throw new GraphQLError('No user found!');
     }
 
     const userData = await User.find({
@@ -97,7 +105,11 @@ module.exports = {
   // Query for a single user by id
   user: async (parent, { id }, context) => {
     if (!context.user) {
-      throw new AuthenticationError('You need to be logged in!');
+      throw new GraphQLError('You need to be logged in!', {
+        extensions: {
+          code: 'UNAUTHENTICATED',
+        },
+      });
     }
 
     return User.findOne({ _id: id })

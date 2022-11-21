@@ -1,4 +1,4 @@
-const { AuthenticationError } = require('@apollo/server');
+const { GraphQLError } = require('graphql')
 const { User } = require('../../models');
 const { clearCookie } = require('../../utils/cookies');
 
@@ -8,7 +8,7 @@ module.exports = {
     const refreshToken = context.headers.cookie.split('refresh_token=')[1];
 
     if (!refreshToken) {
-      throw new AuthenticationError('No refresh token found');
+      throw new ForbiddenError('No refresh token found');
     }
 
     // clear httpOnly cookie
@@ -17,7 +17,7 @@ module.exports = {
     const user = await User.findOne({ refreshToken: refreshToken });
 
     if (!user) {
-      throw new AuthenticationError('User not found');
+      throw new ForbiddenError('User not found');
     }
    
     const newRefreshTokenArray = user.refreshToken.filter(

@@ -1,4 +1,4 @@
-const { AuthenticationError } = require('@apollo/server');
+const { GraphQLError } = require('graphql')
 const { User } = require('../../models');
 const { generateToken, validToken } = require('../../utils/auth');
 const { setCookie, clearCookie } = require('../../utils/cookies');
@@ -12,7 +12,7 @@ module.exports = {
     )[1];
 
     if (!refresh_token) {
-      throw new AuthenticationError('No refresh token found');
+      throw new ForbiddenError('No refresh token found');
     }
     // check if refresh token is valid
     const isValidToken = validToken(refresh_token);
@@ -24,11 +24,11 @@ module.exports = {
 
     if (!user) {
       console.log("user not found");
-      throw new AuthenticationError('User not found');
+      throw new ForbiddenError('User not found');
     }
     
     if (!user?.refreshToken.includes(refresh_token)) {
-      throw new AuthenticationError('Refresh token not found');
+      throw new ForbiddenError('Refresh token not found');
     }
 
     const newRefreshTokenArray = user.refreshToken.filter(
@@ -44,7 +44,7 @@ module.exports = {
       clearCookie(context.res, 'refresh_token');
       user.refreshToken = newRefreshTokenArray;
       await user.save();
-      throw new AuthenticationError(
+      throw new ForbiddenError(
         'Refresh token expired, please login again'
       );
     }
