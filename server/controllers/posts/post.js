@@ -1,4 +1,4 @@
-const { GraphQLError } = require('graphql')
+const { GraphQLError } = require('graphql');
 const { User, Post, Comment } = require('../../models');
 const { PubSub, withFilter } = require('graphql-subscriptions');
 
@@ -16,7 +16,11 @@ module.exports = {
     }
 
     if (!context.user.isAdmin) {
-      throw new ForbiddenError('You are not authorized to perform this action');
+      throw new GraphQLError('You are not authorized to perform this action', {
+        extensions: {
+          code: 'UNAUTHORIZED',
+        },
+      });
     }
 
     return Post.find()
@@ -126,7 +130,11 @@ module.exports = {
     const post = await Post.findOne({ _id: postId });
 
     if (post.postAuthor.toString() !== context.user._id) {
-      throw new ForbiddenError('You are not authorized to update this post!');
+      throw new GraphQLError('You are not authorized to update this post!', {
+        extensions: {
+          code: 'UNAUTHORIZED',
+        },
+      });
     }
 
     return (updatedPost = await Post.findOneAndUpdate(
@@ -168,7 +176,11 @@ module.exports = {
     const post = await Post.findOne({ _id: postId });
 
     if (!post) {
-      throw new ForbiddenError('Post does not exist!');
+      throw new GraphQLError('Post does not exist!', {
+        extensions: {
+          code: 'NOT_FOUND',
+        },
+      });
     }
 
     // check if the logged in user is the post author or is an admin
@@ -176,7 +188,11 @@ module.exports = {
       post.postAuthor._id.toString() !== context.user._id.toString() &&
       !context.user.isAdmin
     ) {
-      throw new ForbiddenError('You are not authorized to delete this post!');
+      throw new GraphQLError('You are not authorized to delete this post!', {
+        extensions: {
+          code: 'UNAUTHORIZED',
+        },
+      });
     }
 
     // delete all the comments associated with the post

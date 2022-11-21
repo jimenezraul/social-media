@@ -57,7 +57,7 @@ export const Feed = () => {
       subscribeToNewLike(subscribeToMore);
     }
   }, [subscribeToMore]);
-console.log(feedData)
+
   const refreshHandler = () => {
     refetch();
     dispatch(setNewPost(false));

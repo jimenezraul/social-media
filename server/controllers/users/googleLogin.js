@@ -1,7 +1,7 @@
 const { OAuth2Client } = require('google-auth-library');
 const { User } = require('../../models');
 const { generateToken } = require('../../utils/auth');
-const { GraphQLError } = require('graphql')
+const { GraphQLError } = require('graphql');
 const { formatUserData } = require('../../utils/formatUserData');
 const { setCookie, clearCookie } = require('../../utils/cookies');
 require('dotenv').config();
@@ -13,7 +13,9 @@ module.exports = {
     clearCookie(context.res, 'refresh_token');
 
     if (!tokenId) {
-      throw new ForbiddenError('You need to be logged in with Google!');
+      throw new GraphQLError('You need to be logged in with Google!', {
+        code: 'FORBIDDEN',
+      });
     }
 
     if (refresh_token) {
@@ -36,12 +38,16 @@ module.exports = {
         !ticket.getPayload() ||
         ticket.getPayload().aud !== process.env.GOOGLE_CLIENT_ID
       ) {
-        throw new ForbiddenError('Invalid token!');
+        throw new GraphQLError('Invalid token!', {
+          extensions: {
+            code: 'FORBIDDEN',
+          },
+        });
       }
 
       const payload = ticket.getPayload();
       const { email, given_name, family_name, picture } = payload;
-    
+
       const user = await User.findOne({ email: email });
 
       if (!user) {
@@ -79,7 +85,7 @@ module.exports = {
       if (user && user.provider !== 'google') {
         return {
           success: false,
-          message: 'Login with email and password',
+          message: `Try to sign in with ${user.provider}!`,
           access_token: null,
           isLoggedIn: false,
           user: null,

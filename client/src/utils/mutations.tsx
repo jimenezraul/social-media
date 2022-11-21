@@ -292,3 +292,20 @@ export const UPDATE_POST = gql`
     }
   }
 `;
+
+export const FACEBOOK_LOGIN = gql`
+  mutation FaceBookLogin($Token: String!) {
+    facebookLogin(fbAccessToken: $Token) {
+      access_token
+      isLoggedIn
+      message
+      success
+      user {
+        _id
+        family_name
+        given_name
+        profileUrl
+      }
+    }
+  }
+`;

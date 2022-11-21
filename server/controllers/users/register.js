@@ -1,4 +1,4 @@
-const { GraphQLError } = require('graphql')
+const { GraphQLError } = require('graphql');
 const { User } = require('../../models');
 const { generateToken } = require('../../utils/auth');
 const { sendVerificationEmail } = require('../../utils/accountVerification');
@@ -10,7 +10,11 @@ module.exports = {
     const userExists = await User.findOne({ email: args.email });
 
     if (userExists) {
-      throw new ForbiddenError('Email already exists');
+      throw new GraphQLError('Email already exists', {
+        extensions: {
+          code: 'EMAIL_ALREADY_EXISTS',
+        },
+      });
     }
 
     const token = generateToken(args);

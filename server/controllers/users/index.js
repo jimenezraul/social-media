@@ -14,6 +14,7 @@ const {
   newFriendRequestSubscription,
 } = require('./friendRequest');
 const { googleLogin } = require('./googleLogin');
+const { facebookLogin } = require('./facebookLogin');
 
 const userResolvers = {
   userQuery: {
@@ -30,6 +31,7 @@ const userResolvers = {
     friendRequest: friendRequest,
     acceptFriendRequest: acceptFriendRequest,
     googleLogin: googleLogin,
+    facebookLogin: facebookLogin,
     removeFriend: removeFriend,
     resetPassword: resetPassword,
     forgotPassword: forgotPassword,

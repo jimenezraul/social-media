@@ -1,21 +1,53 @@
 import FacebookLogin from '@greatsumini/react-facebook-login';
+import { FACEBOOK_LOGIN } from '../../utils/mutations';
+import { useMutation } from '@apollo/client';
+import { useAppDispatch } from '../../app/hooks';
+import { user_login, setAccessToken } from '../../features/users/userSlice';
 
 interface FacebookLoginProps {
   setErrors: (message: string) => void;
 }
 
 interface FacebookLoginResponse {
-  email: string;
-  name: string;
-  id: string;
-  picture: {
-    data: {
-      url: string;
-    };
-  };
+  accessToken: string;
+  expiresIn: string;
+  reauthorize_required_in: string;
+  signedRequest: string;
+  userID: string;
 }
 
 const FacebookLoginButton = ({ setErrors }: FacebookLoginProps) => {
+  const [facebookLogin] = useMutation(FACEBOOK_LOGIN);
+  const dispatch = useAppDispatch();
+
+  const facebookLoginHandler = async (token: string | undefined) => {
+    if (!token) {
+      setErrors('Facebook login failed');
+    }
+
+    try {
+      const response = await facebookLogin({
+        variables: {
+          Token: token,
+        },
+      });
+
+      const { success, message, access_token, user } = response.data.facebookLogin;
+
+      if (!success) {
+        setErrors(message);
+        return;
+      }
+
+      localStorage.setItem('access_token', access_token);
+      dispatch(user_login(user));
+      dispatch(setAccessToken(access_token));
+    } catch (err: any) {
+      console.log(err.message);
+      setErrors('Facebook login failed');
+    }
+  };
+
   return (
     <div className="w-[258px] flex justify-center items-center mt-5 px-[10px] py-[2px]">
       <div className="flex w-full justify-center items-center bg-[#4267b2] hover:bg-[#385999] text-white px-4 py-2 rounded">
@@ -23,21 +55,12 @@ const FacebookLoginButton = ({ setErrors }: FacebookLoginProps) => {
         <FacebookLogin
           appId="658646712381953"
           onSuccess={(response) => {
-            console.log('Login Success!', response);
+            response as FacebookLoginResponse;
+            facebookLoginHandler(response?.accessToken);
           }}
           onFail={(error) => {
             console.log('Login Failed!', error);
             setErrors('Login Failed');
-          }}
-          onProfileSuccess={(response) => {
-            console.log('Get Profile Success!', response);
-            const res = response as FacebookLoginResponse;
-            const fullname = res.name.split(' ');
-            const given_name = fullname[0];
-            const family_name = fullname[1];
-            const picture = res.picture.data.url;
-            const email = res.email;
-            console.log(given_name);
           }}
         />
       </div>

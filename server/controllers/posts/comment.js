@@ -1,4 +1,4 @@
-const { GraphQLError } = require('graphql')
+const { GraphQLError } = require('graphql');
 const { Post, Comment } = require('../../models');
 const { PubSub } = require('graphql-subscriptions');
 

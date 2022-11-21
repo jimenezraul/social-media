@@ -1,7 +1,4 @@
-const {
-  AuthenticationError,
-  ForbiddenError,
-} = require('@apollo/server');
+const { GraphQLError } = require('graphql');
 const { PubSub, withFilter } = require('graphql-subscriptions');
 const { Message, User } = require('../../models');
 
@@ -11,7 +8,11 @@ module.exports = {
   // get all chats
   chats: async (parent, args, context) => {
     if (!context.user) {
-      throw new AuthenticationError('You need to be logged in!');
+      throw new GraphQLError('You need to be logged in!', {
+        extensions: {
+          code: 'UNAUTHENTICATED',
+        },
+      });
     }
 
     const messages = await Message.find()
@@ -39,7 +40,11 @@ module.exports = {
     const loggedUser = context.user;
 
     if (!loggedUser) {
-      throw new AuthenticationError('You need to be logged in!');
+      throw new GraphQLError('You need to be logged in!', {
+        extensions: {
+          code: 'UNAUTHENTICATED',
+        },
+      });
     }
     return Message.findOne({ _id: id })
       .select('-__v')
@@ -62,7 +67,11 @@ module.exports = {
   chatByUser: async (parent, args, context) => {
     const loggedUser = context.user;
     if (!loggedUser) {
-      throw new AuthenticationError('You need to be logged in!');
+      throw new GraphQLError('You need to be logged in!', {
+        extensions: {
+          code: 'UNAUTHENTICATED',
+        },
+      });
     }
 
     const chats = await Message.find({
@@ -90,7 +99,11 @@ module.exports = {
   postMessage: async (parent, { recipientId, text, media }, context) => {
     const loggedUser = context.user;
     if (!loggedUser) {
-      throw new AuthenticationError('You need to be logged in!');
+      throw new GraphQLError('You need to be logged in!', {
+        extensions: {
+          code: 'UNAUTHENTICATED',
+        },
+      });
     }
 
     // check if logged user is a member of the chat
@@ -199,7 +212,11 @@ module.exports = {
   markMessageAsRead: async (parent, { messageId }, context) => {
     const loggedUser = context.user;
     if (!loggedUser) {
-      throw new AuthenticationError('You need to be logged in!');
+      throw new GraphQLError('You need to be logged in!', {
+        extensions: {
+          code: 'UNAUTHENTICATED',
+        },
+      });
     }
 
     // change status from delivered to read
@@ -241,7 +258,11 @@ module.exports = {
   getMessagesById: async (parent, { id, limit }, context) => {
     const loggedUser = context.user;
     if (!loggedUser) {
-      throw new AuthenticationError('You need to be logged in!');
+      throw new GraphQLError('You need to be logged in!', {
+        extensions: {
+          code: 'UNAUTHENTICATED',
+        },
+      });
     }
     console.log(limit);
     const message = await Message.findOne({

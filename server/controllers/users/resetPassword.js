@@ -1,4 +1,4 @@
-const { GraphQLError } = require('graphql')
+const { GraphQLError } = require('graphql');
 const { User } = require('../../models');
 
 module.exports = {
@@ -9,7 +9,11 @@ module.exports = {
     const user = await User.findOne({ accessToken: token });
 
     if (!user) {
-      throw new ForbiddenError('Invalid token');
+      throw new GraphQLError('Invalid token', {
+        extensions: {
+          code: 'INVALID_TOKEN',
+        },
+      });
     }
 
     user.password = password;

@@ -146,6 +146,7 @@ const typeDefs = gql`
     likes(postId: ID!): Message
     likeComment(commentId: ID!): Message
     googleLogin(tokenId: String!): Auth
+    facebookLogin(fbAccessToken: String!): Auth
     removeFriend(friendId: ID!): Message
     resetPassword(token: String!, password: String!): Message
     forgotPassword(email: String!): Message

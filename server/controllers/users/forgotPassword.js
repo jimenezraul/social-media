@@ -1,4 +1,4 @@
-const { GraphQLError } = require('graphql')
+const { GraphQLError } = require('graphql');
 const { User } = require('../../models');
 const { generateToken } = require('../../utils/auth');
 const { sendResetPassEmail } = require('../../utils/sendResetPassEmail');
@@ -12,7 +12,11 @@ module.exports = {
     const user = await User.findOne({ email });
 
     if (!user) {
-      throw new ForbiddenError('User not found');
+      throw new GraphQLError('User not found', {
+        extensions: {
+          code: 'USER_NOT_FOUND',
+        },
+      });
     }
 
     const accessToken = generateToken({ user: user._id });

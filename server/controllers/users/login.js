@@ -1,4 +1,4 @@
-const { GraphQLError } = require('graphql')
+const { GraphQLError } = require('graphql');
 const { User } = require('../../models');
 const { generateToken } = require('../../utils/auth');
 const { formatUserData } = require('../../utils/formatUserData');
@@ -11,17 +11,23 @@ module.exports = {
     const user = await User.findOne({ email: email.toLowerCase() });
 
     if (!user) {
-      throw new ForbiddenError('Incorrect email or password');
+      throw new GraphQLError('Incorrect email or password', {
+        code: 'INCORRECT_EMAIL_OR_PASSWORD',
+      });
     }
 
     const correctPw = await user.isCorrectPassword(password);
 
     if (!correctPw) {
-      throw new ForbiddenError('Incorrect email or password');
+      throw new GraphQLError('Incorrect email or password', {
+        code: 'INCORRECT_EMAIL_OR_PASSWORD',
+      });
     }
 
     if (!user.isVerified) {
-      throw new ForbiddenError('Please verify your email');
+      throw new GraphQLError('Please verify your email', {
+        code: 'EMAIL_NOT_VERIFIED',
+      });
     }
 
     // user data to be sent to client

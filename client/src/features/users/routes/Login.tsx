@@ -5,14 +5,12 @@ import GoogleLoginButton from '../../../components/GoogleLoginButton';
 import { validation } from '../../../utils/validation';
 import { useMutation } from '@apollo/client';
 import { LOGIN } from '../../../utils/mutations';
-import { useAppDispatch, useAppSelector } from '../../../app/hooks';
-import { user_login, setAccessToken, selectUser } from '../../../features/users/userSlice';
+import { useAppDispatch } from '../../../app/hooks';
+import { user_login, setAccessToken } from '../../../features/users/userSlice';
 import { FormEvent, ChangeEvent } from './types';
 import FacebookLoginButton from '../../../components/FacebookLoginButton';
 
 export const Login = () => {
-  const user = useAppSelector(selectUser).user
-  console.log(user)
   const dispatch = useAppDispatch();
   const [errors, setErrors] = useState<String>('');
 

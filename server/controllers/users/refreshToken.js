@@ -1,4 +1,4 @@
-const { GraphQLError } = require('graphql')
+const { GraphQLError } = require('graphql');
 const { User } = require('../../models');
 const { generateToken, validToken } = require('../../utils/auth');
 const { setCookie, clearCookie } = require('../../utils/cookies');
@@ -12,7 +12,11 @@ module.exports = {
     )[1];
 
     if (!refresh_token) {
-      throw new ForbiddenError('No refresh token found');
+      throw new GraphQLError('No refresh token found', {
+        extensions: {
+          code: 'FORBIDDEN',
+        },
+      });
     }
     // check if refresh token is valid
     const isValidToken = validToken(refresh_token);
@@ -23,20 +27,28 @@ module.exports = {
     });
 
     if (!user) {
-      console.log("user not found");
-      throw new ForbiddenError('User not found');
+      console.log('user not found');
+      throw new GraphQLError('User not found', {
+        extensions: {
+          code: 'FORBIDDEN',
+        },
+      });
     }
-    
+
     if (!user?.refreshToken.includes(refresh_token)) {
-      throw new ForbiddenError('Refresh token not found');
+      throw new GraphQLError('Refresh token not found', {
+        extensions: {
+          code: 'FORBIDDEN',
+        },
+      });
     }
 
     const newRefreshTokenArray = user.refreshToken.filter(
       (token) => token !== refresh_token
     );
 
-    const filteredExpiredTokenArray = newRefreshTokenArray.filter(
-      (token) => validToken(token)
+    const filteredExpiredTokenArray = newRefreshTokenArray.filter((token) =>
+      validToken(token)
     );
 
     // Refresh token expired
@@ -44,9 +56,11 @@ module.exports = {
       clearCookie(context.res, 'refresh_token');
       user.refreshToken = newRefreshTokenArray;
       await user.save();
-      throw new ForbiddenError(
-        'Refresh token expired, please login again'
-      );
+      throw new GraphQLError('Refresh token expired, please login again', {
+        extensions: {
+          code: 'FORBIDDEN',
+        },
+      });
     }
 
     const currentUser = formatUserData(user);

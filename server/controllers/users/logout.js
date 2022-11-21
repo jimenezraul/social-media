@@ -1,4 +1,4 @@
-const { GraphQLError } = require('graphql')
+const { GraphQLError } = require('graphql');
 const { User } = require('../../models');
 const { clearCookie } = require('../../utils/cookies');
 
@@ -8,7 +8,11 @@ module.exports = {
     const refreshToken = context.headers.cookie.split('refresh_token=')[1];
 
     if (!refreshToken) {
-      throw new ForbiddenError('No refresh token found');
+      throw new GraphQLError('No refresh token found', {
+        extensions: {
+          code: 'FORBIDDEN',
+        },
+      });
     }
 
     // clear httpOnly cookie
@@ -17,9 +21,13 @@ module.exports = {
     const user = await User.findOne({ refreshToken: refreshToken });
 
     if (!user) {
-      throw new ForbiddenError('User not found');
+      throw new GraphQLError('User not found', {
+        extensions: {
+          code: 'FORBIDDEN',
+        },
+      });
     }
-   
+
     const newRefreshTokenArray = user.refreshToken.filter(
       (token) => token !== refreshToken
     );

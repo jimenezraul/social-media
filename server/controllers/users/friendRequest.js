@@ -1,4 +1,4 @@
-const { GraphQLError } = require('graphql')
+const { GraphQLError } = require('graphql');
 const { User } = require('../../models');
 const { PubSub } = require('graphql-subscriptions');
 
@@ -21,9 +21,13 @@ module.exports = {
     const friend = await User.findOne({ _id: context.user._id }).select(
       '-__v -password'
     );
-     
+
     if (!user) {
-      throw new ForbiddenError('User not found');
+      throw new GraphQLError('User not found', {
+        extensions: {
+          code: 'NOT_FOUND',
+        },
+      });
     }
 
     if (user.friendRequests.includes(context.user._id)) {
@@ -78,15 +82,27 @@ module.exports = {
     const user = await User.findOne({ _id: context.user._id });
 
     if (!user) {
-      throw new ForbiddenError('User not found');
+      throw new GraphQLError('User not found', {
+        extensions: {
+          code: 'NOT_FOUND',
+        },
+      });
     }
 
     if (!user.friendRequests.includes(friendId)) {
-      throw new ForbiddenError('You have not received a friend request');
+      throw new GraphQLError('You have not received a friend request', {
+        extensions: {
+          code: 'FRIEND_REQUEST_NOT_FOUND',
+        },
+      });
     }
 
     if (user.friends.includes(friendId)) {
-      throw new ForbiddenError('You are already friends');
+      throw new GraphQLError('You are already friends', {
+        extensions: {
+          code: 'ALREADY_FRIENDS',
+        },
+      });
     }
 
     user.friendRequestCount -= 1;
@@ -134,11 +150,19 @@ module.exports = {
     const user = await User.findOne({ _id: context.user._id });
 
     if (!user) {
-      throw new ForbiddenError('User not found');
+      throw new GraphQLError('User not found', {
+        extensions: {
+          code: 'NOT_FOUND',
+        },
+      });
     }
 
     if (!user.friends.includes(friendId)) {
-      throw new ForbiddenError('You are not friends');
+      throw new GraphQLError('You are not friends', {
+        extensions: {
+          code: 'NOT_FRIENDS',
+        },
+      });
     }
 
     user.friends.pull(friendId);
