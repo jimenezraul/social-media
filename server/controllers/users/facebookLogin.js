@@ -6,8 +6,8 @@ require('dotenv').config();
 
 module.exports = {
   facebookLogin: async (parent, { fbAccessToken }) => {
-    const url = `https://graph.facebook.com/v15.0/me?fields=first_name,last_name,picture,email&access_token=${fbAccessToken}`;
-
+    const url = `https://graph.facebook.com/v15.0/me?fields=first_name,last_name,picture.width(200).height(200),email&access_token=${fbAccessToken}`;
+    
     const response = await new Promise((resolve, reject) => {
       https
         .get(url, (res) => {
@@ -61,7 +61,7 @@ module.exports = {
         user: data,
       };
     }
-    
+
     if (user.provider !== 'facebook') {
       return {
         success: false,
