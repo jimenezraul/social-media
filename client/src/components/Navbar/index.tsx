@@ -1,11 +1,8 @@
 import { Link } from 'react-router-dom';
 import { useState, useRef, useEffect } from 'react';
 import { useAppSelector } from '../../app/hooks';
-import {
-  selectUser,
-  user_logout,
-  notifications,
-} from '../../features/users/userSlice';
+import { googleLogout } from '@react-oauth/google';
+import { selectUser, user_logout, notifications } from '../../features/users/userSlice';
 import { useAppDispatch } from '../../app/hooks';
 import { useMutation, useQuery } from '@apollo/client';
 import { LOGOUT } from '../../utils/mutations';
@@ -21,9 +18,7 @@ const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [notificationsOpen, setNotificationsOpen] = useState(false);
   const dispatch = useAppDispatch();
-  const [currentPath, setCurrentPath] = useState<String>(
-    window.location.pathname
-  );
+  const [currentPath, setCurrentPath] = useState<String>(window.location.pathname);
   const { data, loading, error, subscribeToMore } = useQuery(GET_ME);
 
   useEffect(() => {
@@ -64,6 +59,7 @@ const Navbar = () => {
     dispatch(user_logout());
     await logout();
     localStorage.removeItem('user');
+    googleLogout();
     window.location.reload();
   };
 
@@ -71,18 +67,14 @@ const Navbar = () => {
   const { profileUrl } = Object(user);
 
   return (
-    <nav className='relative flex items-center justify-between flex-wrap p-6'>
-      <div className='container mx-auto flex flex-wrap  justify-between'>
-        <div className='flex items-center flex-shrink-0 text-white mr-6'>
-          <span className='font-semibold text-xl tracking-tight'>
-            Social Media
-          </span>
+    <nav className="relative flex items-center justify-between flex-wrap p-6">
+      <div className="container mx-auto flex flex-wrap  justify-between">
+        <div className="flex items-center flex-shrink-0 text-white mr-6">
+          <span className="font-semibold text-xl tracking-tight">Social Media</span>
         </div>
 
-        <div
-          className={`w-full hidden flex-grow md:flex md:items-center md:w-auto`}
-        >
-          <div className='text-sm flex'>
+        <div className={`w-full hidden flex-grow md:flex md:items-center md:w-auto`}>
+          <div className="text-sm flex">
             {routes.map((route, index) => {
               // check if the route is active
               const isActive = currentPath === route.path;
@@ -102,16 +94,16 @@ const Navbar = () => {
             })}
           </div>
         </div>
-        <div className='flex items-center space-x-5'>
-          <Link to='/messages'>
-            <i className='text-xl fa-solid fa-comment text-slate-300'></i>
+        <div className="flex items-center space-x-5">
+          <Link to="/messages">
+            <i className="text-xl fa-solid fa-comment text-slate-300"></i>
           </Link>
-          <div className='relative' ref={notificationsRef}>
+          <div className="relative" ref={notificationsRef}>
             <div
               onClick={() => setNotificationsOpen(!notificationsOpen)}
-              className='cursor-pointer'
+              className="cursor-pointer"
             >
-              <i className='text-xl fa-solid fa-bell text-slate-300'></i>
+              <i className="text-xl fa-solid fa-bell text-slate-300"></i>
               <div
                 className={`${
                   notification.length > 0 ? 'flex' : 'hidden'
@@ -120,16 +112,14 @@ const Navbar = () => {
                 {notification.length}
               </div>
             </div>
-            {notificationsOpen && (
-              <Notifications setNotificationsOpen={setNotificationsOpen} />
-            )}
+            {notificationsOpen && <Notifications setNotificationsOpen={setNotificationsOpen} />}
           </div>
-          <div className='flex relative justify-center items-center cursor-pointer' ref={menuRef}>
+          <div className="flex relative justify-center items-center cursor-pointer" ref={menuRef}>
             <img
-              className='mr-2 h-10 bg-default rounded-full p-0.5'
+              className="mr-2 h-10 bg-default rounded-full p-0.5"
               src={`${profileUrl}`}
-              alt=''
-              referrerPolicy='no-referrer'
+              alt=""
+              referrerPolicy="no-referrer"
               onClick={() => setIsOpen(!isOpen)}
             ></img>
             {isOpen && (

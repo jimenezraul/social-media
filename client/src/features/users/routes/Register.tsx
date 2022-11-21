@@ -1,10 +1,13 @@
 import { ChangeEvent, FC, FormEvent, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { GoogleLoginButton } from '../../../components/GoogleLogin';
+import { GoogleLogin } from '@react-oauth/google';
 import { Button } from '../../../components/CustomButton';
 import { registerValidation } from '../../../utils/validation';
 import { useMutation } from '@apollo/client';
 import { REGISTER } from '../../../utils/mutations';
+import { useAppDispatch } from '../../../app/hooks';
+import { GOOGLE_LOGIN } from '../../../utils/mutations';
+import { user_login, setAccessToken } from '../../../features/users/userSlice';
 
 const inputFields: Array<formInfo> = [
   {
@@ -50,6 +53,8 @@ const initialState = {
 };
 
 export const Register: FC = () => {
+  const [googleLogin] = useMutation(GOOGLE_LOGIN);
+  const dispatch = useAppDispatch();
   const [loading, setLoading] = useState<boolean>(false);
   const [errors, setErrors] = useState<String>('');
   const [registerError, setRegisterError] = useState<RegisterInfo>({
@@ -124,74 +129,95 @@ export const Register: FC = () => {
     if (errors) setErrors('');
   };
 
+  const handleGoogleLogin = async (response: any) => {
+    try {
+      const google_login = await googleLogin({
+        variables: {
+          tokenId: response.credential,
+        },
+      });
+
+      const { success, message, access_token, user } = google_login.data.googleLogin;
+
+      if (!success) {
+        setErrors(message);
+        return;
+      }
+
+      localStorage.setItem('user', JSON.stringify(user));
+      dispatch(user_login(user));
+      dispatch(setAccessToken(access_token));
+    } catch (err: any) {
+      setErrors('Google login failed');
+    }
+  };
+
   return (
-    <div className='px-2 flex flex-1 items-center justify-center my-3'>
-      <div className='w-full max-w-md'>
+    <div className="px-2 flex flex-1 items-center justify-center my-3">
+      <div className="w-full max-w-md">
         <form
           onSubmit={handleSubmit}
-          className='bg-slate-800 shadow-md border border-slate-700 rounded-lg px-12 pt-6 pb-8 mb-4'
+          className="bg-slate-800 shadow-md border border-slate-700 rounded-lg px-12 pt-6 pb-8 mb-4"
         >
-          <h1 className='text-2xl text-center text-slate-300 font-bold mb-3'>
-            Register
-          </h1>
+          <h1 className="text-2xl text-center text-slate-300 font-bold mb-3">Register</h1>
           <img
-            className='h-40 w-40 mx-auto bg-gradient-to-r from-blue-600 to to-red-600 rounded-full'
-            src='assets/img/rocket-front-color.png'
-            alt=''
+            className="h-40 w-40 mx-auto bg-gradient-to-r from-blue-600 to to-red-600 rounded-full"
+            src="assets/img/rocket-front-color.png"
+            alt=""
           />
-          <div className='mt-3'>
+          <div className="mt-3">
             {inputFields.map(({ name, type, placeholder }) => (
-              <div key={name} className='mb-4'>
+              <div key={name} className="mb-4">
                 <input
                   type={type}
                   name={name}
                   onChange={(e) => handleChange(e)}
-                  className='bg-slate-700 shadow appearance-none rounded w-full py-2 px-3 text-gray-200 leading-tight focus:outline focus:shadow-outline'
+                  className="bg-slate-700 shadow appearance-none rounded w-full py-2 px-3 text-gray-200 leading-tight focus:outline focus:shadow-outline"
                   placeholder={placeholder}
                   value={formState[name as keyof RegisterFormState['error']]}
                 />
-                <div className='text-red-500 text-xs'>
+                <div className="text-red-500 text-xs">
                   {formState.error[name as keyof RegisterFormState['error']]}
                 </div>
               </div>
             ))}
           </div>
-          <div
-            className={`${
-              registerError.success ? 'text-blue-300' : 'text-red-500'
-            } text-xs`}
-          >
+          <div className={`${registerError.success ? 'text-blue-300' : 'text-red-500'} text-xs`}>
             {registerError.message}
           </div>
-          <div
-            className={`${
-              registerError.success ? 'text-blue-300' : 'text-red-500'
-            } text-xs`}
-          >
+          <div className={`${registerError.success ? 'text-blue-300' : 'text-red-500'} text-xs`}>
             {registerError.subMessage}
           </div>
-          <div className='text-red-500 text-xs'>{errors}</div>
-          <div className='flex items-center justify-between'>
+          <div className="text-red-500 text-xs">{errors}</div>
+          <div className="flex items-center justify-between">
             <Button
               disabled={loading}
-              type='submit'
-              name='Register'
-              className='bg-gradient-to-r from-blue-600 to to-red-500 hover:from-blue-700 hover:to-red-600 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline mt-5'
+              type="submit"
+              name="Register"
+              className="bg-gradient-to-r from-blue-600 to to-red-500 hover:from-blue-700 hover:to-red-600 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline mt-5"
             />
             <Link
-              to='/login'
-              className='inline-block align-baseline font-bold text-sm text-blue-500 hover:text-blue-800'
+              to="/login"
+              className="inline-block align-baseline font-bold text-sm text-blue-500 hover:text-blue-800"
             >
               Login
             </Link>
           </div>
-          <div className='relative flex py-5 items-center'>
-            <div className='flex-grow border-t border-gray-400'></div>
-            <span className='flex-shrink mx-4 text-gray-400'>or</span>
-            <div className='flex-grow border-t border-gray-400'></div>
+          <div className="relative flex py-5 items-center">
+            <div className="flex-grow border-t border-gray-400"></div>
+            <span className="flex-shrink mx-4 text-gray-400">or</span>
+            <div className="flex-grow border-t border-gray-400"></div>
           </div>
-          <div className='flex items-center justify-center'>
-            <GoogleLoginButton setErrors={setErrors} />
+          <div className="flex items-center justify-center">
+            <GoogleLogin
+              onSuccess={(credentialResponse) => {
+                handleGoogleLogin(credentialResponse);
+              }}
+              onError={() => {
+                setErrors('Login Failed');
+              }}
+              useOneTap
+            />
           </div>
         </form>
       </div>
