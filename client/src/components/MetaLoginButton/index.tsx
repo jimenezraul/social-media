@@ -4,7 +4,7 @@ import { useMutation } from '@apollo/client';
 import { useAppDispatch } from '../../app/hooks';
 import { user_login, setAccessToken } from '../../features/users/userSlice';
 
-interface FacebookLoginProps {
+interface MetaLoginProps {
   setErrors: (message: string) => void;
 }
 
@@ -16,11 +16,11 @@ interface FacebookLoginResponse {
   userID: string;
 }
 
-const FacebookLoginButton = ({ setErrors }: FacebookLoginProps) => {
+const MetaLoginButton = ({ setErrors }: MetaLoginProps) => {
   const [facebookLogin] = useMutation(FACEBOOK_LOGIN);
   const dispatch = useAppDispatch();
 
-  const facebookLoginHandler = async (token: string | undefined) => {
+  const metaLoginHandler = async (token: string | undefined) => {
     if (!token) {
       setErrors('Facebook login failed');
     }
@@ -55,15 +55,16 @@ const FacebookLoginButton = ({ setErrors }: FacebookLoginProps) => {
           appId="658646712381953"
           onSuccess={(response) => {
             response as FacebookLoginResponse;
-            facebookLoginHandler(response?.accessToken);
+            metaLoginHandler(response?.accessToken);
           }}
           onFail={(error) => {
             console.log('Login Failed!', error);
           }}
           children={
             <div className="flex justify-center items-center">
-              <i className="text-white text-lg fa-brands fa-facebook mr-2"></i>
-              <span className="text-md">Login with Facebook</span>
+              {/* <i className="text-white text-lg fa-brands fa-facebook mr-2"></i> */}
+              <i className="text-white text-lg fa-brands fa-meta mr-2"></i>
+              <span className="text-md">Login with Meta</span>
             </div>
           }
         />
@@ -72,4 +73,4 @@ const FacebookLoginButton = ({ setErrors }: FacebookLoginProps) => {
   );
 };
 
-export default FacebookLoginButton;
+export default MetaLoginButton;

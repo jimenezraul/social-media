@@ -8,7 +8,7 @@ import { LOGIN } from '../../../utils/mutations';
 import { useAppDispatch } from '../../../app/hooks';
 import { user_login, setAccessToken } from '../../../features/users/userSlice';
 import { FormEvent, ChangeEvent } from './types';
-import FacebookLoginButton from '../../../components/FacebookLoginButton';
+import FacebookLoginButton from '../../../components/MetaLoginButton';
 
 export const Login = () => {
   const dispatch = useAppDispatch();

@@ -1,7 +1,7 @@
 import { ChangeEvent, FC, FormEvent, useState } from 'react';
 import { Link } from 'react-router-dom';
 import GoogleLoginButton from '../../../components/GoogleLoginButton';
-import FacebookLoginButton from '../../../components/FacebookLoginButton';
+import FacebookLoginButton from '../../../components/MetaLoginButton';
 import { Button } from '../../../components/CustomButton';
 import { registerValidation } from '../../../utils/validation';
 import { useMutation } from '@apollo/client';
