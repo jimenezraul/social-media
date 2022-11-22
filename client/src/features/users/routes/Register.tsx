@@ -1,13 +1,11 @@
 import { ChangeEvent, FC, FormEvent, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { GoogleLogin } from '@react-oauth/google';
+import GoogleLoginButton from '../../../components/GoogleLoginButton';
+import FacebookLoginButton from '../../../components/FacebookLoginButton';
 import { Button } from '../../../components/CustomButton';
 import { registerValidation } from '../../../utils/validation';
 import { useMutation } from '@apollo/client';
 import { REGISTER } from '../../../utils/mutations';
-import { useAppDispatch } from '../../../app/hooks';
-import { GOOGLE_LOGIN } from '../../../utils/mutations';
-import { user_login, setAccessToken } from '../../../features/users/userSlice';
 
 const inputFields: Array<formInfo> = [
   {
@@ -53,8 +51,6 @@ const initialState = {
 };
 
 export const Register: FC = () => {
-  const [googleLogin] = useMutation(GOOGLE_LOGIN);
-  const dispatch = useAppDispatch();
   const [loading, setLoading] = useState<boolean>(false);
   const [errors, setErrors] = useState<String>('');
   const [registerError, setRegisterError] = useState<RegisterInfo>({
@@ -129,29 +125,6 @@ export const Register: FC = () => {
     if (errors) setErrors('');
   };
 
-  const handleGoogleLogin = async (response: any) => {
-    try {
-      const google_login = await googleLogin({
-        variables: {
-          tokenId: response.credential,
-        },
-      });
-
-      const { success, message, access_token, user } = google_login.data.googleLogin;
-
-      if (!success) {
-        setErrors(message);
-        return;
-      }
-
-      localStorage.setItem('user', JSON.stringify(user));
-      dispatch(user_login(user));
-      dispatch(setAccessToken(access_token));
-    } catch (err: any) {
-      setErrors('Google login failed');
-    }
-  };
-
   return (
     <div className="px-2 flex flex-1 items-center justify-center my-3">
       <div className="w-full max-w-md">
@@ -208,16 +181,9 @@ export const Register: FC = () => {
             <span className="flex-shrink mx-4 text-gray-400">or</span>
             <div className="flex-grow border-t border-gray-400"></div>
           </div>
-          <div className="flex items-center justify-center">
-            <GoogleLogin
-              onSuccess={(credentialResponse) => {
-                handleGoogleLogin(credentialResponse);
-              }}
-              onError={() => {
-                setErrors('Login Failed');
-              }}
-              useOneTap
-            />
+          <div className="flex flex-col items-center justify-center">
+            <GoogleLoginButton setErrors={setErrors} />
+            <FacebookLoginButton setErrors={setErrors} />
           </div>
         </form>
       </div>

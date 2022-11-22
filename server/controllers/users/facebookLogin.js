@@ -1,13 +1,16 @@
 const { GraphQLError } = require('graphql');
 const { User } = require('../../models');
+const { generateToken } = require('../../utils/auth');
 const { setCookie } = require('../../utils/cookies');
+const { formatUserData } = require('../../utils/formatUserData');
+
 const https = require('https');
 require('dotenv').config();
 
 module.exports = {
-  facebookLogin: async (parent, { fbAccessToken }) => {
+  facebookLogin: async (parent, { fbAccessToken }, context) => {
     const url = `https://graph.facebook.com/v15.0/me?fields=first_name,last_name,picture.width(200).height(200),email&access_token=${fbAccessToken}`;
-    
+
     const response = await new Promise((resolve, reject) => {
       https
         .get(url, (res) => {
@@ -49,9 +52,12 @@ module.exports = {
 
       const data = formatUserData(newUser);
       const access_token = generateToken({ user: data });
-      const refresh_token = generateRefreshToken({ user: data });
+      const refresh_token = generateToken({ user: data }, 'refresh');
 
       setCookie(context.res, 'refresh_token', refresh_token);
+
+      newUser.refreshToken = [refresh_token];
+      await newUser.save();
 
       return {
         success: true,
@@ -72,11 +78,15 @@ module.exports = {
       };
     }
 
+    const currentRefreshToken = user.refreshToken;
     const userData = formatUserData(user);
     const access_token = generateToken({ user: userData });
-    const refresh_token = generateRefreshToken({ user: userData });
+    const refresh_token = generateToken({ user: userData }, 'refresh');
 
     setCookie(context.res, 'refresh_token', refresh_token);
+
+    user.refreshToken = [...currentRefreshToken, refresh_token];
+    await user.save();
 
     return {
       success: true,
