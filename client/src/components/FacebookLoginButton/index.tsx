@@ -59,7 +59,6 @@ const FacebookLoginButton = ({ setErrors }: FacebookLoginProps) => {
           }}
           onFail={(error) => {
             console.log('Login Failed!', error);
-            setErrors('Login Failed');
           }}
           children={
             <div className="flex justify-center items-center">
