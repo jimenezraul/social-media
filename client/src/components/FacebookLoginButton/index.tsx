@@ -62,8 +62,8 @@ const FacebookLoginButton = ({ setErrors }: FacebookLoginProps) => {
           }}
           children={
             <div className="flex justify-center items-center">
-              <i className="text-white text-xl fa-brands fa-facebook mr-2"></i>
-              <span className="text-lg">Login with Facebook</span>
+              <i className="text-white text-lg fa-brands fa-facebook mr-2"></i>
+              <span className="text-md">Login with Facebook</span>
             </div>
           }
         />
