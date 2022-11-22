@@ -45,6 +45,9 @@ const GoogleLoginButton = ({setErrors}: GoogleLoginProps) => {
         setErrors('Login Failed');
       }}
       useOneTap
+      width='250'
+      text='signin_with'
+      theme='filled_blue'
     />
   );
 };

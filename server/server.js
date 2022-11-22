@@ -82,15 +82,6 @@ if (process.env.NODE_ENV === 'production') {
   });
 }
 
-app.enable('trust proxy');
-app.use(function (req, res, next) {
-  if (req.secure) {
-    next();
-  } else {
-    res.redirect('https://' + req.headers.host + req.url);
-  }
-});
-
 const startApolloServer = async () => {
   await server.start();
   app.use(
@@ -102,8 +93,7 @@ const startApolloServer = async () => {
 
   db.once('open', () => {
     httpServer.listen(PORT, () => {
-      console.log(`API server running on port ${PORT}!`);
-      console.log(`Use GraphQL at http://localhost:${PORT}`);
+      console.log(`Use GraphQL at http://localhost:${PORT}/graphql`);
     });
   });
 };

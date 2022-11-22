@@ -61,10 +61,10 @@ const MetaLoginButton = ({ setErrors }: MetaLoginProps) => {
             console.log('Login Failed!', error);
           }}
           children={
-            <div className="flex justify-center items-center">
+            <div className="flex justify-center items-center w-[210px]">
               {/* <i className="text-white text-lg fa-brands fa-facebook mr-2"></i> */}
-              <i className="text-white text-lg fa-brands fa-meta mr-2"></i>
-              <span className="text-md">Login with Meta</span>
+              <i className="text-white text-lg fa-brands fa-meta mr-3"></i>
+              <span className="text-md">Sign in with Meta</span>
             </div>
           }
         />
