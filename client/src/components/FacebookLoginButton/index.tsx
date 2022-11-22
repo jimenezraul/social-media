@@ -50,8 +50,7 @@ const FacebookLoginButton = ({ setErrors }: FacebookLoginProps) => {
 
   return (
     <div className="w-[258px] flex justify-center items-center mt-5 px-[10px] py-[2px]">
-      <div className="relative flex w-full justify-center items-center bg-[#4267b2] hover:bg-[#385999] text-white h-10 rounded">
-        <i className="absolute left-3 text-white text-xl fa-brands fa-facebook mr-3"></i>
+      <div className="flex w-full justify-center items-center bg-[#4267b2] hover:bg-[#385999] text-white h-10 rounded">
         <FacebookLogin
           appId="658646712381953"
           onSuccess={(response) => {
@@ -62,14 +61,12 @@ const FacebookLoginButton = ({ setErrors }: FacebookLoginProps) => {
             console.log('Login Failed!', error);
             setErrors('Login Failed');
           }}
-          style={{
-            position: 'absolute',
-            left: 0,
-            right: 0,
-            top: 0,
-            bottom: 0,
-            width: '100%',
-          }}
+          children={
+            <div className="flex justify-center items-center">
+              <i className="text-white text-xl fa-brands fa-facebook mr-2"></i>
+              <span className="text-lg">Login with Facebook</span>
+            </div>
+          }
         />
       </div>
     </div>
