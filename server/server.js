@@ -56,7 +56,7 @@ const server = new ApolloServer({
           },
         };
       },
-    }
+    },
   ],
 });
 
@@ -72,22 +72,25 @@ if (process.env.NODE_ENV === 'production') {
   app.get('*', (req, res) => {
     res.sendFile(path.join(__dirname, '../client/build/index.html'));
   });
+  app.use((req, res, next) => {
+    if (req.header('x-forwarded-proto') !== 'https')
+      res.redirect(`https://${req.header('host')}${req.url}`);
+    else next();
+  });
 }
 
 const startApolloServer = async () => {
   await server.start();
   app.use(
-    "/graphql",
+    '/graphql',
     expressMiddleware(server, {
-      context: authMiddleware
-    }),
+      context: authMiddleware,
+    })
   );
   db.once('open', () => {
     httpServer.listen(PORT, () => {
       console.log(`API server running on port ${PORT}!`);
-      console.log(
-        `Use GraphQL at http://localhost:${PORT}`
-      );
+      console.log(`Use GraphQL at http://localhost:${PORT}`);
     });
   });
 };
