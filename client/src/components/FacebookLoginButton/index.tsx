@@ -49,7 +49,7 @@ const FacebookLoginButton = ({ setErrors }: FacebookLoginProps) => {
   };
 
   return (
-    <div className="w-[240px] flex justify-center items-center mt-5">
+    <div className="w-[238px] flex justify-center items-center mt-5">
       <div className="flex w-full justify-center items-center bg-[#4267b2] hover:bg-[#385999] text-white h-10 rounded">
         <FacebookLogin
           appId="658646712381953"
