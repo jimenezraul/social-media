@@ -23,13 +23,22 @@ code {
 
 /* Hide scrollbar for IE, Edge and Firefox */
 .no-scrollbar {
-  -ms-overflow-style: none;  /* IE and Edge */
-  scrollbar-width: none;  /* Firefox */
+  -ms-overflow-style: none;
+  /* IE and Edge */
+  scrollbar-width: none;
+  /* Firefox */
 }
 
 .bg-default {
   /* gradiant color */
-  background: linear-gradient(90deg, rgb(54, 54, 255) 20%, rgb(201, 61, 61) 100%);
+  background: linear-gradient(90deg, rgb(57, 90, 237) 20%, rgb(201, 61, 61) 100%);
+}
+
+@layer utilities {
+  .bg-default {
+    /* gradiant color */
+    background: linear-gradient(90deg, rgb(54, 54, 255) 20%, rgb(201, 61, 61) 100%);
+  }
 }
 
 /* max height to vh */
@@ -39,5 +48,5 @@ code {
 }
 
 .backdrop {
-  background-color: rgba(0,0,0,0.5);
+  background-color: rgba(0, 0, 0, 0.5);
 }

@@ -47,9 +47,11 @@ Profile
 Chat
 ![Chat](server/public/screenshots/Chat.png)
 Notifications
-![Notifications](server/public/screenshots/Notifications.png)
-Mobile
-![Mobile](server/public/screenshots/Mobile.png)
+![Notifications](server/public/screenshots/Notifications.png) 
+Login Page
+![Login](server/public/screenshots/login_page.png)  
+Mobile  
+![Mobile](server/public/screenshots/Mobile.png)  
 
 ## Installation
 1. Clone the repository

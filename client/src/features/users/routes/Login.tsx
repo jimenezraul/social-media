@@ -122,7 +122,7 @@ export const Login = () => {
             <Button
               type="submit"
               name="Login"
-              className="bg-gradient-to-r from-blue-600 to to-red-500 hover:from-blue-700 hover:to-red-600 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline mt-5"
+              className="bg-default hover:bg-default text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline mt-5"
             />
             <Link
               to="/register"
