@@ -31,7 +31,7 @@ You can create an account or login with google account.
 - [Express](https://expressjs.com/)
 - [MongoDB](https://www.mongodb.com/)
 - [GraphQL](https://graphql.org/)
-- [oAuth2](https://oauth.net/2/)
+- [OAuth2](https://oauth.net/2/)
 - [Webpack](https://webpack.js.org/)
 - [Heroku](https://www.heroku.com/)
 
