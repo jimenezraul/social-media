@@ -6,6 +6,7 @@ import { VerifyEmail } from '../features/users';
 import ForgotPassword from '../features/users/routes/ForgotPassword';
 import PrivacyPolicy from '../features/users/routes/PrivacyPolicy';
 import DataDeletion from '../features/users/routes/DataDeletion';
+import ResetPassword from '../features/users/routes/reset-password';
 
 const { Login } = lazyImport(() => import('../features/users'), 'Login');
 const { Register } = lazyImport(() => import('../features/users'), 'Register');
@@ -45,12 +46,16 @@ export const publicRoutes = [
         element: <ForgotPassword />,
       },
       {
-        path: 'privacy-policy',
+        path: '/privacy-policy',
         element: <PrivacyPolicy />,
       },
       {
-        path: 'data-deletion',
+        path: '/data-deletion',
         element: <DataDeletion />,
+      },
+      {
+        path: '/reset-password',
+        element: <ResetPassword />,
       },
       { path: '*', element: <Navigate to="/login" /> },
     ],
