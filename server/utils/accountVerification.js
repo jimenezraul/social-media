@@ -12,6 +12,7 @@ module.exports = {
     });
 
     const link = `${process.env.WEBSITE_URL}/verify?token=${token}`;
+    const logo = `${process.env.WEBSITE_URL}/assets/images/social-media.png`;
 
     const mailOptions = {
       from: `"Social Media App" <${process.env.EMAIL}>`,
@@ -134,9 +135,7 @@ module.exports = {
               <table border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width: 600px;">
                 <tr>
                   <td align="center" valign="top" style="padding: 36px 24px;">
-                    <a href="https://www.raulthebarber.net/" target="_blank" style="display: inline-block;">
-                      <img src="https://www.raulthebarber.net/assets/img/Barber-logo.png" alt="Logo" border="0" width="48" style="display: block; width: 48px; max-width: 48px; min-width: 48px;">
-                    </a>
+                      <img src="${logo}" alt="Logo" border="0" width="48" style="display: block; width: 48px; max-width: 48px; min-width: 48px;">
                   </td>
                 </tr>
               </table>
