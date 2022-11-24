@@ -11,11 +11,13 @@ module.exports = {
       },
     });
 
+    const link = `${process.env.WEBSITE_URL}/verify?token=${token}`;
+
     const mailOptions = {
       from: `"Social Media App" <${process.env.EMAIL}>`,
       to: user.email,
       subject: 'Account Verification',
-      text: `Please click the link below to verify your account: ${process.env.WEBSITE_URL}/verify?token=${token}`,
+      text: `Please click the link below to verify your account: ${link}`,
       html: `<!DOCTYPE html>
       <html>
       <head>
@@ -199,7 +201,7 @@ module.exports = {
                           <table border="0" cellpadding="0" cellspacing="0">
                             <tr>
                               <td align="center" bgcolor="#1a82e2" style="border-radius: 6px;">
-                                <a href="${process.env.WEBSITE_URL}/verify?token=${token}" target="_blank" style="display: inline-block; padding: 16px 36px; font-family: 'Source Sans Pro', Helvetica, Arial, sans-serif; font-size: 16px; color: #ffffff; text-decoration: none; border-radius: 6px;">Activate Account</a>
+                                <a href="${link}" target="_blank" style="display: inline-block; padding: 16px 36px; font-family: 'Source Sans Pro', Helvetica, Arial, sans-serif; font-size: 16px; color: #ffffff; text-decoration: none; border-radius: 6px;">Activate Account</a>
                               </td>
                             </tr>
                           </table>
@@ -214,7 +216,7 @@ module.exports = {
                 <tr>
                   <td align="left" bgcolor="#ffffff" style="padding: 24px; font-family: 'Source Sans Pro', Helvetica, Arial, sans-serif; font-size: 16px; line-height: 24px;">
                     <p style="margin: 0;">If that doesn't work, copy and paste the following link in your browser:</p>
-                    <p style="margin: 0;"><a href="${process.env.WEBSITE_URL}/verify?token=${token}" target="_blank">${process.env.WEBSITE_URL}/verify?token=${token}</a></p>
+                    <p style="margin: 0;"><a href="${link}" target="_blank">${link}</a></p>
                   </td>
                 </tr>
                 <!-- end copy -->

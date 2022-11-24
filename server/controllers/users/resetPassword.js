@@ -1,4 +1,3 @@
-const { GraphQLError } = require('graphql');
 const { User } = require('../../models');
 
 module.exports = {
@@ -9,11 +8,10 @@ module.exports = {
     const user = await User.findOne({ accessToken: token });
 
     if (!user) {
-      throw new GraphQLError('Invalid token', {
-        extensions: {
-          code: 'INVALID_TOKEN',
-        },
-      });
+      return {
+        success: false,
+        message: 'Invalid token',
+      };
     }
 
     user.password = password;
@@ -21,9 +19,10 @@ module.exports = {
     user.accessToken = null;
 
     await user.save();
+
     return {
       success: true,
-      message: 'Password reset successfully',
+      message: 'Your user password has been updated',
     };
   },
 };

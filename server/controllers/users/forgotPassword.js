@@ -19,6 +19,14 @@ module.exports = {
       });
     }
 
+    if (user.provider !== 'email') {
+      throw new GraphQLError(`Sign in with ${user.provider}`, {
+        extensions: {
+          code: 'SIGN_IN_WITH_SOCIAL',
+        },
+      });
+    }
+
     const accessToken = generateToken({ user: user._id });
 
     user.accessToken = accessToken;

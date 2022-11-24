@@ -125,3 +125,10 @@ export const registerValidation = (
 
   return isValid;
 };
+
+export const isPasswordValid = (password: string) => {
+  if (!validPasswordRegex.test(password)) {
+    return false;
+  }
+  return true;
+};

@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '../../../components/CustomButton';
-import { RESET_PASSWORD } from '../../../utils/mutations';
+import { FORGOT_PASSWORD } from '../../../utils/mutations';
 import { useMutation } from '@apollo/client';
 
 const ForgotPassword = () => {
@@ -10,7 +10,7 @@ const ForgotPassword = () => {
   const [isSent, setIsSent] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
-  const [resetPassword] = useMutation(RESET_PASSWORD);
+  const [forgotPassword] = useMutation(FORGOT_PASSWORD);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -23,8 +23,12 @@ const ForgotPassword = () => {
     }
 
     try {
-      const res = await resetPassword({ variables: { email: email.toLowerCase() } });
-      console.log(res);
+      const res = await forgotPassword({ variables: { email: email.toLowerCase() } });
+      if (!res.data.forgotPassword.success) {
+        setError(res.data.forgotPassword.message);
+        setLoading(false);
+        return;
+      }
       setIsSent(true);
       setLoading(false);
     } catch (err: any) {
