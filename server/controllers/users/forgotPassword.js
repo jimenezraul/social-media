@@ -12,9 +12,9 @@ module.exports = {
     const user = await User.findOne({ email });
 
     if (!user) {
-      throw new GraphQLError('User not found', {
+      throw new GraphQLError('Email not found', {
         extensions: {
-          code: 'USER_NOT_FOUND',
+          code: 'EMAIL_NOT_FOUND',
         },
       });
     }

@@ -309,3 +309,13 @@ export const FACEBOOK_LOGIN = gql`
     }
   }
 `;
+
+export const RESET_PASSWORD = gql`
+  mutation Reset_Password($email: String!) {
+    forgotPassword(email: $email) {
+      message
+      subMessage
+      success
+    }
+  }
+`;

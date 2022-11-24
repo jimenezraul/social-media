@@ -1,7 +1,8 @@
 import { useState } from 'react';
-import { useAppDispatch } from '../../../app/hooks';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '../../../components/CustomButton';
+import { RESET_PASSWORD } from '../../../utils/mutations';
+import { useMutation } from '@apollo/client';
 
 const ForgotPassword = () => {
   const navigate = useNavigate();
@@ -9,7 +10,7 @@ const ForgotPassword = () => {
   const [isSent, setIsSent] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
-  const dispatch = useAppDispatch();
+  const [resetPassword] = useMutation(RESET_PASSWORD);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -21,13 +22,20 @@ const ForgotPassword = () => {
       return;
     }
 
-    // try {
-    //   await dispatch(forgotPassword(email));
-    setIsSent(true);
-    setLoading(false);
-    // } catch (err) {
-    //   setError(err.message);
-    // }
+    try {
+      const res = await resetPassword({ variables: { email: email.toLowerCase() } });
+      console.log(res);
+      setIsSent(true);
+      setLoading(false);
+    } catch (err: any) {
+      setError(err.message);
+      setLoading(false);
+    }
+  };
+
+  const inputHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (error !== '') setError('');
+    setEmail(e.target.value);
   };
 
   return (
@@ -60,14 +68,14 @@ const ForgotPassword = () => {
                 type="email"
                 placeholder="Email"
                 value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                onChange={(e) => inputHandler(e)}
               />
               <div className="flex justify-end">
                 <Button
                   disabled={loading}
                   type="submit"
                   className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 mt-5 rounded"
-                                      name='Send Reset Email'
+                  name="Send Reset Email"
                 />
               </div>
               {error && <p className="text-red-400">{error}</p>}
