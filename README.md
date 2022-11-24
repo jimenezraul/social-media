@@ -1,8 +1,12 @@
 <p align="center">
-    <img src="server/public/screenshots/home.png" alt="Banner">
+    <img width="200px" height="200px" src="server/public/screenshots/connectme.png" alt="Banner">
 </p>
 
 <h3 align="center">ConnectME</h3>
+
+<p align="center">
+    <img src="server/public/screenshots/home.png" alt="Banner">
+</p>
 
 ## Description
 ConnectME is a social media application that allows users to create an account, make posts, and interact with other users. It is built using the MERN stack (MongoDB, Express, React, Node.js) and is deployed on Heroku.
