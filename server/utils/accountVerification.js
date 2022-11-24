@@ -12,7 +12,7 @@ module.exports = {
     });
 
     const link = `${process.env.WEBSITE_URL}/verify?token=${token}`;
-    const logo = `${process.env.WEBSITE_URL}/assets/images/social-media.png`;
+    const logo = `${process.env.WEBSITE_URL}/assets/img/social-media.png`;
 
     const mailOptions = {
       from: `"Social Media App" <${process.env.EMAIL}>`,
