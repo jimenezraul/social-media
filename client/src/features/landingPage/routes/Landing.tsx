@@ -19,7 +19,7 @@ export const Landing = () => {
               <h1 className="text-4xl text-white font-bold">Welcome to</h1>
               <h2 className="text-4xl text-white font-bold mt-3">
                 Connect{" "}
-                <span className="bg-green-500 p-1 rounded-xl border">ME</span>
+                <span className="bg-default p-1 rounded-xl border">ME</span>
               </h2>
               <p className="text-xl text-slate-300 mt-5">
                 A social media platform where you can connect with people around
