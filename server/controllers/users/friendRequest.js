@@ -1,6 +1,6 @@
 const { GraphQLError } = require('graphql');
 const { User, Notification } = require('../../models');
-const { PubSub } = require('graphql-subscriptions');
+const { PubSub, withFilter } = require('graphql-subscriptions');
 
 const pubsub = new PubSub();
 
@@ -38,15 +38,14 @@ module.exports = {
         recipient: user._id,
         type: 'FRIEND_REQUEST',
       });
-      
+
       user.notifications.pull(notification._id);
       user.save();
 
       pubsub.publish('NEW_FRIEND_REQUEST', {
         newFriendRequestSubscription: {
-          friendId: friendId,
-          user: friend,
-          requestExists: false,
+          _id: notification._id,
+          message: 'Removed friend request',
         },
       });
 
@@ -64,16 +63,17 @@ module.exports = {
       type: 'FRIEND_REQUEST',
       message: `${friend.given_name} ${friend.family_name} sent you a friend request`,
     });
-  console.log(notification);
+
     user.notifications.push(notification);
     user.save();
-
+    const newNotification = await Notification.findOne({
+      _id: notification._id,
+    })
+      .populate('sender', '-__v -password')
+      .populate('recipient', '-__v -password');
+   
     pubsub.publish('NEW_FRIEND_REQUEST', {
-      newFriendRequestSubscription: {
-        friendId: friendId,
-        user: friend,
-        requestExists: true,
-      },
+      newFriendRequestSubscription: newNotification,
     });
 
     return {

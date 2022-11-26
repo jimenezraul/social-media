@@ -329,3 +329,12 @@ export const RESET_PASSWORD = gql`
     }
   }
 `;
+
+export const MARK_NOTIFICATIONS_READ = gql`
+  mutation Mark_Notification_Read($notificationId: ID!) {
+    markNotificationAsRead(notificationId: $notificationId) {
+      message
+      success
+    }
+  }
+`;

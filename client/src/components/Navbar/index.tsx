@@ -20,25 +20,19 @@ const Navbar = () => {
   const [notificationsOpen, setNotificationsOpen] = useState(false);
   const dispatch = useAppDispatch();
   const [currentPath, setCurrentPath] = useState<String>(window.location.pathname);
-  const { data, loading, error, subscribeToMore } = useQuery(GET_ME);
+  const { data } = useQuery(GET_ME);
   const {
     data: notificationsData,
-    loading: notificationsLoading,
-    error: notificationsError,
     subscribeToMore: notificationsSubscribeToMore,
   } = useQuery(GET_NOTIFICATIONS, {
     variables: { userId: data?.me?._id },
   });
 
   useEffect(() => {
-    if (loading) return;
-    if (error) return;
-    if (!data) return;
-
-    if (subscribeToMore) {
-      subscribeToFriendRequests(subscribeToMore);
+    if (notificationsSubscribeToMore) {
+      subscribeToFriendRequests(notificationsSubscribeToMore);
     }
-  }, [data, loading, error, subscribeToMore]);
+  }, [notificationsSubscribeToMore]);
 
   const notificationsCount = notificationsData?.notificationsByUser?.length || 0;
 

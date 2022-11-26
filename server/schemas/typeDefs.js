@@ -155,6 +155,8 @@ const typeDefs = gql`
     postMessage(recipientId: ID!, text: String, media: String): Messages
     markMessageAsRead(messageId: ID!): Messages
     getMessagesById(id: ID!, limit:Int!): [Messages]
+    markAllNotificationsAsRead: Message
+    markNotificationAsRead(notificationId: ID!): Message
   }
 
   type Subscription {
@@ -162,7 +164,7 @@ const typeDefs = gql`
     newCommentSubscription: CommentSub
     newLikeSubscription: LikeSub
     newLikeCommentSubscription: likeCommentSub
-    newFriendRequestSubscription: friendRequestSub
+    newFriendRequestSubscription: Notifications
     newMessageSubscription(userId: ID!): Messages
   }
 `;

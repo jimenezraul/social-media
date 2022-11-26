@@ -152,13 +152,12 @@ export const subscribeToNewLike = (subscribeToMore: any) => {
             return post;
           }),
         };
-        
+
         return Object.assign({}, prev, {
           me: updatePost,
         });
       }
 
-      
       // update feed cache with new like
       const updatedFeed = prev.feed.map((post: any) => {
         const user = JSON.parse(localStorage.getItem('user')!) || {};
@@ -257,26 +256,22 @@ export const subscribeToFriendRequests = (subscribeToMore: any) => {
       if (!subscriptionData.data) return prev;
       const newFriendRequest = subscriptionData.data.newFriendRequestSubscription;
       const user = store.getState().user;
-
-      const data = {
-        type: 'friendRequest',
-        postId: newFriendRequest.friendId,
-        message: `${newFriendRequest.user.fullName} sent you a friend request`,
-        user: newFriendRequest.user,
-        post: {
-          _id: newFriendRequest.friendId,
-        },
-      };
-
-      if (newFriendRequest.friendId === user.user._id && newFriendRequest.requestExists) {
-        setNewNotifications(user.notifications, data);
-      } else {
-        const filteredNotifications = user.notifications.filter(
-          (notification: any) => notification.post._id !== newFriendRequest.friendId,
+      
+      if (newFriendRequest.message === 'Removed friend request') {
+        
+        const updatedNotifications = prev.notificationsByUser.filter(
+          (friendRequest: any) => friendRequest._id !== newFriendRequest._id,
         );
-        setNewNotification(filteredNotifications);
+        return Object.assign({}, prev, {
+          notificationsByUser: updatedNotifications,
+        });
       }
 
+      if (newFriendRequest.recipient._id === user.user._id) {
+        return Object.assign({}, prev, {
+          notificationsByUser: [newFriendRequest, ...prev.notificationsByUser],
+        });
+      }
       return prev;
     },
   });

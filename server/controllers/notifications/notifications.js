@@ -32,18 +32,21 @@ module.exports = {
   },
   // get all notifications by user id
   notificationsByUser: async (parent, { userId }, context) => {
-    // const loggedUser = context.user;
-    // if (!loggedUser) {
-    //   throw new GraphQLError('You need to be logged in!', {
-    //     extensions: {
-    //       code: 'UNAUTHENTICATED',
-    //     },
-    //   });
-    // }
+    const loggedUser = context.user;
+    if (!loggedUser) {
+      throw new GraphQLError('You need to be logged in!', {
+        extensions: {
+          code: 'UNAUTHENTICATED',
+        },
+      });
+    }
 
-    const notifications = await Notification.find({ recipient: userId, is_read: false })
+    const notifications = await Notification.find({
+      recipient: userId,
+      is_read: false,
+    })
       .populate({
-        path: 'sender', 
+        path: 'sender',
         select: '-__v -password',
       })
       .populate({
@@ -53,9 +56,71 @@ module.exports = {
       .populate({
         path: 'postId',
         select: '-__v -password',
-      })
-    
-    
+      });
+
     return notifications;
+  },
+  // mark all notifications by user as read
+  markAllNotificationsAsRead: async (parent, { userId }, context) => {
+    const loggedUser = context.user;
+    if (!loggedUser) {
+      throw new GraphQLError('You need to be logged in!', {
+        extensions: {
+          code: 'UNAUTHENTICATED',
+        },
+      });
+    }
+
+    const notifications = await Notification.find({
+      recipient: userId,
+      is_read: false,
+    });
+
+    if (!notifications) {
+      return {
+        success: false,
+        message: 'No notifications found',
+      };
+    }
+
+    notifications.forEach(async (notification) => {
+      notification.is_read = true;
+      await notification.save();
+    });
+
+    return {
+      success: true,
+      message: 'All notifications marked as read',
+    };
+  },
+  // mark notification as read
+  markNotificationAsRead: async (parent, { notificationId }, context) => {
+    const loggedUser = context.user;
+    if (!loggedUser) {
+      throw new GraphQLError('You need to be logged in!', {
+        extensions: {
+          code: 'UNAUTHENTICATED',
+        },
+      });
+    }
+
+    const notification = await Notification.findOne({
+      _id: notificationId,
+    });
+
+    if (!notification) {
+      return {
+        success: false,
+        message: 'Notification not found',
+      };
+    }
+
+    notification.is_read = true;
+    await notification.save();
+
+    return {
+      success: true,
+      message: 'Notification marked as read',
+    };
   },
 };

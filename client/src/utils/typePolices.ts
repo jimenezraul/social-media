@@ -58,6 +58,11 @@ export const policies = {
             return incoming;
           },
         },
+        notificationsByUser: {
+          merge(existing = [], incoming: any) {
+            return incoming;
+          },
+        },
       },
     },
   },

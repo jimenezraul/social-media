@@ -1,4 +1,7 @@
 import { Link, useNavigate } from 'react-router-dom';
+import { useMutation } from '@apollo/client';
+import { MARK_NOTIFICATIONS_READ } from '../../utils/mutations';
+import { GET_NOTIFICATIONS } from '../../utils/queries';
 
 interface Iprops {
   setNotificationsOpen: (value: boolean) => void;
@@ -8,6 +11,8 @@ interface Iprops {
 export const Notifications = ({ setNotificationsOpen, ...args }: Iprops) => {
   const navigate = useNavigate();
   const notifications = args.notificationsByUser || [];
+
+  const [markNotificationsRead] = useMutation(MARK_NOTIFICATIONS_READ);
 
   if (notifications.length === 0) {
     return (
@@ -21,10 +26,41 @@ export const Notifications = ({ setNotificationsOpen, ...args }: Iprops) => {
     setNotificationsOpen(false);
   };
 
-  const removeNotificationHandler = (id: string, nType: string, userId: string) => {
-    navigate(`/profile/${userId}`);
+  const removeNotificationHandler = async (id: string, userId: string) => {
+    const me = notifications.find((notification) => notification._id === id);
 
+    try {
+      await markNotificationsRead({
+        variables: {
+          notificationId: id,
+        },
+        update(cache) {
+          const data: Iprops | null = cache.readQuery({
+            query: GET_NOTIFICATIONS,
+            variables: {
+              userId: me?.recipient?._id,
+            },
+          });
+          const newData = data?.notificationsByUser.filter(
+            (notification: Notifications) => notification._id !== id,
+          );
+
+          cache.writeQuery({
+            query: GET_NOTIFICATIONS,
+            variables: {
+              userId: me?.recipient?._id,
+            },
+            data: {
+              notificationsByUser: newData,
+            },
+          });
+        },
+      });
+    } catch (error) {
+      console.log(error);
+    }
     setNotificationsOpen(false);
+    navigate(`/profile/${userId}`);
   };
 
   return (
@@ -62,11 +98,7 @@ export const Notifications = ({ setNotificationsOpen, ...args }: Iprops) => {
               {notification?.type === 'FRIEND_REQUEST' && (
                 <button
                   onClick={() =>
-                    removeNotificationHandler(
-                      notification._id,
-                      notification.type,
-                      notification.sender._id,
-                    )
+                    removeNotificationHandler(notification._id, notification.sender._id)
                   }
                   className="text-xs text-start text-blue-500 z-50"
                 >
@@ -76,11 +108,7 @@ export const Notifications = ({ setNotificationsOpen, ...args }: Iprops) => {
               {notification.type === 'comment' && (
                 <Link
                   onClick={() =>
-                    removeNotificationHandler(
-                      notification.post._id,
-                      notification.type,
-                      notification.user._id,
-                    )
+                    removeNotificationHandler(notification._id, notification.sender._id)
                   }
                   to={`/post/${notification.postId}/#${notification.post._id}`}
                 >
@@ -88,13 +116,7 @@ export const Notifications = ({ setNotificationsOpen, ...args }: Iprops) => {
                 </Link>
               )}
               <button
-                onClick={() =>
-                  removeNotificationHandler(
-                    notification.post._id,
-                    notification.type,
-                    notification.user._id,
-                  )
-                }
+                onClick={() => removeNotificationHandler(notification._id, notification.sender._id)}
                 type="button"
                 className="absolute right-0 bg-slate-700 rounded-md p-2 inline-flex items-center justify-center text-gray-400 hover:text-slate-300 hover:bg-slate-600 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-indigo-500"
               >

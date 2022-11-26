@@ -30,6 +30,7 @@ const resolvers = {
     ...userMutation,
     ...postMutation,
     ...messageMutation,
+    ...notificationMutation,
   },
   Subscription: {
     ...postSubscription,

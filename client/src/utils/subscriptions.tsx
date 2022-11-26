@@ -103,15 +103,23 @@ export const NEW_LIKE_COMMENT_SUBSCRIPTION = gql`
 export const NEW_FRIEND_REQUEST = gql`
   subscription New_Friend_Request {
     newFriendRequestSubscription {
-      user {
+      _id
+      is_read
+      message
+      postId
+      recipient {
         _id
+        family_name
+        given_name
+        profileUrl
+      }
+      sender {
+        _id
+        family_name
         profileUrl
         given_name
-        family_name
-        fullName
       }
-      friendId
-      requestExists
+      type
     }
   }
 `;

@@ -210,6 +210,7 @@ interface SearchProps {
 }
 
 interface Notifications {
+  _id: ID;
   is_read: boolean;
   message: string;
   postId: string;
