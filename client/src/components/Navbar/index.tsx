@@ -2,7 +2,7 @@ import { Link } from 'react-router-dom';
 import { useState, useRef, useEffect } from 'react';
 import { useAppSelector } from '../../app/hooks';
 import { googleLogout } from '@react-oauth/google';
-import { selectUser, user_logout, notifications } from '../../features/users/userSlice';
+import { selectUser, user_logout } from '../../features/users/userSlice';
 import { useAppDispatch } from '../../app/hooks';
 import { useMutation, useQuery } from '@apollo/client';
 import { LOGOUT } from '../../utils/mutations';
@@ -11,6 +11,7 @@ import { useOutside } from '../../utils/useOutside';
 import { Notifications } from '../Notifications';
 import { GET_ME } from '../../utils/queries';
 import { subscribeToFriendRequests } from '../../utils/subscribe';
+import { GET_NOTIFICATIONS } from '../../utils/queries';
 
 const Navbar = () => {
   const menuRef = useRef(null);
@@ -20,6 +21,14 @@ const Navbar = () => {
   const dispatch = useAppDispatch();
   const [currentPath, setCurrentPath] = useState<String>(window.location.pathname);
   const { data, loading, error, subscribeToMore } = useQuery(GET_ME);
+  const {
+    data: notificationsData,
+    loading: notificationsLoading,
+    error: notificationsError,
+    subscribeToMore: notificationsSubscribeToMore,
+  } = useQuery(GET_NOTIFICATIONS, {
+    variables: { userId: data?.me?._id },
+  });
 
   useEffect(() => {
     if (loading) return;
@@ -29,15 +38,9 @@ const Navbar = () => {
     if (subscribeToMore) {
       subscribeToFriendRequests(subscribeToMore);
     }
-    // add to notifications just one time
-    if (data.me.friendRequestCount > 0) {
-      const notification = localStorage.getItem('notification');
-      console.log(notification);
-    }
   }, [data, loading, error, subscribeToMore]);
 
-  // get notifications from the local storage
-  const notification = useAppSelector(notifications);
+  const notificationsCount = notificationsData?.notificationsByUser?.length || 0;
 
   const [logout] = useMutation(LOGOUT);
 
@@ -106,13 +109,15 @@ const Navbar = () => {
               <i className="text-xl fa-solid fa-bell text-slate-300"></i>
               <div
                 className={`${
-                  notification.length > 0 ? 'flex' : 'hidden'
+                  notificationsCount > 0 ? 'flex' : 'hidden'
                 } absolute -top-2 -right-4 justify-center items-center w-6 h-6 text-xs font-bold text-white bg-red-500 rounded-full border-2 border-white dark:border-gray-900`}
               >
-                {notification.length}
+                {notificationsCount}
               </div>
             </div>
-            {notificationsOpen && <Notifications setNotificationsOpen={setNotificationsOpen} />}
+            {notificationsOpen && (
+              <Notifications setNotificationsOpen={setNotificationsOpen} {...notificationsData} />
+            )}
           </div>
           <div className="flex relative justify-center items-center cursor-pointer" ref={menuRef}>
             <img

@@ -102,6 +102,7 @@ const typeDefs = gql`
   }
 
   type Notifications {
+    _id: ID
     sender: User
     recipient: User
     type: String

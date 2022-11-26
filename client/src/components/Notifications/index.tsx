@@ -1,12 +1,15 @@
-import { useAppSelector, useAppDispatch } from '../../app/hooks';
-import { notifications, setNotifications } from '../../features/users/userSlice';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
-export const Notifications = ({ setNotificationsOpen }: Notifications) => {
-  const dispatch = useAppDispatch();
-  const myNotification = useAppSelector(notifications);
+interface Iprops {
+  setNotificationsOpen: (value: boolean) => void;
+  notificationsByUser: Notifications[];
+}
 
-  if (myNotification.length === 0) {
+export const Notifications = ({ setNotificationsOpen, ...args }: Iprops) => {
+  const navigate = useNavigate();
+  const notifications = args.notificationsByUser || [];
+
+  if (notifications.length === 0) {
     return (
       <div className="w-80 text-center z-50 absolute bg-slate-800 top-8 -right-16 md:-right-2 p-4 rounded-md border border-slate-700 text-white">
         <h1>No Notifications</h1>
@@ -15,17 +18,12 @@ export const Notifications = ({ setNotificationsOpen }: Notifications) => {
   }
 
   const clearAllHandler = () => {
-    localStorage.setItem('notifications', JSON.stringify([]));
-    dispatch(setNotifications([]));
     setNotificationsOpen(false);
   };
 
   const removeNotificationHandler = (id: string, nType: string, userId: string) => {
-    const newNotifications = myNotification.filter(
-      (n: any) => n.user._id !== userId || n.type !== nType || n.postId !== id,
-    );
-    localStorage.setItem('notifications', JSON.stringify(newNotifications));
-    dispatch(setNotifications(newNotifications));
+    navigate(`/profile/${userId}`);
+
     setNotificationsOpen(false);
   };
 
@@ -36,8 +34,9 @@ export const Notifications = ({ setNotificationsOpen }: Notifications) => {
           Clear All
         </span>
       </div>
-      {myNotification.map((notification: any, index: number) => {
-        const isLast = index === myNotification.length - 1;
+      {notifications.map((notification: any, index: number) => {
+        const isLast = index === notifications.length - 1;
+
         return (
           <div
             key={index}
@@ -47,7 +46,7 @@ export const Notifications = ({ setNotificationsOpen }: Notifications) => {
           >
             <img
               className="h-8 w-8 rounded-full bg-default p-0.5"
-              src={notification.user.profileUrl}
+              src={notification.sender.profileUrl}
               alt=""
               referrerPolicy="no-referrer"
             />
@@ -60,20 +59,19 @@ export const Notifications = ({ setNotificationsOpen }: Notifications) => {
                   ? notification.post?.postText.slice(0, 20) + '...'
                   : notification.post?.postText}
               </p>
-              {notification.type === 'friendRequest' && (
-                <Link
+              {notification?.type === 'FRIEND_REQUEST' && (
+                <button
                   onClick={() =>
                     removeNotificationHandler(
-                      notification.post._id,
+                      notification._id,
                       notification.type,
-                      notification.user._id,
+                      notification.sender._id,
                     )
                   }
-                  to={`/profile/${notification.user._id}`}
-                  className="text-xs text-blue-500 z-50"
+                  className="text-xs text-start text-blue-500 z-50"
                 >
                   View Profile
-                </Link>
+                </button>
               )}
               {notification.type === 'comment' && (
                 <Link

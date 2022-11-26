@@ -210,7 +210,22 @@ interface SearchProps {
 }
 
 interface Notifications {
-  setNotificationsOpen: (open: boolean) => void;
+  is_read: boolean;
+  message: string;
+  postId: string;
+  recipient: {
+    _id: string;
+    family_name: string;
+    given_name: string;
+    profileUrl: string;
+  };
+  sender: {
+    _id: string;
+    family_name: string;
+    profileUrl: string;
+    given_name: string;
+  };
+  type: string;
 }
 
 interface formInfo {

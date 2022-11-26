@@ -1,6 +1,6 @@
 const { GraphQLError } = require('graphql');
 const { PubSub } = require('graphql-subscriptions');
-const { notifications } = require('../../models');
+const { Notification } = require('../../models');
 
 const pubsub = new PubSub();
 
@@ -32,28 +32,30 @@ module.exports = {
   },
   // get all notifications by user id
   notificationsByUser: async (parent, { userId }, context) => {
-    const loggedUser = context.user;
-    if (!loggedUser) {
-      throw new GraphQLError('You need to be logged in!', {
-        extensions: {
-          code: 'UNAUTHENTICATED',
-        },
-      });
-    }
-    return Notification.findOne({ recipient: userId })
-      .select('-__v')
+    // const loggedUser = context.user;
+    // if (!loggedUser) {
+    //   throw new GraphQLError('You need to be logged in!', {
+    //     extensions: {
+    //       code: 'UNAUTHENTICATED',
+    //     },
+    //   });
+    // }
+
+    const notifications = await Notification.find({ recipient: userId, is_read: false })
       .populate({
-        path: 'members',
+        path: 'sender', 
         select: '-__v -password',
       })
       .populate({
-        path: 'notifications',
-        populate: [
-          {
-            path: 'sender',
-            model: 'User',
-          },
-        ],
-      });
+        path: 'recipient',
+        select: '-__v -password',
+      })
+      .populate({
+        path: 'postId',
+        select: '-__v -password',
+      })
+    
+    
+    return notifications;
   },
 };

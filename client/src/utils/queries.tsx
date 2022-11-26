@@ -295,3 +295,27 @@ export const GET_MESSAGES_BY_USER = gql`
     }
   }
 `;
+
+export const GET_NOTIFICATIONS = gql`
+  query Notifications($userId: ID!) {
+    notificationsByUser(userId: $userId) {
+      _id
+      is_read
+      message
+      type
+      postId
+      recipient {
+        _id
+        given_name
+        profileUrl
+        family_name
+      }
+      sender {
+        _id
+        given_name
+        profileUrl
+        family_name
+      }
+    }
+  }
+`;
