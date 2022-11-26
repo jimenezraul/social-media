@@ -1,5 +1,5 @@
-const { GraphQLError } = require('graphql')
-const { Post, User, Comment } = require('../../models');
+const { GraphQLError } = require('graphql');
+const { Post, User, Comment, Notification } = require('../../models');
 const { PubSub } = require('graphql-subscriptions');
 
 const pubsub = new PubSub();
@@ -41,6 +41,28 @@ module.exports = {
         user: currentUser,
       },
     });
+
+    if (likeExists && post.postAuthor._id !== context.user._id) {
+      const noti = await Notification.findOneAndDelete({
+        sender: context.user._id,
+        postId: postId,
+        type: 'LIKE',
+      });
+      
+      currentUser.notifications.pull(noti._id);
+      currentUser.save();
+    } else if (post.postAuthor._id != context.user._id) {
+      const noti = await Notification.create({
+        sender: context.user._id,
+        recipient: post.postAuthor._id,
+        type: 'LIKE',
+        postId: postId,
+        message: `${currentUser.given_name} ${currentUser.family_name} liked your post`,
+      });
+
+      currentUser.notifications.push(noti._id);
+      currentUser.save();
+    }
 
     return {
       success: true,
@@ -93,6 +115,9 @@ module.exports = {
 
   newLikeSubscription: {
     subscribe: () => pubsub.asyncIterator(['NEW_LIKE']),
+  },
+  newLikeNotificationSubscription: {
+    subscribe: pubsub.asyncIterator('NEW_LIKE_NOTIFICATION'),
   },
 
   newLikeCommentSubscription: {
