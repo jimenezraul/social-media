@@ -34,13 +34,13 @@ export const Feed = () => {
     if (feedError) return;
     if (!feedData) return;
 
-    if (feedData.feed.length > 0) {
+    if (feedData) {
       setFeed(feedData.feed);
+      refetch();
     }
 
     if (!meData && !meLoading && !meError) {
       Me();
-      refetch();
     }
 
     if (meLoading) return;

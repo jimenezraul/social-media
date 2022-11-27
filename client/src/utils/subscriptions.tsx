@@ -149,3 +149,27 @@ export const NEW_MESSAGE_SUBSCRIPTION = gql`
     }
   }
 `;
+
+export const NEW_LIKE_NOTIFICATION_SUBSCRIPTION = gql`
+  subscription New_Like_Notification_Subscription($userId: ID!) {
+    newLikeNotificationSubscription(userId: $userId) {
+      _id
+      is_read
+      message
+      postId
+      recipient {
+        _id
+        family_name
+        given_name
+        profileUrl
+      }
+      sender {
+        _id
+        family_name
+        given_name
+        profileUrl
+      }
+      type
+    }
+  }
+`;

@@ -5,10 +5,10 @@ import {
   NEW_LIKE_COMMENT_SUBSCRIPTION,
   NEW_LIKE_SUBSCRIPTION,
   NEW_MESSAGE_SUBSCRIPTION,
+  NEW_LIKE_NOTIFICATION_SUBSCRIPTION,
 } from './subscriptions';
 import { store } from '../app/store';
 import { setNewPost } from '../features/posts/postSlice';
-import { setNewNotifications, setNewNotification } from './notification';
 
 export const subscribeToNewPost = (subscribeToMore: any) => {
   const user = store.getState().user.user;
@@ -40,19 +40,6 @@ export const subscribeToNewComment = (subscribeToMore: any) => {
       // update feed cache with new comment
       if (!subscriptionData.data) return prev;
       const newComment = subscriptionData.data.newCommentSubscription;
-      const state = store.getState().user;
-      const user = state.user;
-
-      const data = {
-        type: 'comment',
-        postId: newComment.postId,
-        message: `${newComment.comment.commentAuthor.fullName} commented on your post`,
-        user: newComment.comment.commentAuthor,
-        post: {
-          ...newComment.comment,
-          postText: newComment.comment.commentText,
-        },
-      };
 
       if (prev.me) {
         const me = prev.me;
@@ -77,9 +64,6 @@ export const subscribeToNewComment = (subscribeToMore: any) => {
 
       if (prev.post) {
         const post = prev.post;
-        if (post.postAuthor._id === user._id && newComment.comment.commentAuthor._id !== user._id) {
-          setNewNotifications(state.notifications, data);
-        }
 
         const updatePost = {
           ...post,
@@ -92,13 +76,6 @@ export const subscribeToNewComment = (subscribeToMore: any) => {
         });
       } else {
         const updatedFeed = prev.feed.map((post: any) => {
-          if (
-            post.postAuthor._id === user._id &&
-            newComment.comment.commentAuthor._id !== user._id
-          ) {
-            setNewNotifications(state.notifications, data);
-          }
-
           return {
             ...post,
             comments: [...post.comments, newComment.comment],
@@ -136,6 +113,7 @@ export const subscribeToNewLike = (subscribeToMore: any) => {
 
       // update Me cache with new like
       if (prev.me) {
+        console.log("here")
         const me = prev.me;
         const updatePost = {
           ...me,
@@ -160,53 +138,13 @@ export const subscribeToNewLike = (subscribeToMore: any) => {
 
       // update feed cache with new like
       const updatedFeed = prev.feed.map((post: any) => {
-        const user = JSON.parse(localStorage.getItem('user')!) || {};
-        const notifications = JSON.parse(localStorage.getItem('notifications')!) || [];
-        if (post._id === newLike.postId) {
-          if (!newLike.likeExists) {
-            if (user._id === post.postAuthor._id && post.postAuthor._id !== newLike.user._id) {
-              const data = {
-                type: 'like',
-                postId: post._id,
-                message: `${newLike.user.fullName} liked your post.`,
-                user: newLike.user,
-                post: post,
-              };
-
-              if (notifications.length > 0) {
-                const notificationExists = notifications.find(
-                  (notification: any) =>
-                    notification.user._id === newLike.user._id &&
-                    notification.type === 'like' &&
-                    notification.postId === post._id,
-                );
-                if (!notificationExists) {
-                  notifications.push(data);
-                  setNewNotification(notifications);
-                }
-              } else {
-                setNewNotification([data]);
-              }
-            }
-          } else {
-            if (user._id === post.postAuthor._id && post.postAuthor._id !== newLike.user._id) {
-              const data = notifications.filter(
-                (notification: any) =>
-                  notification.user._id !== newLike.user._id && notification.type === 'like',
-              );
-              setNewNotification(data);
-            }
-          }
-
-          return {
-            ...post,
-            likes: !newLike.likeExists
-              ? [...post.likes, newLike.user]
-              : post.likes.filter((like: any) => like._id !== newLike.user._id),
-            likeCount: !newLike.likeExists ? post.likeCount + 1 : post.likeCount - 1,
-          };
-        }
-        return post;
+        return {
+          ...post,
+          likes: !newLike.likeExists
+            ? [...post.likes, newLike.user]
+            : post.likes.filter((like: any) => like._id !== newLike.user._id),
+          likeCount: !newLike.likeExists ? post.likeCount + 1 : post.likeCount - 1,
+        };
       });
 
       return Object.assign({}, prev, {
@@ -256,9 +194,8 @@ export const subscribeToFriendRequests = (subscribeToMore: any) => {
       if (!subscriptionData.data) return prev;
       const newFriendRequest = subscriptionData.data.newFriendRequestSubscription;
       const user = store.getState().user;
-      
+
       if (newFriendRequest.message === 'Removed friend request') {
-        
         const updatedNotifications = prev.notificationsByUser.filter(
           (friendRequest: any) => friendRequest._id !== newFriendRequest._id,
         );
@@ -298,6 +235,36 @@ export const subscribeToNewMessage = (subscribeToMore: any) => {
           messages: newArray,
         },
       });
+    },
+  });
+};
+
+export const subscribeToNewLikeNotification = (subscribeToMore: any) => {
+  const user = store.getState().user;
+  subscribeToMore({
+    document: NEW_LIKE_NOTIFICATION_SUBSCRIPTION,
+    variables: {
+      userId: user.user._id,
+    },
+    updateQuery: (prev: any, { subscriptionData }: any) => {
+      if (!subscriptionData.data) return prev;
+      const newLikeNotification = subscriptionData.data.newLikeNotificationSubscription;
+
+      if (newLikeNotification.message === 'Removed like notification') {
+        const updatedNotifications = prev.notificationsByUser.filter(
+          (likeNotification: any) => likeNotification._id !== newLikeNotification._id,
+        );
+        return Object.assign({}, prev, {
+          notificationsByUser: updatedNotifications,
+        });
+      }
+
+      if (newLikeNotification.recipient._id === user.user._id) {
+        return Object.assign({}, prev, {
+          notificationsByUser: [newLikeNotification, ...prev.notificationsByUser],
+        });
+      }
+      return prev;
     },
   });
 };

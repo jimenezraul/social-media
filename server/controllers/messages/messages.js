@@ -264,7 +264,7 @@ module.exports = {
         },
       });
     }
-    console.log(limit);
+  
     const message = await Message.findOne({
       _id: id,
     })

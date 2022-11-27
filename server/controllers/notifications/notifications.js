@@ -1,8 +1,5 @@
 const { GraphQLError } = require('graphql');
-const { PubSub } = require('graphql-subscriptions');
 const { Notification } = require('../../models');
-
-const pubsub = new PubSub();
 
 module.exports = {
   // get all notifications
@@ -40,7 +37,7 @@ module.exports = {
         },
       });
     }
-
+    
     const notifications = await Notification.find({
       recipient: userId,
       is_read: false,
@@ -53,10 +50,6 @@ module.exports = {
         path: 'recipient',
         select: '-__v -password',
       })
-      .populate({
-        path: 'postId',
-        select: '-__v -password',
-      });
 
     return notifications;
   },
@@ -123,4 +116,5 @@ module.exports = {
       message: 'Notification marked as read',
     };
   },
+
 };

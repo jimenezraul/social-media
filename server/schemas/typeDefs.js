@@ -166,6 +166,7 @@ const typeDefs = gql`
     newLikeCommentSubscription: likeCommentSub
     newFriendRequestSubscription: Notifications
     newMessageSubscription(userId: ID!): Messages
+    newLikeNotificationSubscription(userId: ID!): Notifications
   }
 `;
 

@@ -11,7 +11,7 @@ interface Iprops {
 export const Notifications = ({ setNotificationsOpen, ...args }: Iprops) => {
   const navigate = useNavigate();
   const notifications = args.notificationsByUser || [];
-
+  console.log(notifications);
   const [markNotificationsRead] = useMutation(MARK_NOTIFICATIONS_READ);
 
   if (notifications.length === 0) {
@@ -104,6 +104,15 @@ export const Notifications = ({ setNotificationsOpen, ...args }: Iprops) => {
                 >
                   View Profile
                 </button>
+              )}
+              {notification?.type === 'LIKE' && (
+                <Link
+                  to={`/post/${notification.postId}`}
+                  onClick={() => setNotificationsOpen(false)}
+                  className="text-xs text-start text-blue-500 z-50"
+                >
+                  View Post
+                </Link>
               )}
               {notification.type === 'comment' && (
                 <Link

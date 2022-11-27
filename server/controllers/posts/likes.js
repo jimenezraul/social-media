@@ -1,6 +1,6 @@
 const { GraphQLError } = require('graphql');
 const { Post, User, Comment, Notification } = require('../../models');
-const { PubSub } = require('graphql-subscriptions');
+const { PubSub, withFilter } = require('graphql-subscriptions');
 
 const pubsub = new PubSub();
 
@@ -42,15 +42,22 @@ module.exports = {
       },
     });
 
-    if (likeExists && post.postAuthor._id !== context.user._id) {
+    if (likeExists && post.postAuthor._id.toString() !== context.user._id) {
       const noti = await Notification.findOneAndDelete({
         sender: context.user._id,
         postId: postId,
         type: 'LIKE',
       });
-      
+
       currentUser.notifications.pull(noti._id);
       currentUser.save();
+      pubsub.publish('NEW_LIKE_NOTIFICATION', {
+        newLikeNotificationSubscription: {
+          _id: noti._id,
+          message: 'Removed like notification',
+          recipient: post.postAuthor
+        },
+      });
     } else if (post.postAuthor._id != context.user._id) {
       const noti = await Notification.create({
         sender: context.user._id,
@@ -59,9 +66,17 @@ module.exports = {
         postId: postId,
         message: `${currentUser.given_name} ${currentUser.family_name} liked your post`,
       });
+      const notification = await Notification.findOne({
+        _id: noti._id,
+      })
+        .populate('sender', '-__v -password')
+        .populate('recipient', '-__v -password');
 
       currentUser.notifications.push(noti._id);
       currentUser.save();
+      pubsub.publish('NEW_LIKE_NOTIFICATION', {
+        newLikeNotificationSubscription: notification,
+      });
     }
 
     return {
@@ -116,11 +131,21 @@ module.exports = {
   newLikeSubscription: {
     subscribe: () => pubsub.asyncIterator(['NEW_LIKE']),
   },
-  newLikeNotificationSubscription: {
-    subscribe: pubsub.asyncIterator('NEW_LIKE_NOTIFICATION'),
-  },
 
   newLikeCommentSubscription: {
     subscribe: () => pubsub.asyncIterator(['NEW_LIKE_COMMENT']),
+  },
+
+  // new like notification subscription
+  newLikeNotificationSubscription: {
+    subscribe: withFilter(
+      () => pubsub.asyncIterator(['NEW_LIKE_NOTIFICATION']),
+      (payload, variables) => {
+        return (
+          payload.newLikeNotificationSubscription.recipient._id.toString() ===
+          variables.userId
+        );
+      }
+    ),
   },
 };

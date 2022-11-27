@@ -36,6 +36,7 @@ const resolvers = {
     ...postSubscription,
     ...userSubscription,
     ...messageSubscription,
+    ...notificationSubscription,
   },
 };
 

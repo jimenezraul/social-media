@@ -9,32 +9,33 @@ import { LOGOUT } from '../../utils/mutations';
 import { Dropdown } from '../Dropdown';
 import { useOutside } from '../../utils/useOutside';
 import { Notifications } from '../Notifications';
-import { GET_ME } from '../../utils/queries';
-import { subscribeToFriendRequests } from '../../utils/subscribe';
+import { subscribeToFriendRequests, subscribeToNewLikeNotification } from '../../utils/subscribe';
 import { GET_NOTIFICATIONS } from '../../utils/queries';
 
 const Navbar = () => {
+  const user = useAppSelector(selectUser).user;
   const menuRef = useRef(null);
   const notificationsRef = useRef(null);
   const [isOpen, setIsOpen] = useState(false);
   const [notificationsOpen, setNotificationsOpen] = useState(false);
   const dispatch = useAppDispatch();
   const [currentPath, setCurrentPath] = useState<String>(window.location.pathname);
-  const { data } = useQuery(GET_ME);
-  const {
-    data: notificationsData,
-    subscribeToMore: notificationsSubscribeToMore,
-  } = useQuery(GET_NOTIFICATIONS, {
-    variables: { userId: data?.me?._id },
-  });
-console.log(notificationsData)
-  useEffect(() => {
-    if (notificationsSubscribeToMore) {
-      subscribeToFriendRequests(notificationsSubscribeToMore);
-    }
-  }, [notificationsSubscribeToMore]);
 
-  const notificationsCount = notificationsData?.notificationsByUser?.length || 0;
+  const { data, subscribeToMore } = useQuery(
+    GET_NOTIFICATIONS,
+    {
+      variables: { userId: user._id },
+    },
+  );
+
+  useEffect(() => {
+    if (subscribeToMore) {
+      subscribeToFriendRequests(subscribeToMore);
+      subscribeToNewLikeNotification(subscribeToMore);
+    }
+  }, [subscribeToMore]);
+
+  const notificationsCount = data?.notificationsByUser?.length || 0;
 
   const [logout] = useMutation(LOGOUT);
 
@@ -60,7 +61,6 @@ console.log(notificationsData)
     window.location.reload();
   };
 
-  const user = useAppSelector(selectUser).user;
   const { profileUrl } = Object(user);
 
   return (
@@ -110,7 +110,7 @@ console.log(notificationsData)
               </div>
             </div>
             {notificationsOpen && (
-              <Notifications setNotificationsOpen={setNotificationsOpen} {...notificationsData} />
+              <Notifications setNotificationsOpen={setNotificationsOpen} {...data} />
             )}
           </div>
           <div className="flex relative justify-center items-center cursor-pointer" ref={menuRef}>
