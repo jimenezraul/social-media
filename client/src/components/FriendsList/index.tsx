@@ -30,7 +30,7 @@ export const FriendsList = ({
         </div>
       </Link>
       <Button
-        onClick={() => onClick(_id)}
+        onClick={() => onClick(_id.toString())}
         name='UNFRIEND'
         className='text-sm bg-red-700 hover:bg-red-900 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline'
       />

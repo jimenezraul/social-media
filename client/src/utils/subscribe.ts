@@ -96,7 +96,7 @@ export const subscribeToNewLike = (subscribeToMore: any) => {
     updateQuery: (prev: any, { subscriptionData }: any) => {
       if (!subscriptionData.data) return prev;
       const newLike = subscriptionData.data.newLikeSubscription;
-
+      
       if (prev.post) {
         const post = prev.post;
         const updatedPost = {
@@ -113,7 +113,6 @@ export const subscribeToNewLike = (subscribeToMore: any) => {
 
       // update Me cache with new like
       if (prev.me) {
-        console.log("here")
         const me = prev.me;
         const updatePost = {
           ...me,
@@ -130,7 +129,7 @@ export const subscribeToNewLike = (subscribeToMore: any) => {
             return post;
           }),
         };
-
+      
         return Object.assign({}, prev, {
           me: updatePost,
         });
@@ -241,15 +240,17 @@ export const subscribeToNewMessage = (subscribeToMore: any) => {
 
 export const subscribeToNewLikeNotification = (subscribeToMore: any) => {
   const user = store.getState().user;
+ 
   subscribeToMore({
     document: NEW_LIKE_NOTIFICATION_SUBSCRIPTION,
     variables: {
       userId: user.user._id,
     },
     updateQuery: (prev: any, { subscriptionData }: any) => {
+   
       if (!subscriptionData.data) return prev;
       const newLikeNotification = subscriptionData.data.newLikeNotificationSubscription;
-
+     
       if (newLikeNotification.message === 'Removed like notification') {
         const updatedNotifications = prev.notificationsByUser.filter(
           (likeNotification: any) => likeNotification._id !== newLikeNotification._id,

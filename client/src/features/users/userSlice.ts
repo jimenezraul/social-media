@@ -1,5 +1,5 @@
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { RootState } from "../../app/store";
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { RootState } from '../../app/store';
 
 interface UserState {
   _id: string | null;
@@ -10,23 +10,24 @@ interface UserState {
     isAdmin?: boolean;
     isVerified?: boolean;
     profileUrl?: string;
-  }
+  };
   access_token: String | null;
   isLoggedIn: boolean;
   notifications: [] | object[];
+  me: User | undefined
 }
 
 export const UserSlice = createSlice({
-  name: "user",
+  name: 'user',
   initialState: {
-    user: localStorage.getItem("user")
-      ? JSON.parse(localStorage.getItem("user") || "{}")
-      : {},
-    access_token: localStorage.getItem("access_token")
-      ? localStorage.getItem("access_token") || ""
+    user: localStorage.getItem('user') ? JSON.parse(localStorage.getItem('user') || '{}') : {},
+    access_token: localStorage.getItem('access_token')
+      ? localStorage.getItem('access_token') || ''
       : null,
-    isLoggedIn: localStorage.getItem("user") ? true : false,
-    notifications: localStorage.getItem("notifications") ? JSON.parse(localStorage.getItem("notifications") || "[]") : [],
+    isLoggedIn: localStorage.getItem('user') ? true : false,
+    notifications: localStorage.getItem('notifications')
+      ? JSON.parse(localStorage.getItem('notifications') || '[]')
+      : [],
   } as UserState,
   reducers: {
     user_login: (state, action: PayloadAction<object>) => {
@@ -42,9 +43,8 @@ export const UserSlice = createSlice({
       state.access_token = action.payload;
     },
     setNotifications: (state, action: PayloadAction<object[]>) => {
-        state.notifications = action.payload;
-        }
-        
+      state.notifications = action.payload;
+    }
   },
 });
 export const { user_login, user_logout, setAccessToken, setNotifications } = UserSlice.actions;

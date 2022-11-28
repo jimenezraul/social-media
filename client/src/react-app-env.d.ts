@@ -145,13 +145,13 @@ interface SetFormState {
 }
 
 interface Friends {
-  _id: string;
-  fullName: string;
-  given_name: string;
-  family_name: string;
-  email: string;
-  profileUrl: string;
-  isVerified: boolean;
+  _id: String;
+  fullName: String;
+  given_name: String;
+  family_name: String;
+  email: String;
+  profileUrl: String;
+  isVerified: Boolean;
 }
 
 interface User {

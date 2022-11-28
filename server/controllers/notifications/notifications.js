@@ -37,7 +37,7 @@ module.exports = {
         },
       });
     }
-    
+
     const notifications = await Notification.find({
       recipient: userId,
       is_read: false,
@@ -49,7 +49,7 @@ module.exports = {
       .populate({
         path: 'recipient',
         select: '-__v -password',
-      })
+      });
 
     return notifications;
   },
@@ -116,5 +116,4 @@ module.exports = {
       message: 'Notification marked as read',
     };
   },
-
 };

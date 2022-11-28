@@ -4,15 +4,12 @@ import { useMutation } from '@apollo/client';
 import { ADD_POST } from '../../utils/mutations';
 import { GET_ME } from '../../utils/queries';
 import { useNavigate } from 'react-router-dom';
-import { useAppSelector } from '../../app/hooks';
-import { selectUser } from '../../features/users/userSlice';
 
 interface AddPostProps {
   me: User;
 }
 
 export const AddPost = ({ me }: AddPostProps) => {
-  const user = useAppSelector(selectUser).user;
   const navigate = useNavigate();
   const textRef = useRef<HTMLTextAreaElement>(null);
   const [addPost] = useMutation(ADD_POST);
@@ -53,7 +50,7 @@ export const AddPost = ({ me }: AddPostProps) => {
       <div className="flex">
         <img
           className="h-10 w-10 bg-default rounded-full p-0.5"
-          src={`${user.profileUrl}`}
+          src={`${me.profileUrl}`}
           alt=""
           referrerPolicy="no-referrer"
         ></img>

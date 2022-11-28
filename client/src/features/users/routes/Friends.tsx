@@ -21,7 +21,8 @@ export const Friends = () => {
 
   const handleSearch = (searchTerm: string) => {
     const filteredFriends = data.me.friends.filter((friend: Friends) => {
-      return friend.fullName.toLowerCase().includes(searchTerm.toLowerCase());
+      const fullName = `${friend.given_name} ${friend.family_name}`;
+      return fullName.toLowerCase().includes(searchTerm.toLowerCase());
     });
     setFriends(filteredFriends);
   };

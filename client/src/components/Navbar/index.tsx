@@ -21,17 +21,14 @@ const Navbar = () => {
   const dispatch = useAppDispatch();
   const [currentPath, setCurrentPath] = useState<String>(window.location.pathname);
 
-  const { data, subscribeToMore } = useQuery(
-    GET_NOTIFICATIONS,
-    {
-      variables: { userId: user._id },
-    },
-  );
+  const { data, subscribeToMore } = useQuery(GET_NOTIFICATIONS, {
+    variables: { userId: user._id },
+  });
 
   useEffect(() => {
     if (subscribeToMore) {
       subscribeToFriendRequests(subscribeToMore);
-      subscribeToNewLikeNotification(subscribeToMore);
+      // subscribeToNewLikeNotification(subscribeToMore);
     }
   }, [subscribeToMore]);
 

@@ -1,8 +1,6 @@
 import { useMutation } from '@apollo/client';
 import { ACCEPT_FRIEND_REQUEST } from '../../utils/mutations';
 import { useNavigate } from 'react-router-dom';
-import { useAppSelector } from '../../app/hooks';
-import { selectUser } from '../../features/users/userSlice';
 
 interface ME {
   me: User | undefined;
@@ -11,7 +9,6 @@ interface ME {
 }
 
 export const MeCard = ({ me, inFriendRequest, isProfile }: ME) => {
-  const user = useAppSelector(selectUser).user;
   const [acceptFriend] = useMutation(ACCEPT_FRIEND_REQUEST);
   const navigate = useNavigate();
 
@@ -36,14 +33,14 @@ export const MeCard = ({ me, inFriendRequest, isProfile }: ME) => {
       </div>
     );
 
-  const { given_name, family_name, posts, friends } = me;
+  const { profileUrl, given_name, family_name, posts, friends } = me;
   const postCount = posts?.length;
   const postOrPosts = posts?.length <= 1 ? 'post' : 'posts';
   const friendCount = friends?.length;
   const friendOrFriends = friendCount <= 1 ? 'friend' : 'friends';
 
   // replace =s96-c with =s400-c to get a larger image
-  const profileUrl400 = user.profileUrl?.replace('=s96-c', '=s400-c');
+  const profileUrl400 = profileUrl?.replace('=s96-c', '=s400-c');
 
   const acceptFriendRequest = async () => {
     try {
@@ -90,7 +87,7 @@ export const MeCard = ({ me, inFriendRequest, isProfile }: ME) => {
           )}
         </div>
         <div className='mt-3 font-bold flex flex-col'>
-          {user.given_name} {user.family_name}
+          {given_name} {family_name}
         </div>
       </div>
       {friendCount !== undefined && (

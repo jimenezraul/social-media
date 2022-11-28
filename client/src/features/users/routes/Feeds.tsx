@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useLazyQuery, useQuery } from '@apollo/client';
+import { useQuery } from '@apollo/client';
 import { FEED, GET_ME } from '../../../utils/queries';
 import { Post } from '../../../components/Posts';
 import { FriendsList } from '../../../components/FriendsList';
@@ -16,10 +16,9 @@ import { newPost, setNewPost } from '../../posts/postSlice';
 export const Feed = () => {
   const dispatch = useAppDispatch();
   const newPostNotification = useAppSelector(newPost).newPost;
+  const [posts, setPosts] = useState<Post[]>([]);
 
-  const [Me, { data: meData, loading: meLoading, error: meError }] = useLazyQuery(GET_ME);
-  const [feed, setFeed] = useState<Post[]>([]);
-  const [friends, setFriends] = useState<Friends[]>([]);
+  const { data: meData, loading: meLoading, error: meError } = useQuery(GET_ME);
 
   const {
     data: feedData,
@@ -32,23 +31,10 @@ export const Feed = () => {
   useEffect(() => {
     if (feedLoading) return;
     if (feedError) return;
-    if (!feedData) return;
-
     if (feedData) {
-      setFeed(feedData.feed);
-      refetch();
+      setPosts(feedData.feed);
     }
-
-    if (!meData && !meLoading && !meError) {
-      Me();
-    }
-
-    if (meLoading) return;
-    if (meError) return;
-    if (!meData) return;
-
-    setFriends(meData.me.friends);
-  }, [feedData, feedLoading, feedError, Me, meData, meLoading, meError, feed, refetch]);
+  }, [feedData, feedLoading, feedError]);
 
   useEffect(() => {
     if (subscribeToMore) {
@@ -96,7 +82,7 @@ export const Feed = () => {
                 </div>
               </div>
 
-              {feed?.map((post: Post, index: number) => {
+              {posts.map((post: Post, index: number) => {
                 const isLastEl = index === feedData?.feed.length - 1;
                 return <Post key={index} {...post} isLastEl={isLastEl} />;
               })}
@@ -104,10 +90,10 @@ export const Feed = () => {
           </div>
           <div className="hidden xl:block md:w-3/12 xl:w-4/12 px-3">
             <div className="bg-slate-800 rounded-lg shadow-xl p-5 border border-slate-700">
-              {!friends?.length && (
+              {!me?.friends?.length && (
                 <p className="text-center text-slate-300">You have no friends yet!</p>
               )}
-              {friends?.map((friend: Friends, index: number) => {
+              {me?.friends?.map((friend: Friends, index: number) => {
                 const isLastEl = index === me.friends.length - 1;
                 return (
                   <FriendsList

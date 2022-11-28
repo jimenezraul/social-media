@@ -41,7 +41,7 @@ module.exports = {
         user: currentUser,
       },
     });
-
+   
     if (likeExists && post.postAuthor._id.toString() !== context.user._id) {
       const noti = await Notification.findOneAndDelete({
         sender: context.user._id,
@@ -51,14 +51,15 @@ module.exports = {
 
       currentUser.notifications.pull(noti._id);
       currentUser.save();
+
       pubsub.publish('NEW_LIKE_NOTIFICATION', {
         newLikeNotificationSubscription: {
           _id: noti._id,
           message: 'Removed like notification',
-          recipient: post.postAuthor
+          recipient: post.postAuthor,
         },
       });
-    } else if (post.postAuthor._id != context.user._id) {
+    } else if (post.postAuthor._id.toString() !== context.user._id) {
       const noti = await Notification.create({
         sender: context.user._id,
         recipient: post.postAuthor._id,
@@ -139,7 +140,7 @@ module.exports = {
   // new like notification subscription
   newLikeNotificationSubscription: {
     subscribe: withFilter(
-      () => pubsub.asyncIterator(['NEW_LIKE_NOTIFICATION']),
+      () => pubsub.asyncIterator('NEW_LIKE_NOTIFICATION'),
       (payload, variables) => {
         return (
           payload.newLikeNotificationSubscription.recipient._id.toString() ===
