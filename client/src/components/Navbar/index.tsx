@@ -27,7 +27,7 @@ const Navbar = () => {
   } = useQuery(GET_NOTIFICATIONS, {
     variables: { userId: data?.me?._id },
   });
-console.log(notificationsData)
+
   useEffect(() => {
     if (notificationsSubscribeToMore) {
       subscribeToFriendRequests(notificationsSubscribeToMore);

@@ -12,7 +12,6 @@ import {
 } from '../../../utils/subscribe';
 import { useAppSelector, useAppDispatch } from '../../../app/hooks';
 import { newPost, setNewPost } from '../../posts/postSlice';
-
 export const Feed = () => {
   const dispatch = useAppDispatch();
   const newPostNotification = useAppSelector(newPost).newPost;
@@ -72,6 +71,12 @@ export const Feed = () => {
           <div className="hidden sm:block w-full sm:max-w-xs px-2 mb-4">
             <MeCard me={me} />
           </div>
+          <img
+            src={`${imageUrl}`}
+            alt="lock"
+            className="hidden sm:block w-full sm:max-w-xs px-2 mb-4"
+          />
+
           <div className="flex flex-col flex-1 w-full sm:max-w-sm md:max-w-2xl px-2 sm:overflow-y-scroll no-scrollbar mb-32 sm:mb-0">
             <div className="relative flex flex-col h-full overflow-y-scroll no-scrollbar">
               <div className="hidden md:flex flex-col flex-1">
