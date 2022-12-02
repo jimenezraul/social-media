@@ -12,11 +12,9 @@ import {
 } from '../../../utils/subscribe';
 import { useAppSelector, useAppDispatch } from '../../../app/hooks';
 import { newPost, setNewPost } from '../../posts/postSlice';
-
 export const Feed = () => {
   const dispatch = useAppDispatch();
   const newPostNotification = useAppSelector(newPost).newPost;
-
   const [Me, { data: meData, loading: meLoading, error: meError }] = useLazyQuery(GET_ME);
   const [feed, setFeed] = useState<Post[]>([]);
   const [friends, setFriends] = useState<Friends[]>([]);
