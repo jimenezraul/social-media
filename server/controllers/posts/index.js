@@ -17,6 +17,7 @@ const {
   likeComment,
   newLikeSubscription,
   newLikeCommentSubscription,
+  newLikePostNotificationSubscription,
 } = require('./likes');
 const { feed } = require('./feed');
 
@@ -41,6 +42,7 @@ const postResolvers = {
     newLikeSubscription: newLikeSubscription,
     newPostSubscription: newPostSubscription,
     newLikeCommentSubscription: newLikeCommentSubscription,
+    newLikePostNotificationSubscription: newLikePostNotificationSubscription,
   },
 };
 

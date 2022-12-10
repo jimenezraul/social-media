@@ -297,8 +297,8 @@ export const GET_MESSAGES_BY_USER = gql`
 `;
 
 export const GET_NOTIFICATIONS = gql`
-  query Notifications($userId: ID!) {
-    notificationsByUser(userId: $userId) {
+  query Notifications {
+    notificationsByUser {
       _id
       is_read
       message

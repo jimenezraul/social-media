@@ -122,7 +122,7 @@ const typeDefs = gql`
     chatById(id: ID!): [Messages]
     chatByUser: [Messages]
     notifications: [Notifications]
-    notificationsByUser(userId: ID!): [Notifications]
+    notificationsByUser: [Notifications]
   }
 
   type Mutation {
@@ -166,6 +166,7 @@ const typeDefs = gql`
     newLikeCommentSubscription: likeCommentSub
     newFriendRequestSubscription: Notifications
     newMessageSubscription(userId: ID!): Messages
+    newLikePostNotificationSubscription(userId: ID!): Notifications
   }
 `;
 
