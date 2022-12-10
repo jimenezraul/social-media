@@ -5,6 +5,7 @@ import {
   NEW_LIKE_COMMENT_SUBSCRIPTION,
   NEW_LIKE_SUBSCRIPTION,
   NEW_MESSAGE_SUBSCRIPTION,
+  NEW_LIKE_POST_NOTIFICATION,
 } from './subscriptions';
 import { store } from '../app/store';
 import { setNewPost } from '../features/posts/postSlice';
@@ -119,7 +120,7 @@ export const subscribeToNewLike = (subscribeToMore: any) => {
     updateQuery: (prev: any, { subscriptionData }: any) => {
       if (!subscriptionData.data) return prev;
       const newLike = subscriptionData.data.newLikeSubscription;
-
+      
       if (prev.post) {
         const post = prev.post;
         const updatedPost = {
@@ -256,9 +257,8 @@ export const subscribeToFriendRequests = (subscribeToMore: any) => {
       if (!subscriptionData.data) return prev;
       const newFriendRequest = subscriptionData.data.newFriendRequestSubscription;
       const user = store.getState().user;
-      
+
       if (newFriendRequest.message === 'Removed friend request') {
-        
         const updatedNotifications = prev.notificationsByUser.filter(
           (friendRequest: any) => friendRequest._id !== newFriendRequest._id,
         );
@@ -298,6 +298,23 @@ export const subscribeToNewMessage = (subscribeToMore: any) => {
           messages: newArray,
         },
       });
+    },
+  });
+};
+
+export const subscribeToNewLikePostNotification = (subscribeToMore: any) => {
+  const user = store.getState().user;
+  subscribeToMore({
+    document: NEW_LIKE_POST_NOTIFICATION,
+    variables: {
+      userId: user.user._id,
+    },
+    updateQuery: (prev: any, { subscriptionData }: any) => {
+      if (!subscriptionData.data) return prev;
+      const newNotification = subscriptionData.data.newNotificationSubscription;
+
+      console.log(prev);
+      return;
     },
   });
 };

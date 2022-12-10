@@ -55,11 +55,11 @@ export const Profile = () => {
   return (
     <div className="flex w-full text-white">
       <div className="lg:container mx-auto w-full">
-        <div className="flex flex-wrap justify-center h-full max-h-full overflow-y-scroll sm:overflow-y-hidden no-scrollbar">
+        <div className="flex flex-wrap justify-center h-full max-h-full overflow-y-scroll no-scrollbar">
           <div className="w-full sm:max-w-xs px-2 mb-4">
             <MeCard me={me} isProfile />
           </div>
-          <div className="flex flex-col flex-1 w-full sm:max-w-sm md:max-w-2xl px-2 sm:overflow-y-scroll no-scrollbar">
+          <div className="flex flex-col flex-1 w-full sm:max-w-sm md:max-w-2xl px-2 overflow-y-scroll no-scrollbar">
             {me?.posts.length ? (
               me?.posts.map((post: Post, index: number) => {
                 const isLastEl = index === me?.posts.length - 1;

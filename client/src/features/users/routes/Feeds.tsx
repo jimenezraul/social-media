@@ -16,7 +16,6 @@ export const Feed = () => {
   const dispatch = useAppDispatch();
   const newPostNotification = useAppSelector(newPost).newPost;
   const [Me, { data: meData, loading: meLoading, error: meError }] = useLazyQuery(GET_ME);
-  const [feed, setFeed] = useState<Post[]>([]);
   const [friends, setFriends] = useState<Friends[]>([]);
 
   const {
@@ -28,17 +27,8 @@ export const Feed = () => {
   } = useQuery(FEED);
 
   useEffect(() => {
-    if (feedLoading) return;
-    if (feedError) return;
-    if (!feedData) return;
-
-    if (feedData.feed.length > 0) {
-      setFeed(feedData.feed);
-    }
-
     if (!meData && !meLoading && !meError) {
       Me();
-      refetch();
     }
 
     if (meLoading) return;
@@ -46,7 +36,7 @@ export const Feed = () => {
     if (!meData) return;
 
     setFriends(meData.me.friends);
-  }, [feedData, feedLoading, feedError, Me, meData, meLoading, meError, feed, refetch]);
+  }, [Me, meData, meLoading, meError, refetch]);
 
   useEffect(() => {
     if (subscribeToMore) {
@@ -62,11 +52,12 @@ export const Feed = () => {
   };
 
   const me = meData && meData.me;
-
+  const feed = feedData && feedData.feed;
+  console.log(feed);
   return (
     <div className="flex w-full text-white">
       <div className="lg:container mx-auto w-full">
-        <div className="flex flex-wrap justify-center h-full max-h-full overflow-y-scroll sm:overflow-y-hidden no-scrollbar">
+        <div className="flex flex-wrap justify-center h-full max-h-full overflow-y-scroll no-scrollbar">
           <div className="hidden sm:block w-full sm:max-w-xs px-2 mb-4">
             <MeCard me={me} />
           </div>

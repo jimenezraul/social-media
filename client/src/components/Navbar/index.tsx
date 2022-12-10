@@ -9,8 +9,10 @@ import { LOGOUT } from '../../utils/mutations';
 import { Dropdown } from '../Dropdown';
 import { useOutside } from '../../utils/useOutside';
 import { Notifications } from '../Notifications';
-import { GET_ME } from '../../utils/queries';
-import { subscribeToFriendRequests } from '../../utils/subscribe';
+import {
+  subscribeToFriendRequests,
+  subscribeToNewLikePostNotification,
+} from '../../utils/subscribe';
 import { GET_NOTIFICATIONS } from '../../utils/queries';
 
 const Navbar = () => {
@@ -20,17 +22,14 @@ const Navbar = () => {
   const [notificationsOpen, setNotificationsOpen] = useState(false);
   const dispatch = useAppDispatch();
   const [currentPath, setCurrentPath] = useState<String>(window.location.pathname);
-  const { data } = useQuery(GET_ME);
-  const {
-    data: notificationsData,
-    subscribeToMore: notificationsSubscribeToMore,
-  } = useQuery(GET_NOTIFICATIONS, {
-    variables: { userId: data?.me?._id },
-  });
+
+  const { data: notificationsData, subscribeToMore: notificationsSubscribeToMore } =
+    useQuery(GET_NOTIFICATIONS);
 
   useEffect(() => {
     if (notificationsSubscribeToMore) {
       subscribeToFriendRequests(notificationsSubscribeToMore);
+      // subscribeToNewLikePostNotification(notificationsSubscribeToMore);
     }
   }, [notificationsSubscribeToMore]);
 

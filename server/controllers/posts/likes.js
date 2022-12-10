@@ -1,6 +1,6 @@
 const { GraphQLError } = require('graphql');
 const { Post, User, Comment, Notification } = require('../../models');
-const { PubSub } = require('graphql-subscriptions');
+const { PubSub, withFilter } = require('graphql-subscriptions');
 
 const pubsub = new PubSub();
 
@@ -34,6 +34,58 @@ module.exports = {
       _id: context.user._id,
     }).select('-__v -password');
 
+    if (likeExists) {
+  pubsub.publish('NEW_LIKE_POST_NOTIFICATION', {
+    newLikePostNotificationSubscription: {
+      sender: currentUser._id,
+      recipient: post.postAuthor._id,
+      postId: postId,
+      type: 'UNLIKE_POST',
+    },
+  });
+} else {
+  pubsub.publish('NEW_LIKE_POST_NOTIFICATION', {
+    newLikePostNotificationSubscription: {
+      sender: currentUser._id,
+      recipient: post.postAuthor._id,
+      postId: postId,
+      type: 'LIKE_POST',
+      message: `${currentUser.given_name} ${currentUser.family_name} liked your post.`,
+    },
+  });
+}
+
+if (likeExists && post.postAuthor._id !== context.user._id) {
+  const noti = await Notification.findOneAndDelete({
+    sender: context.user._id,
+    postId: postId,
+    type: 'LIKE',
+  });
+
+  User.findOneAndUpdate(
+    { _id: post.postAuthor._id },
+    { $pull: { notifications: noti._id } },
+    {
+      new: true,
+    }
+  ).exec();
+} else if (post.postAuthor._id != context.user._id) {
+  const noti = await Notification.create({
+    sender: context.user._id,
+    recipient: post.postAuthor._id,
+    type: 'LIKE',
+    postId: postId,
+    message: `${currentUser.given_name} ${currentUser.family_name} liked your post`,
+  });
+
+  User.findOneAndUpdate(
+    { _id: post.postAuthor._id },
+    { $push: { notifications: noti._id } },
+    { new: true }
+  ).exec();
+}
+
+
     pubsub.publish('NEW_LIKE', {
       newLikeSubscription: {
         postId: postId,
@@ -41,28 +93,6 @@ module.exports = {
         user: currentUser,
       },
     });
-
-    if (likeExists && post.postAuthor._id !== context.user._id) {
-      const noti = await Notification.findOneAndDelete({
-        sender: context.user._id,
-        postId: postId,
-        type: 'LIKE',
-      });
-      
-      currentUser.notifications.pull(noti._id);
-      currentUser.save();
-    } else if (post.postAuthor._id != context.user._id) {
-      const noti = await Notification.create({
-        sender: context.user._id,
-        recipient: post.postAuthor._id,
-        type: 'LIKE',
-        postId: postId,
-        message: `${currentUser.given_name} ${currentUser.family_name} liked your post`,
-      });
-
-      currentUser.notifications.push(noti._id);
-      currentUser.save();
-    }
 
     return {
       success: true,
@@ -116,11 +146,71 @@ module.exports = {
   newLikeSubscription: {
     subscribe: () => pubsub.asyncIterator(['NEW_LIKE']),
   },
-  newLikeNotificationSubscription: {
-    subscribe: pubsub.asyncIterator('NEW_LIKE_NOTIFICATION'),
-  },
 
   newLikeCommentSubscription: {
     subscribe: () => pubsub.asyncIterator(['NEW_LIKE_COMMENT']),
   },
+
+  newLikePostNotificationSubscription: {
+    subscribe: withFilter(
+      () => pubsub.asyncIterator('NEW_LIKE_POST_NOTIFICATION'),
+      (payload, variables) => {
+        return (
+          payload.newLikePostNotificationSubscription.recipient._id.toString() ===
+          variables.userId
+        );
+      }
+    ),
+  },
 };
+
+// if (likeExists) {
+//   pubsub.publish('NEW_LIKE_POST_NOTIFICATION', {
+//     newLikePostNotificationSubscription: {
+//       sender: currentUser._id,
+//       recipient: post.postAuthor._id,
+//       postId: postId,
+//       type: 'UNLIKE_POST',
+//     },
+//   });
+// } else {
+//   pubsub.publish('NEW_LIKE_POST_NOTIFICATION', {
+//     newLikePostNotificationSubscription: {
+//       sender: currentUser._id,
+//       recipient: post.postAuthor._id,
+//       postId: postId,
+//       type: 'LIKE_POST',
+//       message: `${currentUser.given_name} ${currentUser.family_name} liked your post.`,
+//     },
+//   });
+// }
+
+// if (likeExists && post.postAuthor._id !== context.user._id) {
+//   const noti = await Notification.findOneAndDelete({
+//     sender: context.user._id,
+//     postId: postId,
+//     type: 'LIKE',
+//   });
+
+//   User.findOneAndUpdate(
+//     { _id: post.postAuthor._id },
+//     { $pull: { notifications: noti._id } },
+//     {
+//       new: true,
+//     }
+//   ).exec();
+// } else if (post.postAuthor._id != context.user._id) {
+//   const noti = await Notification.create({
+//     sender: context.user._id,
+//     recipient: post.postAuthor._id,
+//     type: 'LIKE',
+//     postId: postId,
+//     message: `${currentUser.given_name} ${currentUser.family_name} liked your post`,
+//   });
+
+//   User.findOneAndUpdate(
+//     { _id: post.postAuthor._id },
+//     { $push: { notifications: noti._id } },
+//     { new: true }
+//   ).exec();
+// }

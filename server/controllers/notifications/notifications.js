@@ -31,7 +31,7 @@ module.exports = {
       });
   },
   // get all notifications by user id
-  notificationsByUser: async (parent, { userId }, context) => {
+  notificationsByUser: async (parent, args, context) => {
     const loggedUser = context.user;
     if (!loggedUser) {
       throw new GraphQLError('You need to be logged in!', {
@@ -42,7 +42,7 @@ module.exports = {
     }
 
     const notifications = await Notification.find({
-      recipient: userId,
+      recipient: loggedUser._id,
       is_read: false,
     })
       .populate({
@@ -51,10 +51,6 @@ module.exports = {
       })
       .populate({
         path: 'recipient',
-        select: '-__v -password',
-      })
-      .populate({
-        path: 'postId',
         select: '-__v -password',
       });
 
