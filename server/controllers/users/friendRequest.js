@@ -1,6 +1,7 @@
 const { GraphQLError } = require('graphql');
 const { User, Notification } = require('../../models');
 const { PubSub, withFilter } = require('graphql-subscriptions');
+const mongoose = require('mongoose');
 
 const pubsub = new PubSub();
 
@@ -33,13 +34,16 @@ module.exports = {
     if (user.friendRequests.includes(context.user._id)) {
       user.friendRequests.pull(context.user._id);
       user.friendRequestCount -= 1;
-      const notification = await Notification.findOneAndDelete({
+
+      const notification = await Notification.find({
         sender: context.user._id,
-        recipient: user._id,
+        recipient: friendId,
         type: 'FRIEND_REQUEST',
       });
 
-      user.notifications.pull(notification._id);
+      await Notification.findByIdAndDelete(notification[0]._id);
+
+      user.notifications.pull(notification[0]._id);
       user.save();
 
       pubsub.publish('NEW_FRIEND_REQUEST', {
@@ -67,11 +71,11 @@ module.exports = {
     user.notifications.push(notification);
     user.save();
     const newNotification = await Notification.findOne({
-      _id: notification._id,
+      _id: notification._id.toString(),
     })
       .populate('sender', '-__v -password')
       .populate('recipient', '-__v -password');
-   
+
     pubsub.publish('NEW_FRIEND_REQUEST', {
       newFriendRequestSubscription: newNotification,
     });
