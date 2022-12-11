@@ -53,7 +53,7 @@ export const Feed = () => {
 
   const me = meData && meData.me;
   const feed = feedData && feedData.feed;
-  console.log(feed);
+
   return (
     <div className="flex w-full text-white">
       <div className="lg:container mx-auto w-full">
