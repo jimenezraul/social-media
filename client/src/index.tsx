@@ -11,7 +11,7 @@ const container = document.getElementById('root')!;
 const root = createRoot(container);
 
 root.render(
-  <GoogleOAuthProvider clientId="759091763684-s8i5j4sq4fr84mqneo6vaq7de4sdu7hd.apps.googleusercontent.com">
+  <GoogleOAuthProvider clientId="759091763684-m7nlinpjcjuil9t8qpetf2qfhnhmvvvb.apps.googleusercontent.com">
     <Provider store={store}>
       <App />
     </Provider>
