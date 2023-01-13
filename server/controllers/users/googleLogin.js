@@ -27,13 +27,13 @@ module.exports = {
     }
 
     const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
-
+    
     async function verify() {
       const ticket = await client.verifyIdToken({
         idToken: tokenId,
         audience: process.env.GOOGLE_CLIENT_ID,
       });
-
+  
       if (
         !ticket.getPayload() ||
         ticket.getPayload().aud !== process.env.GOOGLE_CLIENT_ID

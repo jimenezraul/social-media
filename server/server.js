@@ -60,7 +60,6 @@ const server = new ApolloServer({
   ],
 });
 
-app.use(cors({ credentials: true, origin: 'http://localhost:3000' }));
 app.use(credentials);
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
