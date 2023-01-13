@@ -22,7 +22,7 @@ import AppRoutes from './routes';
 
 const isProduction = true;
 
-const wsUrl = !isProduction ? 'ws://localhost:3001/graphql' : 'wss://connectme.vercel.app/graphql';
+const wsUrl = !isProduction ? 'ws://localhost:3001/graphql' : 'wss://morning-tundra-02449.herokuapp.com/graphql';
 
 const wsLink = new GraphQLWsLink(
   createClient({
