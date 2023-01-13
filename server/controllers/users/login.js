@@ -17,7 +17,7 @@ module.exports = {
     }
 
     const correctPw = await user.isCorrectPassword(password);
-
+    console.log(correctPw);
     if (!correctPw) {
       throw new GraphQLError('Incorrect email or password', {
         code: 'INCORRECT_EMAIL_OR_PASSWORD',

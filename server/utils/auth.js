@@ -32,6 +32,7 @@ module.exports = {
 
     return req;
   },
+
   generateToken: function (user, type) {
     let secretkey = process.env.ACCESS_TOKEN_SECRET;
     if (type === 'refresh') {
@@ -43,15 +44,18 @@ module.exports = {
     }
     return jwt.sign(user, secretkey, { expiresIn: expiration });
   },
+
   credentials: (req, res, next) => {
     const origin = req.headers.origin;
 
     if (allowedOrigins.includes(origin)) {
       res.header('Access-Control-Allow-Credentials', true);
+      res.header('Access-Control-Allow-Origin', origin);
     }
 
     next();
   },
+
   validToken: (refreshToken) => {
     return jwt.verify(
       refreshToken,

@@ -22,9 +22,7 @@ import AppRoutes from './routes';
 
 const isProduction = true;
 
-const wsUrl = !isProduction
-  ? 'ws://localhost:3001/graphql'
-  : 'wss://connectme.vercel.app/graphql';
+const wsUrl = !isProduction ? 'ws://localhost:3001/graphql' : 'wss://connectme.vercel.app/graphql';
 
 const wsLink = new GraphQLWsLink(
   createClient({
