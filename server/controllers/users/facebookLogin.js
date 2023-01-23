@@ -1,7 +1,7 @@
 const { GraphQLError } = require('graphql');
 const { User } = require('../../models');
 const { generateToken } = require('../../utils/auth');
-const { setCookie } = require('../../utils/cookies');
+const cookies = require('../../utils/cookies');
 const { formatUserData } = require('../../utils/formatUserData');
 
 const https = require('https');
@@ -54,7 +54,9 @@ module.exports = {
       const access_token = generateToken({ user: data });
       const refresh_token = generateToken({ user: data }, 'refresh');
 
-      setCookie(context.res, 'refresh_token', refresh_token);
+      cookies.setCookie(context.res, 'refresh_token', refresh_token, {
+        signed: true,
+      });
 
       newUser.refreshToken = [refresh_token];
       await newUser.save();
@@ -83,7 +85,9 @@ module.exports = {
     const access_token = generateToken({ user: userData });
     const refresh_token = generateToken({ user: userData }, 'refresh');
 
-    setCookie(context.res, 'refresh_token', refresh_token);
+    cookies.setCookie(context.res, 'refresh_token', refresh_token, {
+      signed: true,
+    });
 
     user.refreshToken = [...currentRefreshToken, refresh_token];
     await user.save();

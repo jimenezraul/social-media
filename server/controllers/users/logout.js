@@ -1,6 +1,6 @@
 const { GraphQLError } = require('graphql');
 const { User } = require('../../models');
-const { clearCookie } = require('../../utils/cookies');
+const cookies = require('../../utils/cookies');
 
 module.exports = {
   // logout user
@@ -16,7 +16,7 @@ module.exports = {
     }
 
     // clear httpOnly cookie
-    clearCookie(context.res, 'refresh_token');
+    cookies.removeCookie(context.res, 'refresh_token', { maxAge: -1 });
 
     const user = await User.findOne({ refreshToken: refreshToken });
 

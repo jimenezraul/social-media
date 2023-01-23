@@ -22,6 +22,7 @@ const GoogleLoginButton = ({setErrors}: GoogleLoginProps) => {
 
       const { success, message, access_token, user } = google_login.data.googleLogin;
 
+      console.log(message)
       if (!success) {
         setErrors(message);
         return;

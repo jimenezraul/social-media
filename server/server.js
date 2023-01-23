@@ -1,4 +1,5 @@
 const express = require('express');
+const cookieParser = require('cookie-parser');
 const { ApolloServer } = require('@apollo/server');
 const { expressMiddleware } = require('@apollo/server/express4');
 const {
@@ -15,7 +16,7 @@ const { useServer } = require('graphql-ws/lib/use/ws');
 const path = require('path');
 const cors = require('cors');
 
-const { authMiddleware, credentials } = require('./utils/auth');
+const authMiddleware = require('./utils/auth');
 
 const db = require('./config/connection');
 
@@ -60,7 +61,8 @@ const server = new ApolloServer({
   ],
 });
 
-app.use(credentials);
+app.use(cookieParser(process.env.COOKIE_SECRET));
+app.use(authMiddleware.credentials);
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
@@ -86,7 +88,7 @@ const startApolloServer = async () => {
   app.use(
     '/graphql',
     expressMiddleware(server, {
-      context: authMiddleware,
+      context: authMiddleware.auth,
     })
   );
 
