@@ -1,15 +1,13 @@
 const { GraphQLError } = require('graphql');
 const { User } = require('../../models');
-const { generateToken, validToken } = require('../../utils/auth');
-const { setCookie, clearCookie } = require('../../utils/cookies');
+const authMiddleware = require('../../utils/auth');
+const cookies = require('../../utils/cookies');
 const { formatUserData } = require('../../utils/formatUserData');
 
 module.exports = {
   // refresh access token
   refreshToken: async (parent, { id }, context) => {
-    const refresh_token = await context.headers.cookie?.split(
-      'refresh_token='
-    )[1];
+    const refresh_token = await context.signedCookies.refresh_token;
 
     if (!refresh_token) {
       throw new GraphQLError('No refresh token found', {
@@ -19,7 +17,7 @@ module.exports = {
       });
     }
     // check if refresh token is valid
-    const isValidToken = validToken(refresh_token);
+    const isValidToken = authMiddleware.validateToken(refresh_token);
 
     // user that has refresh token in the refreshToken array
     const user = await User.findOne({
@@ -48,12 +46,12 @@ module.exports = {
     );
 
     const filteredExpiredTokenArray = newRefreshTokenArray.filter((token) =>
-      validToken(token)
+      authMiddleware.validateToken(token)
     );
 
     // Refresh token expired
     if (!isValidToken) {
-      clearCookie(context.res, 'refresh_token');
+      cookies.removeCookie(context.res, 'refresh_token', { maxAge: -1 });
       user.refreshToken = newRefreshTokenArray;
       await user.save();
       throw new GraphQLError('Refresh token expired, please login again', {
@@ -66,16 +64,21 @@ module.exports = {
     const currentUser = formatUserData(user);
 
     // generate new refresh token and save to user
-    const newRefreshToken = generateToken({ user: currentUser }, 'refresh');
+    const newRefreshToken = authMiddleware.generateToken(
+      { user: currentUser },
+      'refresh_token'
+    );
 
     user.refreshToken = [...filteredExpiredTokenArray, newRefreshToken];
     await user.save();
 
     // generate new access token
-    const accessToken = generateToken({ user: currentUser });
-    clearCookie(context.res, 'refresh_token');
+    const accessToken = authMiddleware.generateToken({ user: currentUser });
+    cookies.removeCookie(context.res, 'refresh_token');
     // set httpOnly cookie
-    setCookie(context.res, 'refresh_token', newRefreshToken);
+    cookies.setCookie(context.res, 'refresh_token', newRefreshToken, {
+      signed: true,
+    });
 
     return {
       success: true,

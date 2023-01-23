@@ -22,6 +22,7 @@ export const getNewToken = async () => {
 
     if (response.ok) {
       const res = await response.json();
+
       const { data, errors } = await res;
 
       if (errors) {

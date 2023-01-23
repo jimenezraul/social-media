@@ -1,16 +1,16 @@
 const { OAuth2Client } = require('google-auth-library');
 const { User } = require('../../models');
-const { generateToken } = require('../../utils/auth');
+const authMiddleware = require('../../utils/auth');
 const { GraphQLError } = require('graphql');
 const { formatUserData } = require('../../utils/formatUserData');
-const { setCookie, clearCookie } = require('../../utils/cookies');
+const cookies = require('../../utils/cookies');
 require('dotenv').config();
 
 module.exports = {
   googleLogin: async (parent, args, context) => {
     const refresh_token = context.headers.cookie?.split('refresh_token=')[1];
     const { tokenId } = args;
-    clearCookie(context.res, 'refresh_token');
+    cookies.removeCookie(context.res, 'refresh_token');
 
     if (!tokenId) {
       throw new GraphQLError('You need to be logged in with Google!', {
@@ -23,11 +23,11 @@ module.exports = {
         { refreshToken: refresh_token },
         { $pull: { refreshToken: refresh_token } }
       );
-      clearCookie(context.res, 'refresh_token');
+      cookies.removeCookie(context.res, 'refresh_token');
     }
 
     const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
-    
+   
     async function verify() {
       const ticket = await client.verifyIdToken({
         idToken: tokenId,
@@ -63,10 +63,12 @@ module.exports = {
         });
 
         const data = formatUserData(newUser);
-        const access_token = generateToken({ user: data });
-        const refreshToken = generateToken({ user: data }, 'refresh');
+        const access_token = authMiddleware.generateToken({ user: data });
+        const refreshToken = authMiddleware.generateToken({ user: data }, 'refresh_token');
 
-        setCookie(context.res, 'refresh_token', refreshToken);
+        cookies.setCookie(context.res, 'refresh_token', refreshToken, {
+          signed: true,
+        });
 
         newUser.refreshToken = [refreshToken];
         await newUser.save();
@@ -95,10 +97,12 @@ module.exports = {
       const currentRefreshToken = user.refreshToken;
       const data = formatUserData(user);
 
-      const access_token = generateToken({ user: data });
-      const refresh_token = generateToken({ user: data }, 'refresh');
+      const access_token = authMiddleware.generateToken({ user: data });
+      const refresh_token = authMiddleware.generateToken({ user: data }, 'refresh_token');
 
-      setCookie(context.res, 'refresh_token', refresh_token);
+      cookies.setCookie(context.res, 'refresh_token', refresh_token,{
+        signed: true,
+      });
 
       user.refreshToken = [...currentRefreshToken, refresh_token];
       await user.save();

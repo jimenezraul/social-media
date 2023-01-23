@@ -2,7 +2,7 @@ const { GraphQLError } = require('graphql');
 const { User } = require('../../models');
 const { generateToken } = require('../../utils/auth');
 const { formatUserData } = require('../../utils/formatUserData');
-const { setCookie, clearCookie } = require('../../utils/cookies');
+const cookies = require('../../utils/cookies');
 
 module.exports = {
   // login a user
@@ -44,7 +44,7 @@ module.exports = {
 
     if (refresh_token) {
       // clear httpOnly cookie
-      clearCookie(context.res, 'refresh_token');
+      cookies.removeCookie(context.res, 'refresh_token');
     }
 
     // save tokens to user
@@ -52,7 +52,9 @@ module.exports = {
     await user.save();
 
     // set httpOnly cookie
-    setCookie(context.res, 'refresh_token', refreshToken);
+    cookies.setCookie(context.res, 'refresh_token', refreshToken,{
+      signed: true,
+    });
 
     return {
       success: true,
