@@ -7,7 +7,8 @@ const { formatUserData } = require('../../utils/formatUserData');
 module.exports = {
   // refresh access token
   refreshToken: async (parent, { id }, context) => {
-    const refresh_token = await context.signedCookies.refresh_token;
+    
+    const refresh_token = cookies.getSignedCookie(context, 'refresh_token');
 
     if (!refresh_token) {
       throw new GraphQLError('No refresh token found', {
