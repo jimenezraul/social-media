@@ -23,8 +23,8 @@ export const SearchForFriends = () => {
 
   return (
     <div className='container mx-auto'>
-      <div className='flex flex-col justify-center items-center w-full'>
-        <div className='w-full max-w-md px-2'>
+      <div className='flex flex-col justify-center items-center w-full h-full'>
+        <div className='w-full max-w-md px-2 flex flex-col h-full overflow-y-scroll no-scrollbar'>
           <Search handleSearch={handleSearch} />
           {filteredUsers.map((user: User, index: any) => (
             <FriendRequest key={index} {...user} />
