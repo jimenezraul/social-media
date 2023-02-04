@@ -34,7 +34,7 @@ export const FriendRequest = ({ _id, fullName, profileUrl, friendRequests, email
   };
 
   return (
-    <div className="border border-slate-700 flex justify-between items-center w-full bg-slate-800 rounded-lg shadow-lg p-4 mb-24">
+    <div className="border border-slate-700 flex justify-between items-center w-full bg-slate-800 rounded-lg shadow-lg p-4 mb-4">
       <Link to={`/profile/${_id}`}>
         <div className="flex justify-start items-center w-full">
           <img
