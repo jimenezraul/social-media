@@ -2,6 +2,7 @@ const express = require('express');
 const cookieParser = require('cookie-parser');
 const { ApolloServer } = require('@apollo/server');
 const { expressMiddleware } = require('@apollo/server/express4');
+const { createCsrfToken } = require('./utils/csrf');
 const {
   ApolloServerPluginInlineTrace,
 } = require('@apollo/server/plugin/inlineTrace');
@@ -88,10 +89,10 @@ const startApolloServer = async () => {
   app.use(
     '/graphql',
     expressMiddleware(server, {
-      context: authMiddleware.auth,
+      context: authMiddleware.auth
     })
   );
-
+  
   db.once('open', () => {
     httpServer.listen(PORT, () => {
       console.log(`Use GraphQL at http://localhost:${PORT}/graphql`);
