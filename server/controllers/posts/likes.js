@@ -5,7 +5,15 @@ const { PubSub, withFilter } = require('graphql-subscriptions');
 const pubsub = new PubSub();
 
 module.exports = {
-  likes: async (parent, { postId }, context) => {
+  likes: async (parent, { postId, csrfToken }, context) => {
+    if (context.cookies['x-csrf-token'] !== csrfToken) {
+      throw new GraphQLError('CSRF token mismatch', {
+        extensions: {
+          code: 'FORBIDDEN',
+        },
+      });
+    }
+
     const loggedUser = context.user;
 
     if (!loggedUser) {
@@ -54,7 +62,7 @@ module.exports = {
     //     },
     //   });
     // }
-    
+
     if (likeExists && post.postAuthor._id.toString() !== context.user._id) {
       const noti = await Notification.findOneAndDelete({
         sender: context.user._id,

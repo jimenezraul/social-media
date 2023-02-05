@@ -50,8 +50,8 @@ export const REFRESH_TOKEN = gql`
 `;
 
 export const LIKE_POST = gql`
-  mutation LikeAPost($postId: ID!) {
-    likes(postId: $postId) {
+  mutation LikeAPost($postId: ID!, $csrfToken: String!) {
+    likes(postId: $postId, csrfToken: $csrfToken) {
       success
       message
     }

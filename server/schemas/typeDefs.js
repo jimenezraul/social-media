@@ -25,6 +25,7 @@ const typeDefs = gql`
     likes: [User]
     likeCount: Int
     createdAtFormatted: String
+    csrfToken: String
   }
 
   type User {
@@ -48,6 +49,7 @@ const typeDefs = gql`
     fullName: String
     friendCount: Int
     createdAtFormatted: String
+    csrfToken: String
   }
 
   type Message {
@@ -144,7 +146,7 @@ const typeDefs = gql`
     deletePost(postId: ID!): Message
     friendRequest(friendId: ID!): Message
     acceptFriendRequest(friendId: ID!): Message
-    likes(postId: ID!): Message
+    likes(postId: ID!, csrfToken:String!): Message
     likeComment(commentId: ID!): Message
     googleLogin(tokenId: String!): Auth
     facebookLogin(fbAccessToken: String!): Auth

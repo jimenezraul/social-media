@@ -203,6 +203,7 @@ interface Post {
   createdAtFormatted: String;
   isLastEl?: boolean;
   isProfile?: boolean;
+  csrfToken?: string;
 }
 
 interface SearchProps {

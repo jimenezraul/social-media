@@ -42,6 +42,16 @@ module.exports = {
       .populate('likes')
       .sort({ createdAt: -1 });
 
+    if (!context.cookies['x-csrf-token']) {
+      posts.forEach((post) => {
+        post.csrfToken = csrf.getToken(context);
+      });
+    } else {
+      posts.forEach((post) => {
+        post.csrfToken = context.cookies['x-csrf-token'];
+      });
+    }
+
     return posts;
   },
 };

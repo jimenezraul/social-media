@@ -1,5 +1,6 @@
-const { GraphQLError } = require('graphql')
+const { GraphQLError } = require('graphql');
 const { User } = require('../../models');
+const csrf = require('../../utils/csrf');
 
 module.exports = {
   // Query for current user
@@ -67,7 +68,11 @@ module.exports = {
       });
 
     userData.posts.sort((a, b) => b.createdAt - a.createdAt);
-
+    if (!context.cookies['x-csrf-token']) {
+      userData.csrfToken = csrf.createToken(context);
+    } else {
+      userData.csrfToken = context.cookies['x-csrf-token'];
+    }
     return userData;
   },
   // Query for all users not including current user and users already friends with
