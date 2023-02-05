@@ -88,10 +88,10 @@ const startApolloServer = async () => {
   app.use(
     '/graphql',
     expressMiddleware(server, {
-      context: authMiddleware.auth,
+      context: authMiddleware.auth
     })
   );
-
+  
   db.once('open', () => {
     httpServer.listen(PORT, () => {
       console.log(`Use GraphQL at http://localhost:${PORT}/graphql`);

@@ -87,7 +87,7 @@ export const Feed = () => {
 
               {feed?.map((post: Post, index: number) => {
                 const isLastEl = index === feedData?.feed.length - 1;
-                return <Post key={index} {...post} isLastEl={isLastEl} />;
+                return <Post key={index} {...post} isLastEl={isLastEl} csrfToken={post.csrfToken} />;
               })}
             </div>
           </div>

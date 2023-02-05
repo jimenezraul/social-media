@@ -5,7 +5,7 @@ const cookies = require('../../utils/cookies');
 module.exports = {
   // logout user
   logout: async (parent, args, context) => {
-    const refreshToken = context.headers.cookie.split('refresh_token=')[1];
+    const refreshToken = context.signedCookies.refresh_token;
 
     if (!refreshToken) {
       throw new GraphQLError('No refresh token found', {

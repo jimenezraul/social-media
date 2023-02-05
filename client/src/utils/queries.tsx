@@ -3,6 +3,7 @@ import { gql } from '@apollo/client';
 export const GET_ME = gql`
   query Me {
     me {
+      csrfToken
       _id
       given_name
       family_name
@@ -126,6 +127,7 @@ export const FEED = gql`
         fullName
         profileUrl
       }
+      csrfToken
     }
   }
 `;

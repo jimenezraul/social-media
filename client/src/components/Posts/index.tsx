@@ -17,6 +17,7 @@ export const Post = ({
   isLastEl,
   isProfile,
   likes,
+  csrfToken,
 }: Post) => {
   const commentRef = useRef() as React.MutableRefObject<HTMLInputElement>;
   const menuRef = useRef() as React.MutableRefObject<HTMLInputElement>;
@@ -35,6 +36,7 @@ export const Post = ({
       await likePost({
         variables: {
           postId: _id,
+          csrfToken,
         },
       });
     } catch (error) {

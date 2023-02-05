@@ -20,7 +20,7 @@ import { store } from './app/store';
 
 import AppRoutes from './routes';
 
-const isProduction = true;
+const isProduction = false;
 
 const wsUrl = !isProduction ? 'ws://localhost:3001/graphql' : 'wss://morning-tundra-02449.herokuapp.com/graphql';
 

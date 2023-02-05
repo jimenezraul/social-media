@@ -63,7 +63,15 @@ export const Profile = () => {
             {me?.posts.length ? (
               me?.posts.map((post: Post, index: number) => {
                 const isLastEl = index === me?.posts.length - 1;
-                return <Post key={index} {...post} isLastEl={isLastEl} isProfile />;
+                return (
+                  <Post
+                    key={index}
+                    {...post}
+                    isLastEl={isLastEl}
+                    isProfile
+                    csrfToken={me.csrfToken}
+                  />
+                );
               })
             ) : (
               <div className="h-20 border border-slate-700 mb-4 break-inside rounded-lg bg-slate-800 flex flex-col justify-center bg-clip-border">
