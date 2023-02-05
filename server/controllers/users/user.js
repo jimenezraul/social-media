@@ -69,7 +69,7 @@ module.exports = {
 
     userData.posts.sort((a, b) => b.createdAt - a.createdAt);
     if (!context.cookies['x-csrf-token']) {
-      userData.csrfToken = csrf.createToken(context);
+      userData.csrfToken = csrf.createCsrfToken(context);
     } else {
       userData.csrfToken = context.cookies['x-csrf-token'];
     }
