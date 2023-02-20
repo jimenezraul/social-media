@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import GoogleLoginButton from '../../../components/GoogleLoginButton';
 import FacebookLoginButton from '../../../components/MetaLoginButton';
 import { Button } from '../../../components/CustomButton';
-import { registerValidation } from '../../../utils/validation';
+import validation from '@jimenezraul/form-validation';
 import { useMutation } from '@apollo/client';
 import { REGISTER } from '../../../utils/mutations';
 
@@ -51,6 +51,7 @@ const initialState = {
 };
 
 export const Register: FC = () => {
+  const { registerValidation } = validation;
   const [loading, setLoading] = useState<boolean>(false);
   const [errors, setErrors] = useState<String>('');
   const [registerError, setRegisterError] = useState<RegisterInfo>({

@@ -2,11 +2,12 @@ import { Button } from '../../../components/CustomButton';
 import { RESET_PASSWORD } from '../../../utils/mutations';
 import { useMutation } from '@apollo/client';
 import { useState } from 'react';
-import { isPasswordValid } from '../../../utils/validation';
+import validation from '@jimenezraul/form-validation';
 import { Link } from 'react-router-dom';
 
 const ResetPassword = () => {
   const token = window.location.href.split('token=')[1];
+  const { isPasswordValid } = validation;
 
   const [formState, setFormState] = useState({
     password: '',
@@ -151,7 +152,10 @@ const ResetPassword = () => {
               <p className={`${error.status}`}>{error.message}</p>
               {error.message === 'Your user password has been updated' && (
                 <p className="text-slate-200">
-                  You can now <Link className='text-blue-500' to="/login">login</Link>
+                  You can now{' '}
+                  <Link className="text-blue-500" to="/login">
+                    login
+                  </Link>
                 </p>
               )}
             </div>
