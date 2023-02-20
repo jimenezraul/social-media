@@ -10,20 +10,22 @@ import { user_login, setAccessToken } from '../../../features/users/userSlice';
 import { FormEvent, ChangeEvent } from './types';
 import FacebookLoginButton from '../../../components/MetaLoginButton';
 
+const initialState = {
+  email: '',
+  password: '',
+  error: {
+    email: '',
+    password: '',
+  },
+};
+
 export const Login = () => {
   const dispatch = useAppDispatch();
   const [errors, setErrors] = useState<String>('');
 
   const [login] = useMutation(LOGIN);
 
-  const [formState, setFormState] = useState({
-    email: '',
-    password: '',
-    error: {
-      email: '',
-      password: '',
-    },
-  });
+  const [formState, setFormState] = useState(initialState);
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
@@ -49,14 +51,7 @@ export const Login = () => {
         return;
       }
 
-      setFormState({
-        email: '',
-        password: '',
-        error: {
-          email: '',
-          password: '',
-        },
-      });
+      setFormState(initialState);
 
       localStorage.setItem('user', JSON.stringify(user));
       dispatch(user_login(user));
