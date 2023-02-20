@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from '../../../components/CustomButton';
 import GoogleLoginButton from '../../../components/GoogleLoginButton';
-import { validation } from '../../../utils/validation';
+import validation from '@jimenezraul/form-validation';
 import { useMutation } from '@apollo/client';
 import { LOGIN } from '../../../utils/mutations';
 import { useAppDispatch } from '../../../app/hooks';

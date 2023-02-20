@@ -17,6 +17,7 @@ module.exports = {
 
     // clear httpOnly cookie
     cookies.removeCookie(context.res, 'refresh_token', { maxAge: -1 });
+    cookies.removeCookie(context.res, 'x-csrf-token', { maxAge: -1 });
 
     const user = await User.findOne({ refreshToken: refreshToken });
 

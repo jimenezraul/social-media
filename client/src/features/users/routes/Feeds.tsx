@@ -53,7 +53,7 @@ export const Feed = () => {
 
   const me = meData && meData.me;
   const feed = feedData && feedData.feed;
-
+  console.log(feedData)
   return (
     <div className="flex w-full text-white">
       <div className="lg:container mx-auto w-full">
@@ -85,7 +85,7 @@ export const Feed = () => {
                 </div>
               </div>
 
-              {feed?.map((post: Post, index: number) => {
+              {me && feed && feed?.map((post: Post, index: number) => {
                 const isLastEl = index === feedData?.feed.length - 1;
                 return <Post key={index} {...post} isLastEl={isLastEl} csrfToken={post.csrfToken} />;
               })}
