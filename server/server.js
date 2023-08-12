@@ -68,20 +68,20 @@ app.use(express.json());
 
 app.use(express.static(path.join(__dirname, 'public')));
 
-// if (process.env.NODE_ENV === 'production') {
-//   app.enable('trust proxy');
-//   app.use(function (req, res, next) {
-//     if (req.secure) {
-//       next();
-//     } else {
-//       res.redirect('https://' + req.headers.host + req.url);
-//     }
-//   });
-//   app.use(express.static(path.join(__dirname, '../client/build')));
-//   app.get('*', (req, res) => {
-//     res.sendFile(path.join(__dirname, '../client/build/index.html'));
-//   });
-// }
+if (process.env.NODE_ENV === 'production') {
+  app.enable('trust proxy');
+  app.use(function (req, res, next) {
+    if (req.secure) {
+      next();
+    } else {
+      res.redirect('https://' + req.headers.host + req.url);
+    }
+  });
+  app.use(express.static(path.join(__dirname, '../client/build')));
+  app.get('*', (req, res) => {
+    res.sendFile(path.join(__dirname, '../client/build/index.html'));
+  });
+}
 
 const startApolloServer = async () => {
   await server.start();
