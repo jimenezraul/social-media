@@ -67,7 +67,7 @@ Mobile
     ```npm run develop```
 
 ## Deploy on Heroku
-[LIVE DEMO](https://connectme-xmdv.onrender.com)
+[LIVE DEMO](https://connectme-i093.onrender.com)
 
 ## Questions
 
